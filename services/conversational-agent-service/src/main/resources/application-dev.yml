@@ -1,0 +1,4 @@
+logging:
+  level:
+    com.lloyds.creditcoach: DEBUG
+    io.github.resilience4j: DEBUG

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conversational-agent-service
+  labels:
+    app: conversational-agent-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: conversational-agent-service
+  template:
+    metadata:
+      labels:
+        app: conversational-agent-service
+    spec:
+      containers:
+        - name: conversational-agent-service
+          image: europe-west2-docker.pkg.dev/lloyds-credit-coach/services/conversational-agent-service:latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: ENVOY_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: conversation-config
+                  key: envoy-url
+            - name: GCP_PROJECT_ID
+              value: "lloyds-credit-coach"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8082
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8082
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

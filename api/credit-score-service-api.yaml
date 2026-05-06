@@ -1,0 +1,442 @@
+openapi: "3.0.3"
+info:
+  title: "Credit Coach — Credit Score Service API"
+  version: "1.0.0"
+  description: |
+    Retrieves, caches, and serves credit scores from CRA partners.
+    Owns: `credit_scores`, `credit_score_factors`, `score_refresh_schedules`, `cra_api_audit_log` tables.
+    Publishes events: `score.retrieved`, `score.changed`.
+    
+    ## Bounded Context
+    Single responsibility: CRA integration, score storage, factor analysis, change explanation.
+    Depends on ConsentService (checks consent before CRA call).
+    
+    ## Integration
+    - CRA (Experian): REST, circuit breaker (3 failures/30s → 60s open), Redis cache (24hr TTL)
+    - ConsentService: gRPC (verify consent before retrieval)
+    - Pub/Sub: publishes score lifecycle events
+    
+    ## Regulatory
+    - CONC 5.2A (soft search only)
+    - PRA FS2/23 (explainability for factor descriptions)
+    - FCA Consumer Duty (consumer understanding)
+    - NFR-01: Score retrieval < 3 seconds
+    - NFR-25: Data quality ≥ 95% before processing
+  contact:
+    name: "Credit Coach API Team"
+    email: "api-support@example.com"
+servers:
+  - url: "https://api.lloydsbanking.com/api/v1"
+    description: "Production"
+  - url: "https://api-staging.lloydsbanking.com/api/v1"
+    description: "Staging"
+security:
+  - bearerAuth: []
+tags:
+  - name: Score
+    description: "Credit score retrieval and display"
+  - name: Factors
+    description: "Score factor breakdown"
+  - name: History
+    description: "Score history and trends"
+  - name: Admin
+    description: "Refresh schedule administration"
+
+paths:
+  /credit-coach/scores/{customerId}:
+    get:
+      operationId: getCurrentScore
+      tags: [Score]
+      summary: "Get current credit score"
+      description: |
+        Returns latest score with band and month-on-month change.
+        Serves from Redis cache (24hr TTL); falls back to CRA on miss.
+        Returns 503 with stale data if CRA unavailable and cache expired.
+        
+        **Stories:** US-008, US-009, US-010, US-057
+        **Cache:** Redis Memorystore, 24hr TTL
+        **Circuit breaker:** 2.5s timeout, 3 failures → OPEN, 60s recovery
+      parameters:
+        - $ref: '#/components/parameters/customerId'
+        - $ref: '#/components/parameters/correlationId'
+      responses:
+        "200":
+          description: "Current score (fresh or cached)"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ScoreResponse' }
+        "202":
+          description: "First retrieval in progress"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ScoreRetrievingResponse' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+        "404":
+          description: "No active consent — must grant consent first"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+        "500": { $ref: '#/components/responses/InternalError' }
+        "503":
+          description: "CRA unavailable — stale cached data returned"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ScoreResponse' }
+          headers:
+            X-Data-Stale: { schema: { type: boolean } }
+            Retry-After: { schema: { type: integer } }
+
+  /credit-coach/scores/{customerId}/refresh:
+    post:
+      operationId: refreshScore
+      tags: [Score]
+      summary: "Trigger on-demand CRA refresh"
+      description: |
+        Forces fresh soft search. Rate limited: max 1 per 24hr per customer.
+        **Stories:** US-008, US-052 | **Events:** score.retrieved, score.changed
+      parameters:
+        - $ref: '#/components/parameters/customerId'
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/idempotencyKey'
+      responses:
+        "202":
+          description: "Refresh initiated"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ScoreRetrievingResponse' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "404": { $ref: '#/components/responses/NotFound' }
+        "429":
+          description: "Max 1 refresh per 24hr"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+          headers:
+            Retry-After: { schema: { type: integer } }
+        "500": { $ref: '#/components/responses/InternalError' }
+
+  /credit-coach/scores/{customerId}/factors:
+    get:
+      operationId: getScoreFactors
+      tags: [Factors]
+      summary: "Get score factors in plain English"
+      description: |
+        Positive and negative factors with impact levels.
+        Flesch reading ease ≥ 60 for all descriptions.
+        **Stories:** US-011, US-053
+      parameters:
+        - $ref: '#/components/parameters/customerId'
+        - $ref: '#/components/parameters/correlationId'
+      responses:
+        "200":
+          description: "Score factors"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FactorsResponse' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "404": { $ref: '#/components/responses/NotFound' }
+        "500": { $ref: '#/components/responses/InternalError' }
+
+  /credit-coach/scores/{customerId}/change-explanation:
+    get:
+      operationId: getScoreChangeExplanation
+      tags: [Score]
+      summary: "Explain score change between refreshes"
+      description: "**Stories:** US-012 | **Regulatory:** PRA FS2/23 explainability"
+      parameters:
+        - $ref: '#/components/parameters/customerId'
+        - $ref: '#/components/parameters/correlationId'
+      responses:
+        "200":
+          description: "Change explanation with contributing factors"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChangeExplanationResponse' }
+        "204":
+          description: "No change — score unchanged since last period"
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "404": { $ref: '#/components/responses/NotFound' }
+        "500": { $ref: '#/components/responses/InternalError' }
+
+  /credit-coach/scores/{customerId}/history:
+    get:
+      operationId: getScoreHistory
+      tags: [History]
+      summary: "Get score history time-series"
+      description: "24-month retention per FR-04. **Stories:** US-013"
+      parameters:
+        - $ref: '#/components/parameters/customerId'
+        - $ref: '#/components/parameters/correlationId'
+        - name: months
+          in: query
+          schema: { type: integer, default: 12, minimum: 1, maximum: 24 }
+      responses:
+        "200":
+          description: "Score history"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ScoreHistoryResponse' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "404": { $ref: '#/components/responses/NotFound' }
+        "500": { $ref: '#/components/responses/InternalError' }
+
+  /credit-coach/admin/refresh-schedule:
+    get:
+      operationId: getRefreshConfig
+      tags: [Admin]
+      summary: "Get refresh frequency config"
+      description: "**Stories:** US-017 | **Auth:** Admin role required"
+      parameters:
+        - $ref: '#/components/parameters/correlationId'
+      responses:
+        "200":
+          description: "Current config"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefreshConfigResponse' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+        "500": { $ref: '#/components/responses/InternalError' }
+    put:
+      operationId: updateRefreshConfig
+      tags: [Admin]
+      summary: "Update refresh frequency"
+      description: "**Stories:** US-017 | **Auth:** Admin role required"
+      parameters:
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/idempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RefreshConfigRequest' }
+      responses:
+        "200":
+          description: "Updated"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RefreshConfigResponse' }
+        "400": { $ref: '#/components/responses/BadRequest' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+        "500": { $ref: '#/components/responses/InternalError' }
+
+  /credit-coach/scores/health:
+    get:
+      operationId: scoreServiceHealth
+      tags: [Score]
+      summary: "Score service health"
+      security: []
+      responses:
+        "200":
+          description: "Healthy"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, enum: [UP, DEGRADED] }
+                  database: { type: string, enum: [UP, DOWN] }
+                  cache: { type: string, enum: [UP, DOWN] }
+                  cra: { type: string, enum: [UP, DOWN, CIRCUIT_OPEN] }
+                  pubsub: { type: string, enum: [UP, DOWN] }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    customerId:
+      name: customerId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    correlationId:
+      name: X-Correlation-Id
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    idempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+
+  schemas:
+    ScoreResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          required: [customerId, provider, score, maxScore, band, bandLabel, retrievedAt, isStale]
+          properties:
+            customerId: { type: string, format: uuid }
+            provider: { type: string, enum: [EXPERIAN, EQUIFAX, TRANSUNION] }
+            score: { type: integer }
+            maxScore: { type: integer, description: "Experian:1250, Equifax:1000, TransUnion:710" }
+            band: { type: string, enum: [poor, fair, good, very_good, excellent] }
+            bandLabel: { type: string, description: "e.g. 'Good (700–849)'" }
+            previousScore: { type: integer, nullable: true }
+            change: { type: integer, nullable: true }
+            changeDirection: { type: string, enum: [up, down, unchanged], nullable: true }
+            retrievedAt: { type: string, format: date-time }
+            isStale: { type: boolean }
+            dataQualityScore: { type: integer, minimum: 0, maximum: 100 }
+        meta:
+          allOf:
+            - { $ref: '#/components/schemas/ResponseMeta' }
+            - type: object
+              properties:
+                source: { type: string, enum: [cra_live, cache, cache_stale] }
+                cacheExpiresAt: { type: string, format: date-time, nullable: true }
+
+    ScoreRetrievingResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            status: { type: string, enum: [retrieving] }
+            estimatedSeconds: { type: integer }
+        meta: { $ref: '#/components/schemas/ResponseMeta' }
+
+    FactorsResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          required: [customerId, factors, retrievedAt]
+          properties:
+            customerId: { type: string, format: uuid }
+            factors:
+              type: array
+              items: { $ref: '#/components/schemas/ScoreFactor' }
+            positiveCount: { type: integer }
+            negativeCount: { type: integer }
+            retrievedAt: { type: string, format: date-time }
+        meta: { $ref: '#/components/schemas/ResponseMeta' }
+
+    ScoreFactor:
+      type: object
+      required: [factorId, category, impact, direction, title, description]
+      properties:
+        factorId: { type: string }
+        category: { type: string, enum: [payment_history, utilisation, credit_age, credit_mix, new_credit] }
+        impact: { type: string, enum: [high, medium, low] }
+        direction: { type: string, enum: [positive, negative] }
+        title: { type: string }
+        description: { type: string, description: "Plain English, Flesch ≥60" }
+        weightingPercent: { type: integer, nullable: true }
+
+    ChangeExplanationResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          required: [customerId, previousScore, currentScore, totalChange, contributors]
+          properties:
+            customerId: { type: string, format: uuid }
+            previousScore: { type: integer }
+            currentScore: { type: integer }
+            totalChange: { type: integer }
+            changeDirection: { type: string, enum: [up, down, unchanged] }
+            contributors:
+              type: array
+              items:
+                type: object
+                properties:
+                  factor: { type: string }
+                  pointImpact: { type: integer }
+                  description: { type: string }
+            periodStart: { type: string, format: date }
+            periodEnd: { type: string, format: date }
+        meta: { $ref: '#/components/schemas/ResponseMeta' }
+
+    ScoreHistoryResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            customerId: { type: string, format: uuid }
+            provider: { type: string, enum: [EXPERIAN, EQUIFAX, TRANSUNION] }
+            dataPoints:
+              type: array
+              items:
+                type: object
+                properties:
+                  date: { type: string, format: date }
+                  score: { type: integer }
+                  band: { type: string, enum: [poor, fair, good, very_good, excellent] }
+            totalMonths: { type: integer }
+        meta: { $ref: '#/components/schemas/ResponseMeta' }
+
+    RefreshConfigRequest:
+      type: object
+      required: [craProvider, frequencyDays]
+      properties:
+        craProvider: { type: string, enum: [EXPERIAN, EQUIFAX, TRANSUNION] }
+        frequencyDays: { type: integer, minimum: 7, maximum: 90 }
+
+    RefreshConfigResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            configurations:
+              type: array
+              items:
+                type: object
+                properties:
+                  craProvider: { type: string }
+                  frequencyDays: { type: integer }
+                  lastUpdated: { type: string, format: date-time }
+                  updatedBy: { type: string }
+        meta: { $ref: '#/components/schemas/ResponseMeta' }
+
+    ResponseMeta:
+      type: object
+      properties:
+        requestId: { type: string, format: uuid }
+        timestamp: { type: string, format: date-time }
+
+    ProblemDetails:
+      type: object
+      required: [type, title, status]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+
+  responses:
+    BadRequest:
+      description: "Invalid request"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    Unauthorized:
+      description: "Bearer JWT missing/invalid"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    Forbidden:
+      description: "Insufficient permissions"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    NotFound:
+      description: "Not found"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    InternalError:
+      description: "Internal error"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }

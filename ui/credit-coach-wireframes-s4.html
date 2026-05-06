@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Credit Coach — Wireframes (EP-07 & EP-08)</title>
+<style>
+:root{--lloyds-green:#006A4D;--lloyds-green-dark:#005238;--lloyds-green-light:#E6F2EE;--bg-app:#F5F5F5;--bg-surface:#FFFFFF;--text-primary:#1A1A1A;--text-secondary:#595959;--text-muted:#888888;--text-error:#C0392B;--border-light:#E0E0E0;--status-positive:#006A4D;--status-positive-bg:#E6F2EE;--status-negative:#C0392B;--status-negative-bg:#FDECEC;--status-info:#1565C0;--status-info-bg:#E3F2FD;--status-pending:#9C5A00;--status-pending-bg:#FFF3E0;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--shadow-sm:0 1px 4px rgba(0,0,0,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'GT Ultra Standard',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:16px;color:var(--text-primary);background:#fff;line-height:1.6}
+.page-title{font-size:32px;font-weight:700;text-align:center;padding:40px 16px 8px}
+.page-subtitle{font-size:14px;text-align:center;color:var(--text-secondary);padding:0 16px 40px}
+.screen-section{max-width:420px;margin:0 auto 60px;border:1px solid var(--border-light);border-radius:var(--radius-xl);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.10)}
+.screen-label{background:var(--bg-app);padding:12px 16px;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+.screen-label .route{font-weight:400;color:var(--text-muted);font-size:12px}
+.screen-label .tag{background:var(--status-positive-bg);color:var(--status-positive);padding:2px 8px;border-radius:20px;font-size:11px}
+.mobile-shell{background:var(--bg-app);min-height:700px;display:flex;flex-direction:column}
+.top-bar{height:56px;background:var(--bg-surface);border-bottom:1px solid var(--border-light);display:flex;align-items:center;padding:0 16px;gap:12px}
+.top-bar .title{flex:1;font-size:17px;font-weight:700;text-align:center}
+.content{flex:1;padding:16px;overflow-y:auto}
+.bottom-nav{height:60px;background:var(--bg-surface);border-top:1px solid var(--border-light);display:flex;align-items:center}
+.bottom-nav .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--text-muted);text-decoration:none}
+.bottom-nav .nav-item.active{color:var(--lloyds-green);font-weight:700}
+.card{background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.card-title{font-size:17px;font-weight:700;margin-bottom:4px}
+.btn-primary{background:var(--lloyds-green);color:#fff;font-size:16px;font-weight:700;height:52px;padding:0 28px;border:none;border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-secondary{background:transparent;color:var(--lloyds-green);font-size:16px;font-weight:700;height:52px;padding:0 28px;border:2px solid var(--lloyds-green);border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center}
+.btn-destructive{background:var(--text-error);color:#fff;font-size:16px;font-weight:700;height:52px;padding:0 28px;border:none;border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-positive{background:var(--status-positive-bg);color:var(--status-positive)}
+.badge-negative{background:var(--status-negative-bg);color:var(--status-negative)}
+.badge-info{background:var(--status-info-bg);color:var(--status-info)}
+.badge-pending{background:var(--status-pending-bg);color:var(--status-pending)}
+.kv-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);font-size:14px}
+.kv-row:last-child{border:none}
+.kv-row .k{color:var(--text-secondary)}
+.kv-row .v{font-weight:700}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border-light)}
+.toggle-row:last-child{border:none}
+.toggle-label{font-size:15px}
+.toggle-desc{font-size:13px;color:var(--text-secondary);margin-top:2px}
+.toggle{width:52px;height:28px;background:#ccc;border-radius:100px;position:relative;cursor:pointer;flex-shrink:0}
+.toggle.on{background:var(--lloyds-green)}
+.toggle::after{content:'';width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;box-shadow:0 1px 3px rgba(0,0,0,0.2);transition:transform 0.2s}
+.toggle.on::after{transform:translateX(24px)}
+.alert-card{border-left:4px solid;border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;background:var(--bg-surface);box-shadow:var(--shadow-sm)}
+.alert-card.warning{border-color:var(--status-pending)}
+.alert-card.success{border-color:var(--status-positive)}
+.alert-card.danger{border-color:var(--status-negative)}
+.alert-card .alert-time{font-size:12px;color:var(--text-muted);margin-top:8px}
+.annotation{font-size:11px;color:var(--text-muted);font-style:italic;margin-top:4px}
+.a11y-note{font-size:10px;color:#1565C0;background:#E3F2FD;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
+.story-ref{font-size:10px;color:var(--status-pending);background:var(--status-pending-bg);padding:2px 6px;border-radius:4px;display:inline-block}
+hr.section-divider{border:none;border-top:3px solid var(--lloyds-green);margin:60px auto;max-width:200px}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">AI Credit Coach — Wireframes</h1>
+<p class="page-subtitle">EP-07 & EP-08 · Sprint 4 · Alerts, Compliance & Cross-Cutting</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 1: ALERT FEED -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 1: Credit Health Alerts Feed</span>
+  <span class="route">/credit-coach/alerts</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span style="cursor:pointer">←</span>
+    <span class="title">Alerts</span>
+    <span style="cursor:pointer;font-size:14px;color:var(--lloyds-green);font-weight:700">Settings</span>
+  </div>
+  <div class="content">
+    <div class="alert-card warning">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="font-size:15px;font-weight:700">⚠️ Utilisation approaching 50%</div>
+        <span class="badge badge-pending">Action needed</span>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;line-height:1.5">Your Barclays credit card utilisation is now 48%. Going above 50% could lower your score. Consider making a payment to bring it down.</p>
+      <div class="alert-time">Today, 09:15</div>
+    </div>
+
+    <div class="alert-card danger">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="font-size:15px;font-weight:700">🔴 Payment due in 3 days</div>
+        <span class="badge badge-negative">High impact</span>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;line-height:1.5">Your Lloyds loan payment of £350 is due on 8 May. Missing it would impact your score for up to 6 years.</p>
+      <div class="alert-time">Yesterday, 14:30</div>
+    </div>
+
+    <div class="alert-card success">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="font-size:15px;font-weight:700">🎉 New product available!</div>
+        <span class="badge badge-positive">Good news</span>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;line-height:1.5">Your score improved to 750 — you now qualify for our best personal loan rates. View your pre-approved offer.</p>
+      <div class="alert-time">2 May 2026</div>
+    </div>
+
+    <p class="annotation">Alerts delivered via push notification within 15 minutes of trigger (NFR-04) · Pub/Sub event-driven</p>
+    <span class="a11y-note">A11Y: Alerts as list with role="feed" · Each alert announced with severity · Timestamps relative</span>
+    <span class="story-ref">US-038, US-040, US-041 · FR-21, FR-22, FR-23</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 2: ALERT PREFERENCES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 2: Alert Preferences</span>
+  <span class="route">/credit-coach/alerts/settings</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:600px">
+  <div class="top-bar">
+    <span style="cursor:pointer">←</span>
+    <span class="title">Alert Settings</span>
+    <span></span>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">Alert types</div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Utilisation warnings</div>
+          <div class="toggle-desc">When credit usage approaches your threshold</div>
+        </div>
+        <div class="toggle on"></div>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Payment reminders</div>
+          <div class="toggle-desc">Upcoming payments that could affect your score</div>
+        </div>
+        <div class="toggle on"></div>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Product eligibility</div>
+          <div class="toggle-desc">When score improvements unlock new offers</div>
+        </div>
+        <div class="toggle on"></div>
+      </div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Score changes</div>
+          <div class="toggle-desc">Monthly score refresh notifications</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Utilisation threshold</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin:8px 0 12px">Alert me when utilisation reaches:</p>
+      <div style="display:flex;gap:8px">
+        <button style="padding:10px 16px;border-radius:20px;border:1.5px solid var(--border-light);background:transparent;font-size:14px">30%</button>
+        <button style="padding:10px 16px;border-radius:20px;border:1.5px solid var(--lloyds-green);background:var(--lloyds-green-light);color:var(--lloyds-green);font-size:14px;font-weight:700">50%</button>
+        <button style="padding:10px 16px;border-radius:20px;border:1.5px solid var(--border-light);background:transparent;font-size:14px">75%</button>
+        <button style="padding:10px 16px;border-radius:20px;border:1.5px solid var(--border-light);background:transparent;font-size:14px">Custom</button>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:var(--text-error);border-width:1.5px">
+      <div class="card-title" style="color:var(--text-error)">Turn off all alerts</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-top:4px">You'll stop receiving credit health notifications. You can turn them back on at any time.</p>
+      <button style="margin-top:12px;padding:10px 16px;border-radius:var(--radius-md);border:1.5px solid var(--text-error);background:transparent;color:var(--text-error);font-size:14px;font-weight:700;cursor:pointer">Turn off all alerts</button>
+    </div>
+    <span class="a11y-note">A11Y: Toggles have aria-checked · Threshold as radio group · Opt-out clearly labelled</span>
+    <span class="story-ref">US-039, US-042 · FR-24</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 3: DELETE DATA & OPT OUT -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 3: Delete Data & Opt Out</span>
+  <span class="route">/credit-coach/settings/delete</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:600px">
+  <div class="top-bar">
+    <span style="cursor:pointer">←</span>
+    <span class="title">Delete My Data</span>
+    <span></span>
+  </div>
+  <div class="content">
+    <div style="padding:16px;background:var(--status-negative-bg);border:1px solid #F5B7B1;border-radius:var(--radius-md);margin-bottom:16px;font-size:14px;color:#922B21;line-height:1.5">
+      <strong>⚠️ This action cannot be undone.</strong> Deleting your data will remove your score history, improvement plans, and simulation history.
+    </div>
+
+    <div class="card">
+      <div class="card-title">What will be deleted</div>
+      <div style="margin-top:12px;font-size:14px;line-height:2">
+        ✓ Score history (all months)<br>
+        ✓ Improvement action plans<br>
+        ✓ Simulation history<br>
+        ✓ Alert preferences<br>
+        ✓ Offer interaction history
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">What we must retain</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-top:4px">By law, we retain certain records:</p>
+      <div style="margin-top:12px;font-size:14px;line-height:2;color:var(--text-secondary)">
+        • Consent records (regulatory audit trail)<br>
+        • Offer acceptance records (CCA — 6 years)<br>
+        • CRA API call logs (compliance)
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:8px">Retained per FCA SYSC 9.1.1R and CCA record-keeping obligations.</p>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:20px">
+      <input type="checkbox" style="width:20px;height:20px;accent-color:var(--text-error);margin-top:2px;flex-shrink:0">
+      <span style="font-size:14px">I understand this will permanently delete my credit coaching data and opt me out of the Credit Coach service</span>
+    </div>
+
+    <button class="btn-destructive">Delete my data & opt out</button>
+    <button class="btn-secondary" style="margin-top:12px">Cancel</button>
+    <span class="a11y-note" style="margin-top:12px">A11Y: Destructive action requires checkbox confirmation · Warning announced first · Focus on Cancel by default</span>
+    <span class="story-ref">US-043 · FR-30</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 4: AUTOMATED DECISION EXPLANATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 4: Automated Decision Explanation</span>
+  <span class="route">/credit-coach/offers/{id}/explanation</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:600px">
+  <div class="top-bar">
+    <span style="cursor:pointer">←</span>
+    <span class="title">How We Decided</span>
+    <span></span>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">How your offer was determined</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;line-height:1.5">This offer was generated automatically based on your credit profile. Here's what we considered:</p>
+
+      <div style="margin-top:16px">
+        <div class="kv-row"><span class="k">Credit score</span><span class="v">750 (Very Good)</span></div>
+        <div class="kv-row"><span class="k">Affordability check</span><span class="v"><span class="badge badge-positive">Passed</span></span></div>
+        <div class="kv-row"><span class="k">Debt-to-income ratio</span><span class="v">34%</span></div>
+        <div class="kv-row"><span class="k">Payment history</span><span class="v">No missed payments</span></div>
+        <div class="kv-row"><span class="k">Risk tier</span><span class="v">Tier 2 (Low-Medium)</span></div>
+        <div class="kv-row"><span class="k">Rate offered</span><span class="v">8.9% APR</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Your rights</div>
+      <div style="font-size:14px;line-height:1.8;margin-top:8px">
+        Under data protection law (UK GDPR Article 22), you have the right to:<br><br>
+        • <strong>Request human review</strong> of this decision<br>
+        • <strong>Express your point of view</strong> about the offer<br>
+        • <strong>Contest the decision</strong> if you believe it's unfair
+      </div>
+      <button class="btn-secondary" style="margin-top:16px;height:44px;font-size:14px">Request human review</button>
+    </div>
+
+    <p class="annotation">GDPR Art. 22 — meaningful information about automated decision logic · DUAA 2025 high-risk ADM safeguards · PRA FS2/23 explainability</p>
+    <span class="a11y-note">A11Y: Decision factors as definition list · Rights section clearly separated · "Request review" as prominent action</span>
+    <span class="story-ref">US-044 · FR-31</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 5: DSAR EXPORT -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 5: Data Export (DSAR)</span>
+  <span class="route">/credit-coach/settings/export</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px">
+  <div class="top-bar">
+    <span style="cursor:pointer">←</span>
+    <span class="title">Export My Data</span>
+    <span></span>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">Download your credit coaching data</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;line-height:1.5">Under UK GDPR (Article 15), you can request a copy of all data we hold about you in the Credit Coach.</p>
+
+      <div style="margin-top:16px;font-size:14px;line-height:2">
+        <strong>Your export will include:</strong><br>
+        • Score history (all months)<br>
+        • Score factors at each refresh<br>
+        • Improvement plans and actions<br>
+        • Simulation history<br>
+        • Offers presented and your responses<br>
+        • Alert history<br>
+        • Consent records
+      </div>
+
+      <div style="margin-top:16px;padding:12px;background:var(--status-info-bg);border-radius:var(--radius-md);font-size:13px;color:#0D47A1">
+        <strong>Format:</strong> JSON (machine-readable) + PDF summary<br>
+        <strong>Delivery:</strong> Available within 24 hours (usually minutes)<br>
+        <strong>Legal deadline:</strong> 1 calendar month per GDPR Art. 15
+      </div>
+
+      <button class="btn-primary" style="margin-top:20px">Request data export</button>
+    </div>
+    <span class="a11y-note">A11Y: Export contents as list · Format info clearly labelled · Single action button</span>
+    <span class="story-ref">US-048 · FR-49</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 6: HUMAN ESCALATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 6: Human Escalation</span>
+  <span class="route">/credit-coach/help (bottom sheet)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:450px;justify-content:flex-end">
+  <div style="background:rgba(0,0,0,0.4);flex:1"></div>
+  <div style="background:var(--bg-surface);border-radius:20px 20px 0 0;padding:24px 24px 40px;box-shadow:0 -4px 24px rgba(0,0,0,0.12)">
+    <div style="width:40px;height:4px;background:var(--border-light);border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:20px;font-weight:700;margin-bottom:8px">Need help?</div>
+    <p style="font-size:14px;color:var(--text-secondary);line-height:1.5;margin-bottom:20px">Connect with a specialist who can help with your credit questions.</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer">
+        <span style="font-size:20px">💬</span>
+        <div><div style="font-size:15px;font-weight:700">Chat with an adviser</div><div style="font-size:13px;color:var(--text-secondary)">Available Mon–Fri, 8am–8pm</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer">
+        <span style="font-size:20px">📞</span>
+        <div><div style="font-size:15px;font-weight:700">Call us</div><div style="font-size:13px;color:var(--text-secondary)">0345 300 0000 · Mon–Sat, 8am–6pm</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--border-light);border-radius:var(--radius-md);cursor:pointer">
+        <span style="font-size:20px">📅</span>
+        <div><div style="font-size:15px;font-weight:700">Book an appointment</div><div style="font-size:13px;color:var(--text-secondary)">In-branch or video call</div></div>
+      </div>
+    </div>
+    <span class="a11y-note" style="margin-top:12px">A11Y: Bottom sheet traps focus · Dismiss via swipe down or Escape · Options as list items with 48dp targets</span>
+    <span class="story-ref">US-049 · FR-41</span>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 7: MULTI-BUREAU COMPARISON -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 7: Multi-Bureau Score Comparison</span>
+  <span class="route">/credit-coach/scores/compare</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:600px">
+  <div class="top-bar">
+    <span style="cursor:pointer">←</span>
+    <span class="title">Score Comparison</span>
+    <span></span>
+  </div>
+  <div class="content">
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">Each bureau uses a different scale. All three scores indicate the same credit health — they're just measured differently.</p>
+
+    <div class="card" style="border-color:var(--lloyds-green)">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:13px;color:var(--text-secondary)">Experian</div>
+          <div style="font-size:28px;font-weight:700">942</div>
+          <div style="font-size:12px;color:var(--text-muted)">out of 1,250</div>
+        </div>
+        <span class="badge badge-positive">Good</span>
+      </div>
+      <div style="margin-top:12px"><div class="progress-track" style="height:6px"><div class="progress-fill" style="width:75%"></div></div></div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:13px;color:var(--text-secondary)">Equifax</div>
+          <div style="font-size:28px;font-weight:700">724</div>
+          <div style="font-size:12px;color:var(--text-muted)">out of 1,000</div>
+        </div>
+        <span class="badge badge-positive">Good</span>
+      </div>
+      <div style="margin-top:12px"><div class="progress-track" style="height:6px"><div class="progress-fill" style="width:72%"></div></div></div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:13px;color:var(--text-secondary)">TransUnion</div>
+          <div style="font-size:28px;font-weight:700">512</div>
+          <div style="font-size:12px;color:var(--text-muted)">out of 710</div>
+        </div>
+        <span class="badge badge-positive">Good</span>
+      </div>
+      <div style="margin-top:12px"><div class="progress-track" style="height:6px"><div class="progress-fill" style="width:72%"></div></div></div>
+    </div>
+
+    <div style="padding:12px;background:var(--status-info-bg);border-radius:var(--radius-md);font-size:13px;color:#0D47A1;line-height:1.5;margin-top:8px">
+      <strong>Why are the numbers different?</strong> Each bureau collects data from different lenders and uses its own scoring model. A "Good" rating across all three means your credit health is consistent.
+    </div>
+    <span class="a11y-note" style="margin-top:8px">A11Y: Each score announced with bureau name and scale · Progress bars have text alternatives · Explanation read after scores</span>
+    <span class="story-ref">US-050 · FR-50, FR-25</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 8: BREATHING SPACE ACTIVE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 8: Breathing Space Active</span>
+  <span class="route">/credit-coach/dashboard (breathing-space)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px">
+  <div class="top-bar">
+    <span style="cursor:pointer">←</span>
+    <span class="title">Credit Coach</span>
+    <span></span>
+  </div>
+  <div class="content">
+    <div style="padding:20px;background:var(--status-info-bg);border:1px solid #90CAF9;border-radius:var(--radius-lg);margin-bottom:16px">
+      <div style="font-size:17px;font-weight:700;color:#0D47A1">Breathing Space active</div>
+      <p style="font-size:14px;color:#0D47A1;margin-top:8px;line-height:1.5">You're currently in a Breathing Space period. During this time:</p>
+      <div style="margin-top:12px;font-size:14px;color:#0D47A1;line-height:2">
+        ✓ Interest and charges are frozen<br>
+        ✓ No enforcement action will be taken<br>
+        ✓ Credit offers are paused<br>
+        ✓ Proactive alerts are paused
+      </div>
+      <div style="margin-top:12px;font-size:13px;color:#0D47A1;opacity:0.8">
+        <strong>Ends:</strong> 3 July 2026 (60 days from start)
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Your score is still monitored</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">You can still view your credit score and factors. We just won't send alerts or offers during this period.</p>
+      <button class="btn-secondary" style="margin-top:16px;height:44px;font-size:14px">View my score</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Free support</div>
+      <div style="font-size:14px;line-height:2;margin-top:8px">
+        <a href="tel:08001381111" style="color:var(--lloyds-green);font-weight:700;text-decoration:none">📞 StepChange — 0800 138 1111</a><br>
+        <a href="#" style="color:var(--lloyds-green);font-weight:700;text-decoration:none">🌐 Citizens Advice</a><br>
+        <a href="tel:08088084000" style="color:var(--lloyds-green);font-weight:700;text-decoration:none">📞 National Debtline — 0808 808 4000</a>
+      </div>
+    </div>
+    <p class="annotation">Debt Respite Scheme 2021 · 60-day moratorium · All offers/alerts auto-suppressed · CONC 7.3 compliance</p>
+    <span class="a11y-note">A11Y: Breathing Space status announced on entry · End date prominent · Support links as tappable items</span>
+    <span class="story-ref">US-047 · FR-48</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 9: VULNERABILITY DETECTED — DEBT ADVICE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 9: Vulnerability Detected — Signposting</span>
+  <span class="route">/credit-coach/support (vulnerability)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:550px">
+  <div class="top-bar">
+    <span style="cursor:pointer">←</span>
+    <span class="title">Credit Coach</span>
+    <span></span>
+  </div>
+  <div class="content">
+    <div class="card" style="border:none;box-shadow:none;text-align:center;padding:24px 16px">
+      <div style="font-size:36px;margin-bottom:12px">💚</div>
+      <div style="font-size:18px;font-weight:700">We noticed you might need support</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:12px;line-height:1.6">Based on your recent financial activity, we want to make sure you know about free, confidential support available to you.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Free debt advice services</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-top:4px">These are independent organisations — not part of Lloyds.</p>
+      <div style="margin-top:16px">
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-light)">
+          <span style="font-size:20px">📞</span>
+          <div style="flex:1"><div style="font-weight:700">StepChange</div><div style="font-size:13px;color:var(--text-secondary)">Free debt advice & plans</div></div>
+          <a href="tel:08001381111" style="color:var(--lloyds-green);font-weight:700;font-size:13px">0800 138 1111</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-light)">
+          <span style="font-size:20px">🌐</span>
+          <div style="flex:1"><div style="font-weight:700">Citizens Advice</div><div style="font-size:13px;color:var(--text-secondary)">Free, independent advice</div></div>
+          <a href="#" style="color:var(--lloyds-green);font-weight:700;font-size:13px">Visit →</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:14px 0">
+          <span style="font-size:20px">📞</span>
+          <div style="flex:1"><div style="font-weight:700">National Debtline</div><div style="font-size:13px;color:var(--text-secondary)">Free phone advice</div></div>
+          <a href="tel:08088084000" style="color:var(--lloyds-green);font-weight:700;font-size:13px">0808 808 4000</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:12px;background:var(--bg-app);border-radius:var(--radius-md);font-size:13px;color:var(--text-secondary);line-height:1.5">
+      <strong>Why am I seeing this?</strong> We detected patterns that sometimes indicate financial difficulty (e.g., missed payments, high utilisation). We're not making any judgement — just making sure you know help is available.
+    </div>
+
+    <button class="btn-secondary" style="margin-top:16px;height:44px;font-size:14px">Dismiss — I'm fine</button>
+    <p class="annotation" style="margin-top:8px">FCA Consumer Duty (avoid foreseeable harm) · CONC 7.3.7AR (signpost free debt advice) · FG21/1 (vulnerable customers)</p>
+    <span class="a11y-note">A11Y: Supportive, non-judgemental tone · Phone numbers tappable · Dismiss option prominent · No credit content shown</span>
+    <span class="story-ref">US-045 · FR-36</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 10: IN-APP NOTIFICATION CENTRE (FAILED DELIVERY FALLBACK) -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 10: Notification Centre (Undelivered Alerts)</span>
+  <span class="route">/credit-coach/alerts (undelivered)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px">
+  <div class="top-bar">
+    <span style="cursor:pointer">←</span>
+    <span class="title">Alerts</span>
+    <span style="font-size:14px;color:var(--lloyds-green);font-weight:700">Settings</span>
+  </div>
+  <div class="content">
+    <div style="padding:12px;background:var(--status-pending-bg);border:1px solid #FFCC80;border-radius:var(--radius-md);margin-bottom:16px;font-size:13px;color:#7D4600;display:flex;gap:8px;align-items:center">
+      <span>📬</span>
+      <span>You have <strong>2 alerts</strong> that couldn't be delivered as push notifications. Showing them here instead.</span>
+    </div>
+
+    <div class="alert-card warning" style="border-left-color:var(--status-pending);opacity:0.9">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="font-size:15px;font-weight:700">⚠️ Utilisation reached 55%</div>
+        <span class="badge badge-pending">Missed push</span>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">Your Barclays card utilisation crossed 50%. Consider making a payment.</p>
+      <div class="alert-time">2 days ago · Push failed (device offline)</div>
+    </div>
+
+    <div class="alert-card success">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="font-size:15px;font-weight:700">✓ Score refreshed</div>
+        <span class="badge badge-positive">New</span>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">Your monthly score has been updated. No change this month — still 742.</p>
+      <div class="alert-time">1 day ago · Push failed (token expired)</div>
+    </div>
+
+    <p style="font-size:12px;color:var(--text-muted);margin-top:12px;text-align:center">Alerts that can't be delivered via push are shown here when you next open the app.</p>
+    <span class="a11y-note">A11Y: "2 unread alerts" announced on entry · "Missed push" badge explains why shown here</span>
+    <span class="story-ref">US-061 · FR-21, FR-24 (delivery failure fallback)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TRACEABILITY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div style="max-width:600px;margin:40px auto;padding:0 16px">
+<h2 style="font-size:20px;font-weight:700;margin-bottom:16px">Screen-to-Story Traceability</h2>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<thead><tr style="border-bottom:2px solid var(--border-light)">
+<th style="text-align:left;padding:8px">Screen</th>
+<th style="text-align:left;padding:8px">Stories</th>
+<th style="text-align:left;padding:8px">Requirements</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">1. Alert Feed</td><td style="padding:8px">US-038, US-040, US-041</td><td style="padding:8px">FR-21, FR-22, FR-23</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">2. Alert Preferences</td><td style="padding:8px">US-039, US-042</td><td style="padding:8px">FR-24</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">3. Delete Data & Opt Out</td><td style="padding:8px">US-043</td><td style="padding:8px">FR-30</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">4. Automated Decision Explanation</td><td style="padding:8px">US-044</td><td style="padding:8px">FR-31</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">5. DSAR Export</td><td style="padding:8px">US-048</td><td style="padding:8px">FR-49</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">6. Human Escalation</td><td style="padding:8px">US-049</td><td style="padding:8px">FR-41</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">7. Multi-Bureau Comparison</td><td style="padding:8px">US-050</td><td style="padding:8px">FR-50, FR-25</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">8. Breathing Space Active</td><td style="padding:8px">US-047</td><td style="padding:8px">FR-48</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">9. Vulnerability Signposting</td><td style="padding:8px">US-045</td><td style="padding:8px">FR-36</td></tr>
+<tr><td style="padding:8px">10. Notification Centre (Failed Delivery)</td><td style="padding:8px">US-061</td><td style="padding:8px">FR-21, FR-24</td></tr>
+</tbody>
+</table>
+
+<h2 style="font-size:20px;font-weight:700;margin:32px 0 16px">Regulatory Compliance Notes</h2>
+<ul style="font-size:13px;color:var(--text-secondary);line-height:2">
+<li><strong>GDPR Art. 17 (Right to Erasure):</strong> Screen 3 — clear explanation of what's deleted vs retained (CCA exemptions)</li>
+<li><strong>GDPR Art. 22 (Automated Decisions):</strong> Screen 4 — meaningful info about logic, right to human review, right to contest</li>
+<li><strong>GDPR Art. 15 (Right of Access / DSAR):</strong> Screen 5 — export in machine-readable format within 1 month</li>
+<li><strong>DUAA 2025:</strong> Screen 4 — high-risk ADM safeguards for credit decisions</li>
+<li><strong>Debt Respite Scheme 2021:</strong> Screen 8 — 60-day moratorium, interest frozen, offers suppressed</li>
+<li><strong>CONC 7.3:</strong> Screen 8 — debt advice signposting (StepChange, Citizens Advice, National Debtline)</li>
+<li><strong>FCA Consumer Duty:</strong> Screen 6 — human escalation available from any screen (consumer support outcome)</li>
+<li><strong>PRA FS2/23:</strong> Screen 4 — explainability of automated credit decisions</li>
+<li><strong>CRA Score Scales:</strong> Screen 7 — Experian (0–1,250), Equifax (0–1,000), TransUnion (0–710) per enterprise architecture KB Section 9.1</li>
+</ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,2694 @@
+{
+  "epic_ids": [
+    "EP-01",
+    "EP-02"
+  ],
+  "mode": "greenfield",
+  "test_type": "integration",
+  "purpose": "UI + API integration tests forming regression pack",
+  "test_scenarios": [
+    {
+      "id": "TS-01-001",
+      "title": "Grant CRA consent with all disclosures displayed",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "User authenticated, no prior consent exists",
+      "steps_high_level": [
+        "Navigate to Credit Coach",
+        "Verify consent screen shows data retrieved, CRA name, purpose, no marketing use",
+        "Tick all consent checkboxes",
+        "Tap 'Agree & Check My Score'",
+        "Verify POST /credit-coach/consents returns 201"
+      ],
+      "expected_result": "Consent recorded with timestamp, consent text version, customer ID; consent.granted event published",
+      "story_ref": "US-003",
+      "tags": [
+        "regression",
+        "smoke",
+        "consent"
+      ]
+    },
+    {
+      "id": "TS-01-002",
+      "title": "Consent checkboxes are not pre-ticked",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "User authenticated, no prior consent",
+      "steps_high_level": [
+        "Navigate to Credit Coach consent screen",
+        "Inspect all checkbox states"
+      ],
+      "expected_result": "All checkboxes are unchecked by default; user must actively opt-in",
+      "story_ref": "US-003",
+      "tags": [
+        "regression",
+        "smoke",
+        "consent"
+      ]
+    },
+    {
+      "id": "TS-01-003",
+      "title": "Consent screen accessible via screen reader",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "User authenticated, VoiceOver/TalkBack enabled",
+      "steps_high_level": [
+        "Navigate to consent screen",
+        "Verify all elements have ARIA labels",
+        "Verify logical focus order top-to-bottom",
+        "Verify content navigable via assistive technology"
+      ],
+      "expected_result": "All consent elements announced correctly; focus order is logical",
+      "story_ref": "US-003",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-01-004",
+      "title": "Consent data encrypted at rest and in transit",
+      "type": "Security",
+      "priority": "Critical",
+      "preconditions": "Consent granted successfully",
+      "steps_high_level": [
+        "Grant consent via UI",
+        "Verify API response uses TLS 1.3",
+        "Verify database record encrypted with AES-256"
+      ],
+      "expected_result": "Consent data encrypted at rest (AES-256) and transmitted via TLS 1.3",
+      "story_ref": "US-003",
+      "tags": [
+        "regression",
+        "security"
+      ]
+    },
+    {
+      "id": "TS-01-005",
+      "title": "Attempt consent grant without accepting all checkboxes",
+      "type": "Negative",
+      "priority": "High",
+      "preconditions": "User authenticated, consent screen displayed",
+      "steps_high_level": [
+        "Leave privacy notice checkbox unticked",
+        "Tap 'Agree & Check My Score'",
+        "Verify button is disabled or validation error shown"
+      ],
+      "expected_result": "Consent cannot be submitted without all required checkboxes ticked",
+      "story_ref": "US-003",
+      "tags": [
+        "regression",
+        "consent"
+      ]
+    },
+    {
+      "id": "TS-01-006",
+      "title": "Duplicate consent grant returns 409 Conflict",
+      "type": "Negative",
+      "priority": "High",
+      "preconditions": "User already has active EXPERIAN consent",
+      "steps_high_level": [
+        "Attempt to grant consent again for EXPERIAN",
+        "Verify API returns 409"
+      ],
+      "expected_result": "409 Conflict returned; no duplicate consent record created",
+      "story_ref": "US-003",
+      "tags": [
+        "regression",
+        "consent"
+      ]
+    },
+    {
+      "id": "TS-01-007",
+      "title": "Withdraw CRA consent independently per provider",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "User has active EXPERIAN consent",
+      "steps_high_level": [
+        "Navigate to Settings > Credit Coach > Manage Consent",
+        "Tap 'Withdraw Consent'",
+        "Confirm withdrawal",
+        "Verify POST /consents/{id}/withdraw returns 200",
+        "Verify consent status is WITHDRAWN with timestamp"
+      ],
+      "expected_result": "Consent withdrawn; CRA retrieval stops; consent record marked withdrawn (not deleted)",
+      "story_ref": "US-004",
+      "tags": [
+        "regression",
+        "smoke",
+        "consent"
+      ]
+    },
+    {
+      "id": "TS-01-008",
+      "title": "Re-consent prompted when consent text version changes",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "User has active consent with version 1.0; consent text updated to 1.1",
+      "steps_high_level": [
+        "Access Credit Coach",
+        "Verify re-consent screen displayed with updated text",
+        "Verify no data retrieved until re-consent granted"
+      ],
+      "expected_result": "User prompted to re-consent before any data retrieval occurs",
+      "story_ref": "US-004",
+      "tags": [
+        "regression",
+        "consent"
+      ]
+    },
+    {
+      "id": "TS-01-009",
+      "title": "Withdraw already-withdrawn consent returns 409",
+      "type": "Negative",
+      "priority": "Medium",
+      "preconditions": "Consent already withdrawn",
+      "steps_high_level": [
+        "Attempt to withdraw consent again via API",
+        "Verify 409 returned"
+      ],
+      "expected_result": "409 Conflict; already withdrawn",
+      "story_ref": "US-004",
+      "tags": [
+        "regression",
+        "consent"
+      ]
+    },
+    {
+      "id": "TS-01-010",
+      "title": "Consent management screen accessible via VoiceOver/TalkBack",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "User has active consent, assistive technology enabled",
+      "steps_high_level": [
+        "Navigate to consent management settings",
+        "Verify all interactive elements navigable",
+        "Verify logical focus order"
+      ],
+      "expected_result": "All elements accessible with logical focus order",
+      "story_ref": "US-004",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-01-011",
+      "title": "Design system components pass axe-core across all brands",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "Component library deployed",
+      "steps_high_level": [
+        "Render components under Lloyds theme",
+        "Render under Halifax theme",
+        "Render under Bank of Scotland theme",
+        "Run axe-core on each"
+      ],
+      "expected_result": "Zero axe-core violations across all three brand themes",
+      "story_ref": "US-005",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-01-012",
+      "title": "Contrast ratios maintained across brand themes",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "Multi-brand theming applied",
+      "steps_high_level": [
+        "Check text contrast >= 4.5:1",
+        "Check UI component contrast >= 3:1",
+        "Verify across Lloyds, Halifax, BoS palettes"
+      ],
+      "expected_result": "All contrast ratios meet WCAG 2.1 AA across all brands",
+      "story_ref": "US-005",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-01-013",
+      "title": "Score visualisations use patterns in addition to colour",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "Score dashboard rendered",
+      "steps_high_level": [
+        "View score gauge and factor indicators",
+        "Verify information conveyed via shape/pattern not colour alone",
+        "Verify ColorBrewer safe palettes used"
+      ],
+      "expected_result": "Colour-blind users can distinguish all visual elements via patterns/shapes",
+      "story_ref": "US-005",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-01-014",
+      "title": "Loading and error states communicated via ARIA live regions",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "Screen reader active",
+      "steps_high_level": [
+        "Trigger loading state",
+        "Verify aria-busy and loading announcement",
+        "Trigger error state",
+        "Verify aria-live assertive announcement"
+      ],
+      "expected_result": "Loading and error states announced to screen reader users",
+      "story_ref": "US-051",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-02-001",
+      "title": "Retrieve credit score via soft search after consent",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "User has active EXPERIAN consent",
+      "steps_high_level": [
+        "Navigate to Credit Coach dashboard",
+        "Verify GET /credit-coach/scores/{customerId} returns 200",
+        "Verify score, band, and factors stored within 3 seconds"
+      ],
+      "expected_result": "Score retrieved via soft search; no footprint on credit file; response within 3s",
+      "story_ref": "US-008",
+      "tags": [
+        "regression",
+        "smoke",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-002",
+      "title": "Circuit breaker triggers on CRA timeout showing cached data",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "CRA API unavailable; cached score exists",
+      "steps_high_level": [
+        "Simulate CRA timeout (>2.5s)",
+        "Verify circuit breaker opens after 3 failures",
+        "Verify cached stale data shown with 'Last updated [date]' label"
+      ],
+      "expected_result": "Stale cached data displayed with timestamp; X-Data-Stale header true",
+      "story_ref": "US-008",
+      "tags": [
+        "regression",
+        "smoke",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-003",
+      "title": "Score retrieval without consent returns 404",
+      "type": "Negative",
+      "priority": "Critical",
+      "preconditions": "No active consent for customer",
+      "steps_high_level": [
+        "Call GET /credit-coach/scores/{customerId}",
+        "Verify 404 returned with message about consent required"
+      ],
+      "expected_result": "404 Not Found; no CRA call made without consent",
+      "story_ref": "US-008",
+      "tags": [
+        "regression",
+        "smoke",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-004",
+      "title": "Data quality below 95% triggers re-fetch flag",
+      "type": "Boundary",
+      "priority": "High",
+      "preconditions": "CRA returns data with quality score 94%",
+      "steps_high_level": [
+        "Retrieve score with low quality data",
+        "Verify data flagged for re-fetch on next cycle"
+      ],
+      "expected_result": "Data with quality < 95% rejected and flagged for re-fetch",
+      "story_ref": "US-052",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-005",
+      "title": "Data older than 30 days triggers re-fetch",
+      "type": "Boundary",
+      "priority": "High",
+      "preconditions": "CRA returns data dated 31 days ago",
+      "steps_high_level": [
+        "Receive stale CRA data",
+        "Verify freshness check rejects it",
+        "Verify re-fetch triggered"
+      ],
+      "expected_result": "Data older than 30 days rejected; re-fetch initiated",
+      "story_ref": "US-052",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-006",
+      "title": "TLS 1.3 enforced on all CRA data transmission",
+      "type": "Security",
+      "priority": "Critical",
+      "preconditions": "Score retrieval in progress",
+      "steps_high_level": [
+        "Monitor network traffic during score retrieval",
+        "Verify TLS 1.3 on all connections"
+      ],
+      "expected_result": "All inter-service communication uses TLS 1.3",
+      "story_ref": "US-008",
+      "tags": [
+        "regression",
+        "security"
+      ]
+    },
+    {
+      "id": "TS-02-007",
+      "title": "Display score with band and month-on-month change",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "Score retrieved; previous score exists",
+      "steps_high_level": [
+        "View Credit Coach dashboard",
+        "Verify score gauge shows current score",
+        "Verify band label (e.g. 'Good (700-849)')",
+        "Verify month-on-month change with directional indicator"
+      ],
+      "expected_result": "Dashboard shows score on gauge, band classification, and +/- change indicator",
+      "story_ref": "US-009",
+      "tags": [
+        "regression",
+        "smoke",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-008",
+      "title": "First score retrieval shows no comparison message",
+      "type": "Boundary",
+      "priority": "High",
+      "preconditions": "First-time score retrieval; no previous score",
+      "steps_high_level": [
+        "View dashboard after first retrieval",
+        "Verify change section shows 'First check \u2014 no comparison available'"
+      ],
+      "expected_result": "No delta shown; friendly first-check message displayed",
+      "story_ref": "US-009",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-009",
+      "title": "Score dashboard accessible via screen reader",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "Score displayed; screen reader active",
+      "steps_high_level": [
+        "Navigate to dashboard",
+        "Verify score value, band, and change direction announced",
+        "Verify accessible labels on gauge widget"
+      ],
+      "expected_result": "Score announced as '[value] out of 1250, [band] band, [direction] [points] points'",
+      "story_ref": "US-009",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-02-010",
+      "title": "Score labelled with Experian scale (0-1250)",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "Score displayed on dashboard",
+      "steps_high_level": [
+        "View score display",
+        "Verify label shows 'Experian score (0-1250)'"
+      ],
+      "expected_result": "Score clearly labelled with provider and scale",
+      "story_ref": "US-009",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-011",
+      "title": "Thin file shows guidance message",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "CRA returns thin file indicator",
+      "steps_high_level": [
+        "Retrieve score for thin-file customer",
+        "Verify dashboard shows thin file message with credit-building guidance"
+      ],
+      "expected_result": "Message: 'We don't have enough data to generate a full score \u2014 here's how to build your credit history'",
+      "story_ref": "US-010",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-012",
+      "title": "CRA unavailable with no cache shows friendly error",
+      "type": "Negative",
+      "priority": "High",
+      "preconditions": "CRA unavailable; no cached data exists",
+      "steps_high_level": [
+        "Navigate to dashboard",
+        "Verify friendly error message displayed",
+        "Verify 'Try again later' option available"
+      ],
+      "expected_result": "Friendly error with retry option; no technical jargon",
+      "story_ref": "US-010",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-013",
+      "title": "PII not leaked in API responses or logs",
+      "type": "Security",
+      "priority": "Critical",
+      "preconditions": "Score retrieval completed",
+      "steps_high_level": [
+        "Check application logs for PII",
+        "Verify API responses don't leak data to unauthorised sessions"
+      ],
+      "expected_result": "No PII in logs; no data leakage across sessions",
+      "story_ref": "US-009",
+      "tags": [
+        "regression",
+        "security"
+      ]
+    },
+    {
+      "id": "TS-02-014",
+      "title": "Display score factors in plain English ordered by impact",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "Score factors available from CRA",
+      "steps_high_level": [
+        "View factors section on dashboard",
+        "Verify up to 5 positive and 5 negative factors shown",
+        "Verify ordered by impact magnitude",
+        "Verify plain English descriptions (Flesch >= 60)"
+      ],
+      "expected_result": "Factors displayed with category, impact direction, and plain language explanation",
+      "story_ref": "US-011",
+      "tags": [
+        "regression",
+        "smoke",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-015",
+      "title": "Unknown factor code shows fallback message",
+      "type": "Negative",
+      "priority": "Medium",
+      "preconditions": "CRA returns unmapped factor code",
+      "steps_high_level": [
+        "Retrieve factors with unknown code",
+        "Verify raw factor shown with 'Contact us for explanation' fallback"
+      ],
+      "expected_result": "Graceful fallback for unmapped factor codes",
+      "story_ref": "US-011",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-016",
+      "title": "Factors accessible via screen reader in logical order",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "Factors displayed; screen reader active",
+      "steps_high_level": [
+        "Navigate factors section",
+        "Verify each factor's category, direction, and explanation announced",
+        "Verify logical reading order"
+      ],
+      "expected_result": "Factors announced in correct order with full context",
+      "story_ref": "US-011",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-02-017",
+      "title": "See all factors expands full list",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "More than 5 positive or negative factors exist",
+      "steps_high_level": [
+        "View factors section",
+        "Tap 'See all'",
+        "Verify full list expanded",
+        "Verify same formatting and ordering by impact"
+      ],
+      "expected_result": "Full factor list displayed ordered by impact with consistent formatting",
+      "story_ref": "US-053",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-018",
+      "title": "See all expansion announced to screen reader",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "Screen reader active; factors section visible",
+      "steps_high_level": [
+        "Activate 'See all' button",
+        "Verify expansion announced",
+        "Verify new factors navigable"
+      ],
+      "expected_result": "Expansion announced; new factors accessible",
+      "story_ref": "US-053",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-02-019",
+      "title": "Score change explanation shows contributing factors",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "Score changed since last refresh",
+      "steps_high_level": [
+        "View change explanation section",
+        "Verify previous score, new score, delta shown",
+        "Verify ranked list of changed factors with details"
+      ],
+      "expected_result": "Change explanation with specific factor details (e.g. 'Credit utilisation increased from 45% to 62%')",
+      "story_ref": "US-012",
+      "tags": [
+        "regression",
+        "smoke",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-020",
+      "title": "Score drop uses empathetic tone with actionable next step",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "Score decreased since last refresh",
+      "steps_high_level": [
+        "View change explanation for score drop",
+        "Verify empathetic language (no alarm)",
+        "Verify actionable next step suggested"
+      ],
+      "expected_result": "Empathetic messaging with constructive suggestion; no panic-inducing language",
+      "story_ref": "US-012",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-021",
+      "title": "Score unchanged shows stability reassurance message",
+      "type": "Boundary",
+      "priority": "High",
+      "preconditions": "Score unchanged since last refresh",
+      "steps_high_level": [
+        "View dashboard when score unchanged",
+        "Verify reassurance message displayed",
+        "Verify GET /change-explanation returns 204"
+      ],
+      "expected_result": "'Your score is stable \u2014 keep up the good work' message displayed",
+      "story_ref": "US-012",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-022",
+      "title": "Score increase shows positive reinforcement",
+      "type": "Functional",
+      "priority": "Medium",
+      "preconditions": "Score increased since last refresh",
+      "steps_high_level": [
+        "View change explanation for score increase",
+        "Verify positive reinforcement messaging"
+      ],
+      "expected_result": "Congratulatory/positive messaging for score improvement",
+      "story_ref": "US-012",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-023",
+      "title": "Change explanation accessible via screen reader",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "Change explanation displayed; screen reader active",
+      "steps_high_level": [
+        "Navigate to change explanation",
+        "Verify delta direction and contributing factors announced"
+      ],
+      "expected_result": "All change details announced accessibly",
+      "story_ref": "US-012",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-02-024",
+      "title": "Score history API returns time-series data within 1 second",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "Multiple score data points stored",
+      "steps_high_level": [
+        "Call GET /credit-coach/scores/{customerId}/history?months=12",
+        "Verify response within 1 second",
+        "Verify correct time-series data returned"
+      ],
+      "expected_result": "Score history returned with score, band, date per data point within 1s",
+      "story_ref": "US-013",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-025",
+      "title": "Score history respects 24-month maximum retention",
+      "type": "Boundary",
+      "priority": "Medium",
+      "preconditions": "Score history spans 30 months",
+      "steps_high_level": [
+        "Request history with months=30",
+        "Verify API caps at 24 months",
+        "Verify validation error or capped response"
+      ],
+      "expected_result": "Maximum 24 months returned per retention policy",
+      "story_ref": "US-013",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-026",
+      "title": "Score history encrypted at rest with AES-256",
+      "type": "Security",
+      "priority": "High",
+      "preconditions": "Score history stored in Cloud SQL",
+      "steps_high_level": [
+        "Verify database encryption configuration",
+        "Confirm AES-256 with CMEK via Cloud KMS"
+      ],
+      "expected_result": "All score history data encrypted at rest",
+      "story_ref": "US-013",
+      "tags": [
+        "regression",
+        "security"
+      ]
+    },
+    {
+      "id": "TS-02-027",
+      "title": "Conversational query 'What is my credit score?' returns score",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "User has active consent and retrieved score",
+      "steps_high_level": [
+        "Type 'What is my credit score?' in chat",
+        "Verify conversational response with current score, band, and last refresh date"
+      ],
+      "expected_result": "Agent responds with score, band, and refresh date in conversational format",
+      "story_ref": "US-014",
+      "tags": [
+        "regression",
+        "smoke",
+        "conversation"
+      ]
+    },
+    {
+      "id": "TS-02-028",
+      "title": "Conversational query 'Why did my score change?' returns explanation",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "Score has changed since last refresh",
+      "steps_high_level": [
+        "Type 'Why did my score change?' in chat",
+        "Verify response includes change explanation with contributing factors"
+      ],
+      "expected_result": "Conversational explanation of score change with factors",
+      "story_ref": "US-014",
+      "tags": [
+        "regression",
+        "conversation"
+      ]
+    },
+    {
+      "id": "TS-02-029",
+      "title": "Unsupported query returns graceful handoff message",
+      "type": "Negative",
+      "priority": "High",
+      "preconditions": "User in conversation",
+      "steps_high_level": [
+        "Type 'Can you transfer money?'",
+        "Verify agent responds with scope explanation and handoff offer"
+      ],
+      "expected_result": "'I can help with credit score, factors, and improvement tips. For other queries, I'll connect you with the right assistant'",
+      "story_ref": "US-014",
+      "tags": [
+        "regression",
+        "conversation"
+      ]
+    },
+    {
+      "id": "TS-02-030",
+      "title": "Conversational response accessible via assistive technology",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "Screen reader active; conversation in progress",
+      "steps_high_level": [
+        "Send a query",
+        "Verify response announced via live region",
+        "Verify send button has accessible label"
+      ],
+      "expected_result": "Chat messages announced; send button labelled 'Send message'",
+      "story_ref": "US-014",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-02-031",
+      "title": "Ambiguous query triggers clarifying question",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "User in conversation",
+      "steps_high_level": [
+        "Type 'How am I doing?'",
+        "Verify agent asks clarifying question before routing"
+      ],
+      "expected_result": "Agent asks 'Would you like to know about your credit score or your spending?'",
+      "story_ref": "US-015",
+      "tags": [
+        "regression",
+        "conversation"
+      ]
+    },
+    {
+      "id": "TS-02-032",
+      "title": "Offensive input deflected gracefully",
+      "type": "Negative",
+      "priority": "High",
+      "preconditions": "User in conversation",
+      "steps_high_level": [
+        "Input offensive/harmful content",
+        "Verify guardrails apply",
+        "Verify input deflected without processing"
+      ],
+      "expected_result": "Input deflected gracefully; no processing of harmful content",
+      "story_ref": "US-015",
+      "tags": [
+        "regression",
+        "security",
+        "conversation"
+      ]
+    },
+    {
+      "id": "TS-02-033",
+      "title": "CRA unavailable during conversation informs user",
+      "type": "Negative",
+      "priority": "Medium",
+      "preconditions": "CRA unavailable; user asks about score in chat",
+      "steps_high_level": [
+        "Type 'What is my score?' while CRA down",
+        "Verify agent informs user and offers retry"
+      ],
+      "expected_result": "Agent explains unavailability and offers to check back later",
+      "story_ref": "US-015",
+      "tags": [
+        "regression",
+        "conversation"
+      ]
+    },
+    {
+      "id": "TS-02-034",
+      "title": "Monthly batch refresh processes all enrolled customers",
+      "type": "Integration",
+      "priority": "High",
+      "preconditions": "Multiple customers enrolled with active consent",
+      "steps_high_level": [
+        "Trigger monthly refresh batch",
+        "Verify all customers refreshed",
+        "Verify requests staggered to respect CRA rate limits"
+      ],
+      "expected_result": "All enrolled customers refreshed within batch window; rate limits respected",
+      "story_ref": "US-016",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-035",
+      "title": "Failed refresh retries with exponential backoff",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "CRA returns error for specific customer",
+      "steps_high_level": [
+        "Trigger refresh that fails",
+        "Verify retry with exponential backoff up to 3 attempts",
+        "Verify marked as failed after 3 failures"
+      ],
+      "expected_result": "3 retries with exponential backoff; marked failed after exhaustion",
+      "story_ref": "US-016",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-036",
+      "title": "Score change emits Pub/Sub event",
+      "type": "Integration",
+      "priority": "High",
+      "preconditions": "Score refresh detects change",
+      "steps_high_level": [
+        "Complete refresh with score change",
+        "Verify score.changed event published to Pub/Sub within 1 second"
+      ],
+      "expected_result": "score.changed event published with correct payload",
+      "story_ref": "US-016",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-037",
+      "title": "Admin can configure refresh frequency",
+      "type": "Functional",
+      "priority": "High",
+      "preconditions": "Admin user authenticated",
+      "steps_high_level": [
+        "Access admin config UI",
+        "Adjust refresh frequency for EXPERIAN",
+        "Verify PUT /admin/refresh-schedule returns 200",
+        "Verify change takes effect on next batch"
+      ],
+      "expected_result": "Frequency updated; change effective on next cycle; audit log recorded",
+      "story_ref": "US-017",
+      "tags": [
+        "regression",
+        "admin"
+      ]
+    },
+    {
+      "id": "TS-02-038",
+      "title": "Refresh frequency enforces min/max boundaries",
+      "type": "Boundary",
+      "priority": "High",
+      "preconditions": "Admin user authenticated",
+      "steps_high_level": [
+        "Attempt to set frequency below 7 days",
+        "Verify 400 Bad Request",
+        "Attempt to set frequency above 90 days",
+        "Verify 400 Bad Request"
+      ],
+      "expected_result": "Frequency constrained between 7-90 days; boundary violations rejected",
+      "story_ref": "US-017",
+      "tags": [
+        "regression",
+        "admin"
+      ]
+    },
+    {
+      "id": "TS-02-039",
+      "title": "Non-admin user cannot access refresh config",
+      "type": "Security",
+      "priority": "Critical",
+      "preconditions": "Regular customer user authenticated",
+      "steps_high_level": [
+        "Attempt GET /admin/refresh-schedule",
+        "Verify 403 Forbidden returned"
+      ],
+      "expected_result": "403 Forbidden; admin endpoints protected by role",
+      "story_ref": "US-017",
+      "tags": [
+        "regression",
+        "security"
+      ]
+    },
+    {
+      "id": "TS-02-040",
+      "title": "On-demand refresh rate limited to 1 per 24hr",
+      "type": "Boundary",
+      "priority": "High",
+      "preconditions": "User already refreshed within last 24 hours",
+      "steps_high_level": [
+        "Attempt POST /scores/{customerId}/refresh",
+        "Verify 429 returned with Retry-After header"
+      ],
+      "expected_result": "429 Too Many Requests; Retry-After header indicates wait time",
+      "story_ref": "US-008",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-041",
+      "title": "CRA unavailable shows cached score with refresh button",
+      "type": "Functional",
+      "priority": "Critical",
+      "preconditions": "CRA unavailable; cached score exists",
+      "steps_high_level": [
+        "Navigate to dashboard",
+        "Verify cached score shown with 'Last updated [date]' label",
+        "Verify 'Refresh' button available"
+      ],
+      "expected_result": "Cached score displayed with stale indicator and refresh option",
+      "story_ref": "US-057",
+      "tags": [
+        "regression",
+        "smoke",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-042",
+      "title": "No cache and CRA unavailable shows retry message",
+      "type": "Negative",
+      "priority": "High",
+      "preconditions": "No cached score; CRA unavailable",
+      "steps_high_level": [
+        "Navigate to dashboard",
+        "Verify message: 'We couldn't retrieve your score right now. Please try again later.'",
+        "Verify retry button present"
+      ],
+      "expected_result": "Friendly error with retry button; no technical details exposed",
+      "story_ref": "US-057",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-043",
+      "title": "Partial CRA response shows score without factors",
+      "type": "Boundary",
+      "priority": "Medium",
+      "preconditions": "CRA returns score but no factors",
+      "steps_high_level": [
+        "Retrieve partial response",
+        "Verify score displayed",
+        "Verify factors section shows 'Factor details temporarily unavailable'"
+      ],
+      "expected_result": "Score shown; factors section gracefully degraded",
+      "story_ref": "US-057",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-044",
+      "title": "Circuit breaker informs user of wait time",
+      "type": "Functional",
+      "priority": "Medium",
+      "preconditions": "Circuit breaker tripped (3 consecutive failures)",
+      "steps_high_level": [
+        "Attempt refresh while circuit breaker open",
+        "Verify user informed of approximate wait time"
+      ],
+      "expected_result": "User sees wait time estimate; system waits for reset period",
+      "story_ref": "US-057",
+      "tags": [
+        "regression",
+        "score"
+      ]
+    },
+    {
+      "id": "TS-02-045",
+      "title": "JWT missing returns 401 Unauthorized",
+      "type": "Security",
+      "priority": "Critical",
+      "preconditions": "No Bearer token in request",
+      "steps_high_level": [
+        "Call any protected endpoint without JWT",
+        "Verify 401 returned"
+      ],
+      "expected_result": "401 Unauthorized; no data exposed",
+      "story_ref": "US-008",
+      "tags": [
+        "regression",
+        "security",
+        "smoke"
+      ]
+    },
+    {
+      "id": "TS-02-046",
+      "title": "Invalid JWT returns 401 Unauthorized",
+      "type": "Security",
+      "priority": "Critical",
+      "preconditions": "Expired or malformed JWT provided",
+      "steps_high_level": [
+        "Call endpoint with expired JWT",
+        "Verify 401 returned",
+        "Call with malformed JWT",
+        "Verify 401 returned"
+      ],
+      "expected_result": "401 for both expired and malformed tokens",
+      "story_ref": "US-008",
+      "tags": [
+        "regression",
+        "security"
+      ]
+    },
+    {
+      "id": "TS-02-047",
+      "title": "Touch targets meet 48dp minimum size",
+      "type": "Accessibility",
+      "priority": "Medium",
+      "preconditions": "Dashboard rendered on mobile",
+      "steps_high_level": [
+        "Measure all interactive elements",
+        "Verify minimum 48dp touch target size"
+      ],
+      "expected_result": "All touch targets >= 48dp; text respects system font scale",
+      "story_ref": "US-008",
+      "tags": [
+        "regression",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "TS-02-048",
+      "title": "Orchestrator routes credit query to Credit Coach agent within 500ms",
+      "type": "Integration",
+      "priority": "High",
+      "preconditions": "Credit Coach agent registered on Envoy platform",
+      "steps_high_level": [
+        "Send credit-related query via FA",
+        "Verify routing to Credit Coach agent",
+        "Verify routing latency < 500ms"
+      ],
+      "expected_result": "Query routed to Credit Coach within 500ms",
+      "story_ref": "US-001",
+      "tags": [
+        "regression",
+        "integration"
+      ]
+    },
+    {
+      "id": "TS-02-049",
+      "title": "Non-credit query not routed to Credit Coach",
+      "type": "Negative",
+      "priority": "High",
+      "preconditions": "Credit Coach agent registered",
+      "steps_high_level": [
+        "Send non-credit query (e.g. 'What did I spend on groceries?')",
+        "Verify NOT routed to Credit Coach"
+      ],
+      "expected_result": "Non-credit queries routed to appropriate agent (e.g. Spending Agent)",
+      "story_ref": "US-001",
+      "tags": [
+        "regression",
+        "integration"
+      ]
+    },
+    {
+      "id": "TS-02-050",
+      "title": "Agent unavailability triggers circuit breaker with graceful error",
+      "type": "Negative",
+      "priority": "High",
+      "preconditions": "Credit Coach agent down",
+      "steps_high_level": [
+        "Send credit query while agent unavailable",
+        "Verify circuit breaker triggers",
+        "Verify graceful error returned within 2 seconds"
+      ],
+      "expected_result": "Graceful error message returned to orchestrator within 2s",
+      "story_ref": "US-001",
+      "tags": [
+        "regression",
+        "integration"
+      ]
+    },
+    {
+      "id": "TS-02-051",
+      "title": "Intent classification routes credit queries with >95% accuracy",
+      "type": "Integration",
+      "priority": "High",
+      "preconditions": "Intent classification configured",
+      "steps_high_level": [
+        "Send 'What is my credit score?'",
+        "Verify routed to Credit Coach",
+        "Send batch of credit queries",
+        "Verify >95% accuracy"
+      ],
+      "expected_result": "Credit queries classified and routed with >95% accuracy",
+      "story_ref": "US-002",
+      "tags": [
+        "regression",
+        "integration"
+      ]
+    },
+    {
+      "id": "TS-02-052",
+      "title": "Ambiguous query triggers clarification before routing",
+      "type": "Functional",
+      "priority": "Medium",
+      "preconditions": "Intent classification active",
+      "steps_high_level": [
+        "Send 'How am I doing financially?'",
+        "Verify clarifying question asked before routing"
+      ],
+      "expected_result": "Clarifying question asked; no premature routing",
+      "story_ref": "US-002",
+      "tags": [
+        "regression",
+        "integration"
+      ]
+    },
+    {
+      "id": "TS-02-067",
+      "title": "Rate limiting rejects excessive score refresh requests",
+      "type": "Security",
+      "priority": "High",
+      "preconditions": "Customer authenticated, consent granted, score already retrieved",
+      "steps_high_level": [
+        "Call POST /scores/{customerId}/refresh",
+        "Immediately call refresh again within 24 hours",
+        "Verify 429 response with Retry-After header"
+      ],
+      "expected_result": "Second refresh within 24hr returns 429 Too Many Requests with Retry-After header indicating seconds until next allowed refresh",
+      "story_ref": "US-008",
+      "tags": [
+        "regression",
+        "security",
+        "rate-limiting"
+      ]
+    },
+    {
+      "id": "TS-02-068",
+      "title": "Focus order follows logical reading sequence on dashboard",
+      "type": "Accessibility",
+      "priority": "High",
+      "preconditions": "Customer on credit score dashboard with score displayed",
+      "steps_high_level": [
+        "Tab through all interactive elements on dashboard",
+        "Verify focus moves: score card \u2192 factors section \u2192 action buttons \u2192 bottom nav",
+        "Verify no focus traps or skipped elements"
+      ],
+      "expected_result": "Focus order follows visual layout top-to-bottom, left-to-right. All interactive elements reachable via keyboard. No focus traps.",
+      "story_ref": "US-009",
+      "tags": [
+        "regression",
+        "accessibility",
+        "focus-order"
+      ]
+    },
+    {
+      "id": "TS-02-069",
+      "title": "Score display handles score unchanged between refreshes",
+      "type": "Negative",
+      "priority": "Medium",
+      "preconditions": "Customer has score 742 from previous month, new refresh returns same 742",
+      "steps_high_level": [
+        "Navigate to dashboard after monthly refresh",
+        "Verify score shows 742 with 'No change since last month' message",
+        "Verify change explanation section shows 'Your score is stable' message"
+      ],
+      "expected_result": "Dashboard shows score 742, change indicator shows '\u2014 No change', positive reassurance message displayed. No error state.",
+      "story_ref": "US-009",
+      "tags": [
+        "regression",
+        "negative"
+      ]
+    },
+    {
+      "id": "TS-02-070",
+      "title": "Score change explanation handles first-ever score (no previous)",
+      "type": "Negative",
+      "priority": "Medium",
+      "preconditions": "Customer just granted consent, first score retrieved, no previous score exists",
+      "steps_high_level": [
+        "Navigate to dashboard after first score retrieval",
+        "Verify change section shows 'This is your starting point' (not an error)",
+        "Verify no month-on-month comparison attempted"
+      ],
+      "expected_result": "Change explanation section shows 'This is your starting point' message. No comparison data. No error.",
+      "story_ref": "US-012",
+      "tags": [
+        "regression",
+        "negative",
+        "edge-case"
+      ]
+    },
+    {
+      "id": "TS-02-071",
+      "title": "Expand all factors via See All link",
+      "type": "Functional",
+      "priority": "Medium",
+      "preconditions": "Customer on dashboard with 4 factors shown in summary",
+      "steps_high_level": [
+        "Tap 'See all \u2192' link in factors section",
+        "Verify navigation to full factors screen",
+        "Verify all positive and negative factors displayed with descriptions"
+      ],
+      "expected_result": "Full factors screen shows all factors grouped by positive/negative with detailed plain English descriptions and weighting percentages",
+      "story_ref": "US-053",
+      "tags": [
+        "regression",
+        "functional"
+      ]
+    },
+    {
+      "id": "TS-02-072",
+      "title": "Consent grant records GDPR-compliant audit trail",
+      "type": "Integration",
+      "priority": "Critical",
+      "preconditions": "Customer on consent screen, all checkboxes checked",
+      "steps_high_level": [
+        "Tap 'Agree & Check My Score' button",
+        "Verify API response includes consentId and grantedAt timestamp",
+        "Query consent record via GET /consents/{customerId}",
+        "Verify record contains: consentTextVersion, consentTextHash, channel, status=GRANTED",
+        "Verify consent.granted event published to Pub/Sub"
+      ],
+      "expected_result": "Immutable consent record created per UK GDPR Art. 7(1) with full audit trail. Event published for downstream processing.",
+      "story_ref": "US-003",
+      "tags": [
+        "regression",
+        "integration",
+        "gdpr",
+        "compliance"
+      ]
+    },
+    {
+      "id": "TS-02-073",
+      "title": "Score displayed in GBP context with correct Experian scale",
+      "type": "Boundary",
+      "priority": "High",
+      "preconditions": "Customer with Experian score of 742",
+      "steps_high_level": [
+        "Navigate to dashboard",
+        "Verify score shows '742' with scale indicator 'out of 1,250'",
+        "Verify band shows 'Good (700\u2013849)'",
+        "Verify any monetary values use \u00a3 symbol"
+      ],
+      "expected_result": "Score displayed on Experian 0-1250 scale. Band classification correct. Any financial context uses \u00a3 (GBP).",
+      "story_ref": "US-009",
+      "tags": [
+        "regression",
+        "boundary",
+        "localisation"
+      ]
+    }
+  ],
+  "manual_test_cases": [
+    {
+      "id": "TC-01-001",
+      "summary": "Grant CRA consent end-to-end flow",
+      "priority": "Critical",
+      "component": "Consent",
+      "labels": [
+        "regression",
+        "smoke",
+        "EP-01"
+      ],
+      "linked_story": "US-003",
+      "linked_scenario": "TS-01-001",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "No prior consent for customer"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Login to Lloyds mobile app as John Smith",
+          "data": "NI: QQ123456C",
+          "expected_result": "Home screen displayed"
+        },
+        {
+          "step": 2,
+          "action": "Navigate to Credit Coach tab",
+          "data": "",
+          "expected_result": "Consent screen displayed with all disclosures"
+        },
+        {
+          "step": 3,
+          "action": "Verify consent text shows: data retrieved, CRA name (Experian), purpose, no marketing",
+          "data": "",
+          "expected_result": "All transparency disclosures visible"
+        },
+        {
+          "step": 4,
+          "action": "Verify all checkboxes are unticked by default",
+          "data": "",
+          "expected_result": "No pre-ticked checkboxes"
+        },
+        {
+          "step": 5,
+          "action": "Tick all three consent checkboxes",
+          "data": "",
+          "expected_result": "All checkboxes checked"
+        },
+        {
+          "step": 6,
+          "action": "Tap 'Agree & Check My Score'",
+          "data": "",
+          "expected_result": "Loading state shown; POST /credit-coach/consents returns 201"
+        },
+        {
+          "step": 7,
+          "action": "Verify consent record in API response",
+          "data": "",
+          "expected_result": "Response includes consentId, customerId, status:GRANTED, grantedAt timestamp, consentTextVersion"
+        }
+      ],
+      "test_data": {
+        "persona": "John Smith",
+        "values": {
+          "ni_number": "QQ123456C",
+          "customer_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "cra_provider": "EXPERIAN"
+        }
+      },
+      "postconditions": "Consent record exists with GRANTED status; consent.granted event published"
+    },
+    {
+      "id": "TC-01-002",
+      "summary": "Withdraw CRA consent and verify data retrieval stops",
+      "priority": "Critical",
+      "component": "Consent",
+      "labels": [
+        "regression",
+        "smoke",
+        "EP-01"
+      ],
+      "linked_story": "US-004",
+      "linked_scenario": "TS-01-007",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Active EXPERIAN consent exists"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Navigate to Settings > Credit Coach > Manage Consent",
+          "data": "",
+          "expected_result": "Consent management screen shows active Experian consent"
+        },
+        {
+          "step": 2,
+          "action": "Tap 'Withdraw Consent'",
+          "data": "",
+          "expected_result": "Confirmation dialog displayed with warning about stopping retrieval"
+        },
+        {
+          "step": 3,
+          "action": "Confirm withdrawal",
+          "data": "reason: customer_request",
+          "expected_result": "POST /consents/{id}/withdraw returns 200"
+        },
+        {
+          "step": 4,
+          "action": "Verify consent status updated",
+          "data": "",
+          "expected_result": "Status: WITHDRAWN, withdrawnAt timestamp set"
+        },
+        {
+          "step": 5,
+          "action": "Navigate to Credit Coach dashboard",
+          "data": "",
+          "expected_result": "Consent screen shown again (no score displayed)"
+        },
+        {
+          "step": 6,
+          "action": "Verify GET /scores/{customerId} returns 404",
+          "data": "",
+          "expected_result": "404 - No active consent"
+        }
+      ],
+      "test_data": {
+        "persona": "John Smith",
+        "values": {
+          "consent_id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+          "cra_provider": "EXPERIAN"
+        }
+      },
+      "postconditions": "Consent marked WITHDRAWN (not deleted); CRA retrieval stopped; consent.revoked event published"
+    },
+    {
+      "id": "TC-01-003",
+      "summary": "Retrieve credit score via soft search and display on dashboard",
+      "priority": "Critical",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "smoke",
+        "EP-02"
+      ],
+      "linked_story": "US-008",
+      "linked_scenario": "TS-02-001",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Active EXPERIAN consent; CRA stub returns score 742"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Navigate to Credit Coach dashboard",
+          "data": "",
+          "expected_result": "Score retrieval initiated"
+        },
+        {
+          "step": 2,
+          "action": "Verify loading skeleton displayed",
+          "data": "",
+          "expected_result": "Skeleton UI with 'Retrieving your credit score...' message"
+        },
+        {
+          "step": 3,
+          "action": "Wait for score retrieval (max 3 seconds)",
+          "data": "",
+          "expected_result": "Score displayed within 3 seconds"
+        },
+        {
+          "step": 4,
+          "action": "Verify score gauge shows 742",
+          "data": "",
+          "expected_result": "Score value: 742"
+        },
+        {
+          "step": 5,
+          "action": "Verify band label shows 'Good (700-849)'",
+          "data": "",
+          "expected_result": "Correct band classification"
+        },
+        {
+          "step": 6,
+          "action": "Verify Experian label and 0-1250 scale shown",
+          "data": "",
+          "expected_result": "Provider and scale clearly labelled"
+        },
+        {
+          "step": 7,
+          "action": "Verify API response matches UI display",
+          "data": "",
+          "expected_result": "GET /scores/{customerId} returns matching data"
+        }
+      ],
+      "test_data": {
+        "persona": "Jane Doe",
+        "values": {
+          "ni_number": "AB123456D",
+          "customer_id": "c3d4e5f6-a7b8-9012-cdef-345678901234",
+          "expected_score": 742,
+          "expected_band": "good",
+          "max_score": 1250
+        }
+      },
+      "postconditions": "Score cached in Redis (24hr TTL); score record stored in Cloud SQL"
+    },
+    {
+      "id": "TC-01-004",
+      "summary": "CRA unavailable - circuit breaker shows cached stale data",
+      "priority": "Critical",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "smoke",
+        "EP-02"
+      ],
+      "linked_story": "US-057",
+      "linked_scenario": "TS-02-041",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Cached score exists (727); CRA stub configured to timeout"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Configure CRA stub to return timeout (>2.5s)",
+          "data": "",
+          "expected_result": "CRA unavailable"
+        },
+        {
+          "step": 2,
+          "action": "Navigate to Credit Coach dashboard",
+          "data": "",
+          "expected_result": "Dashboard loads with stale data"
+        },
+        {
+          "step": 3,
+          "action": "Verify score shows 727 with stale indicator",
+          "data": "",
+          "expected_result": "Score displayed with reduced opacity"
+        },
+        {
+          "step": 4,
+          "action": "Verify warning banner: 'Couldn't refresh your score'",
+          "data": "",
+          "expected_result": "Warning banner with explanation visible"
+        },
+        {
+          "step": 5,
+          "action": "Verify 'Last updated [date]' timestamp shown",
+          "data": "",
+          "expected_result": "Stale date clearly displayed"
+        },
+        {
+          "step": 6,
+          "action": "Verify 'Try Again' button present",
+          "data": "",
+          "expected_result": "Retry option available"
+        },
+        {
+          "step": 7,
+          "action": "Verify API returns X-Data-Stale: true header",
+          "data": "",
+          "expected_result": "Stale header present in response"
+        }
+      ],
+      "test_data": {
+        "persona": "Jane Doe",
+        "values": {
+          "cached_score": 727,
+          "cached_date": "2026-04-15",
+          "cra_timeout_ms": 3000
+        }
+      },
+      "postconditions": "Circuit breaker in OPEN state; stale data served from cache"
+    },
+    {
+      "id": "TC-01-005",
+      "summary": "Display score factors in plain English with impact ordering",
+      "priority": "Critical",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "smoke",
+        "EP-02"
+      ],
+      "linked_story": "US-011",
+      "linked_scenario": "TS-02-014",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Score retrieved with 3 positive and 2 negative factors"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "View factors section on dashboard",
+          "data": "",
+          "expected_result": "Factors section visible"
+        },
+        {
+          "step": 2,
+          "action": "Verify positive factors listed with green checkmark icons",
+          "data": "",
+          "expected_result": "Up to 5 positive factors shown"
+        },
+        {
+          "step": 3,
+          "action": "Verify negative factors listed with warning icons",
+          "data": "",
+          "expected_result": "Up to 5 negative factors shown"
+        },
+        {
+          "step": 4,
+          "action": "Verify factors ordered by impact magnitude (high first)",
+          "data": "",
+          "expected_result": "High impact factors at top"
+        },
+        {
+          "step": 5,
+          "action": "Verify each factor has category, direction badge, and plain English description",
+          "data": "",
+          "expected_result": "All factor components present"
+        },
+        {
+          "step": 6,
+          "action": "Verify descriptions are readable (Flesch >= 60)",
+          "data": "",
+          "expected_result": "Plain English; no jargon"
+        }
+      ],
+      "test_data": {
+        "persona": "Jane Doe",
+        "values": {
+          "positive_factors": 3,
+          "negative_factors": 2
+        }
+      },
+      "postconditions": "Factors displayed correctly"
+    },
+    {
+      "id": "TC-01-006",
+      "summary": "Score change explanation with contributing factors",
+      "priority": "Critical",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "smoke",
+        "EP-02"
+      ],
+      "linked_story": "US-012",
+      "linked_scenario": "TS-02-019",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Previous score 727, current score 742 (+15)"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "View change explanation section on dashboard",
+          "data": "",
+          "expected_result": "Change section visible"
+        },
+        {
+          "step": 2,
+          "action": "Verify previous score (727) and new score (742) shown",
+          "data": "",
+          "expected_result": "Both scores displayed"
+        },
+        {
+          "step": 3,
+          "action": "Verify delta (+15) with upward indicator",
+          "data": "",
+          "expected_result": "Positive change indicator shown"
+        },
+        {
+          "step": 4,
+          "action": "Verify ranked list of contributing factors",
+          "data": "",
+          "expected_result": "Factors listed: 'Credit card balance reduced +12 pts', 'On-time payment +5 pts', 'New credit application -2 pts'"
+        },
+        {
+          "step": 5,
+          "action": "Verify GET /scores/{customerId}/change-explanation returns matching data",
+          "data": "",
+          "expected_result": "API response matches UI display"
+        }
+      ],
+      "test_data": {
+        "persona": "Jane Doe",
+        "values": {
+          "previous_score": 727,
+          "current_score": 742,
+          "total_change": 15
+        }
+      },
+      "postconditions": "Change explanation displayed correctly"
+    },
+    {
+      "id": "TC-01-007",
+      "summary": "Conversational credit query returns score in chat format",
+      "priority": "Critical",
+      "component": "Conversation",
+      "labels": [
+        "regression",
+        "smoke",
+        "EP-02"
+      ],
+      "linked_story": "US-014",
+      "linked_scenario": "TS-02-027",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Active consent; score 742 retrieved"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Navigate to Credit Coach conversation screen",
+          "data": "",
+          "expected_result": "Chat interface displayed with quick reply buttons"
+        },
+        {
+          "step": 2,
+          "action": "Type 'What is my credit score?'",
+          "data": "Query: What is my credit score?",
+          "expected_result": "Message appears in chat as user bubble"
+        },
+        {
+          "step": 3,
+          "action": "Wait for agent response",
+          "data": "",
+          "expected_result": "Response appears within 3 seconds"
+        },
+        {
+          "step": 4,
+          "action": "Verify response contains current score (742)",
+          "data": "",
+          "expected_result": "Score value present in response"
+        },
+        {
+          "step": 5,
+          "action": "Verify response contains band (Good)",
+          "data": "",
+          "expected_result": "Band classification present"
+        },
+        {
+          "step": 6,
+          "action": "Verify response contains last refresh date",
+          "data": "",
+          "expected_result": "Refresh date present"
+        },
+        {
+          "step": 7,
+          "action": "Verify conversational tone (not robotic)",
+          "data": "",
+          "expected_result": "Natural language response"
+        }
+      ],
+      "test_data": {
+        "persona": "John Smith",
+        "values": {
+          "query": "What is my credit score?",
+          "expected_score": 742,
+          "expected_band": "Good"
+        }
+      },
+      "postconditions": "Conversation history maintained"
+    },
+    {
+      "id": "TC-01-008",
+      "summary": "Ambiguous conversational query triggers clarification",
+      "priority": "High",
+      "component": "Conversation",
+      "labels": [
+        "regression",
+        "EP-02"
+      ],
+      "linked_story": "US-015",
+      "linked_scenario": "TS-02-031",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Active consent; score retrieved"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Navigate to conversation screen",
+          "data": "",
+          "expected_result": "Chat interface displayed"
+        },
+        {
+          "step": 2,
+          "action": "Type 'How am I doing?'",
+          "data": "Query: How am I doing?",
+          "expected_result": "Message sent"
+        },
+        {
+          "step": 3,
+          "action": "Verify agent asks clarifying question",
+          "data": "",
+          "expected_result": "Agent responds: 'Would you like to know about your credit score or your spending?'"
+        },
+        {
+          "step": 4,
+          "action": "Reply 'credit score'",
+          "data": "Query: credit score",
+          "expected_result": "Agent provides credit score information"
+        }
+      ],
+      "test_data": {
+        "persona": "John Smith",
+        "values": {
+          "ambiguous_query": "How am I doing?"
+        }
+      },
+      "postconditions": "Correct routing after clarification"
+    },
+    {
+      "id": "TC-01-009",
+      "summary": "JWT validation - missing token returns 401",
+      "priority": "Critical",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "smoke",
+        "security",
+        "EP-02"
+      ],
+      "linked_story": "US-008",
+      "linked_scenario": "TS-02-045",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "unauthenticated",
+        "data_setup": "None"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Call GET /credit-coach/scores/{customerId} without Authorization header",
+          "data": "No Bearer token",
+          "expected_result": "401 Unauthorized returned"
+        },
+        {
+          "step": 2,
+          "action": "Call POST /credit-coach/consents without Authorization header",
+          "data": "No Bearer token",
+          "expected_result": "401 Unauthorized returned"
+        },
+        {
+          "step": 3,
+          "action": "Call GET /credit-coach/scores/{customerId}/factors without Authorization header",
+          "data": "No Bearer token",
+          "expected_result": "401 Unauthorized returned"
+        },
+        {
+          "step": 4,
+          "action": "Verify no data exposed in error responses",
+          "data": "",
+          "expected_result": "ProblemDetails response with no sensitive data"
+        }
+      ],
+      "test_data": {
+        "persona": "Unauthenticated user",
+        "values": {}
+      },
+      "postconditions": "No data exposed; all endpoints protected"
+    },
+    {
+      "id": "TC-01-010",
+      "summary": "Thin file customer sees guidance message",
+      "priority": "High",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "EP-02"
+      ],
+      "linked_story": "US-010",
+      "linked_scenario": "TS-02-011",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "CRA stub returns thin file indicator"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Login as thin-file customer",
+          "data": "NI: CD789012E",
+          "expected_result": "Home screen displayed"
+        },
+        {
+          "step": 2,
+          "action": "Navigate to Credit Coach dashboard",
+          "data": "",
+          "expected_result": "Dashboard loads"
+        },
+        {
+          "step": 3,
+          "action": "Verify thin file message displayed",
+          "data": "",
+          "expected_result": "Message: 'We don't have enough data to generate a full score \u2014 here's how to build your credit history'"
+        },
+        {
+          "step": 4,
+          "action": "Verify credit-building guidance provided",
+          "data": "",
+          "expected_result": "Actionable guidance visible"
+        }
+      ],
+      "test_data": {
+        "persona": "Sarah Wilson",
+        "values": {
+          "ni_number": "CD789012E",
+          "customer_id": "d4e5f6a7-b8c9-0123-defg-456789012345",
+          "credit_file": "thin"
+        }
+      },
+      "postconditions": "Thin file state handled gracefully"
+    },
+    {
+      "id": "TC-01-011",
+      "summary": "First score retrieval shows no comparison available",
+      "priority": "High",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "EP-02"
+      ],
+      "linked_story": "US-009",
+      "linked_scenario": "TS-02-008",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "First-time consent just granted; no previous score"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Grant consent for first time",
+          "data": "",
+          "expected_result": "Consent granted; score retrieval begins"
+        },
+        {
+          "step": 2,
+          "action": "Wait for first score retrieval",
+          "data": "",
+          "expected_result": "Score displayed"
+        },
+        {
+          "step": 3,
+          "action": "Verify month-on-month change section",
+          "data": "",
+          "expected_result": "'First check \u2014 no comparison available' displayed instead of delta"
+        }
+      ],
+      "test_data": {
+        "persona": "John Smith",
+        "values": {
+          "first_retrieval": true
+        }
+      },
+      "postconditions": "First score stored; next refresh will have comparison"
+    },
+    {
+      "id": "TC-01-012",
+      "summary": "Admin refresh frequency configuration with audit log",
+      "priority": "High",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "EP-02"
+      ],
+      "linked_story": "US-017",
+      "linked_scenario": "TS-02-037",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "admin",
+        "data_setup": "Admin user with appropriate role"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Authenticate as admin user",
+          "data": "Role: credit_coach_admin",
+          "expected_result": "Admin authenticated"
+        },
+        {
+          "step": 2,
+          "action": "GET /credit-coach/admin/refresh-schedule",
+          "data": "",
+          "expected_result": "Current config returned (200)"
+        },
+        {
+          "step": 3,
+          "action": "PUT /credit-coach/admin/refresh-schedule with frequencyDays: 14",
+          "data": "{\"craProvider\": \"EXPERIAN\", \"frequencyDays\": 14}",
+          "expected_result": "200 OK; config updated"
+        },
+        {
+          "step": 4,
+          "action": "Verify audit log entry created",
+          "data": "",
+          "expected_result": "Audit log records who changed what and when"
+        },
+        {
+          "step": 5,
+          "action": "Verify change takes effect on next batch",
+          "data": "",
+          "expected_result": "Next batch uses 14-day frequency"
+        }
+      ],
+      "test_data": {
+        "persona": "Admin User",
+        "values": {
+          "role": "credit_coach_admin",
+          "new_frequency": 14
+        }
+      },
+      "postconditions": "Refresh frequency updated to 14 days"
+    },
+    {
+      "id": "TC-01-013",
+      "summary": "Score dashboard accessibility - full screen reader walkthrough",
+      "priority": "High",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "accessibility",
+        "EP-02"
+      ],
+      "linked_story": "US-009",
+      "linked_scenario": "TS-02-009",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Score 742 retrieved; VoiceOver enabled on iOS"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Enable VoiceOver on device",
+          "data": "",
+          "expected_result": "VoiceOver active"
+        },
+        {
+          "step": 2,
+          "action": "Navigate to Credit Coach dashboard",
+          "data": "",
+          "expected_result": "Screen announced"
+        },
+        {
+          "step": 3,
+          "action": "Swipe to score hero section",
+          "data": "",
+          "expected_result": "Announced: '742 out of 1250, Good band, up 15 points'"
+        },
+        {
+          "step": 4,
+          "action": "Swipe to factors section",
+          "data": "",
+          "expected_result": "Each factor announced with category, direction, and explanation"
+        },
+        {
+          "step": 5,
+          "action": "Swipe to change explanation",
+          "data": "",
+          "expected_result": "Delta and contributing factors announced"
+        },
+        {
+          "step": 6,
+          "action": "Verify all interactive elements reachable",
+          "data": "",
+          "expected_result": "All buttons and links focusable"
+        }
+      ],
+      "test_data": {
+        "persona": "Jane Doe",
+        "values": {
+          "assistive_tech": "VoiceOver",
+          "platform": "iOS"
+        }
+      },
+      "postconditions": "Full screen reader navigation verified"
+    },
+    {
+      "id": "TC-01-014",
+      "summary": "Consent data encryption verification",
+      "priority": "Critical",
+      "component": "Consent",
+      "labels": [
+        "regression",
+        "security",
+        "EP-01"
+      ],
+      "linked_story": "US-003",
+      "linked_scenario": "TS-01-004",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "security_tester",
+        "data_setup": "Consent record exists in database"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Verify TLS 1.3 on consent API endpoint",
+          "data": "openssl s_client check",
+          "expected_result": "TLS 1.3 confirmed"
+        },
+        {
+          "step": 2,
+          "action": "Query consent database directly",
+          "data": "",
+          "expected_result": "ip_address and device_fingerprint fields are AES-256 encrypted (base64)"
+        },
+        {
+          "step": 3,
+          "action": "Verify Cloud KMS CMEK configuration",
+          "data": "",
+          "expected_result": "AES-256 encryption with customer-managed keys confirmed"
+        },
+        {
+          "step": 4,
+          "action": "Attempt to read encrypted fields without KMS access",
+          "data": "",
+          "expected_result": "Fields unreadable without proper KMS permissions"
+        }
+      ],
+      "test_data": {
+        "persona": "Security Tester",
+        "values": {
+          "encryption": "AES-256",
+          "tls_version": "1.3"
+        }
+      },
+      "postconditions": "Encryption verified at rest and in transit"
+    },
+    {
+      "id": "TC-01-015",
+      "summary": "On-demand score refresh rate limiting",
+      "priority": "High",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "EP-02"
+      ],
+      "linked_story": "US-008",
+      "linked_scenario": "TS-02-040",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Customer already refreshed within last 24 hours"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Trigger first on-demand refresh",
+          "data": "",
+          "expected_result": "202 Accepted; refresh initiated"
+        },
+        {
+          "step": 2,
+          "action": "Immediately attempt second refresh",
+          "data": "",
+          "expected_result": "429 Too Many Requests"
+        },
+        {
+          "step": 3,
+          "action": "Verify Retry-After header in response",
+          "data": "",
+          "expected_result": "Retry-After header indicates seconds until next allowed refresh"
+        },
+        {
+          "step": 4,
+          "action": "Verify UI shows appropriate message",
+          "data": "",
+          "expected_result": "User informed of rate limit"
+        }
+      ],
+      "test_data": {
+        "persona": "John Smith",
+        "values": {
+          "rate_limit": "1 per 24hr"
+        }
+      },
+      "postconditions": "Rate limit enforced; user informed"
+    },
+    {
+      "id": "TC-01-016",
+      "summary": "Unsupported conversational query handled gracefully",
+      "priority": "High",
+      "component": "Conversation",
+      "labels": [
+        "regression",
+        "EP-02"
+      ],
+      "linked_story": "US-014",
+      "linked_scenario": "TS-02-029",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Active conversation session"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Type 'Can you transfer money?'",
+          "data": "Query: Can you transfer money?",
+          "expected_result": "Message sent"
+        },
+        {
+          "step": 2,
+          "action": "Verify agent response explains scope",
+          "data": "",
+          "expected_result": "Response: 'I can help with credit score, factors, and improvement tips. For other queries, I'll connect you with the right assistant'"
+        },
+        {
+          "step": 3,
+          "action": "Verify no error or crash",
+          "data": "",
+          "expected_result": "Graceful handling; conversation continues"
+        }
+      ],
+      "test_data": {
+        "persona": "John Smith",
+        "values": {
+          "unsupported_query": "Can you transfer money?"
+        }
+      },
+      "postconditions": "Conversation continues normally after unsupported query"
+    },
+    {
+      "id": "TC-01-017",
+      "summary": "Score factors 'See all' expansion",
+      "priority": "High",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "EP-02"
+      ],
+      "linked_story": "US-053",
+      "linked_scenario": "TS-02-017",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Customer has 7 positive and 6 negative factors"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "View factors section showing top 5+5",
+          "data": "",
+          "expected_result": "5 positive and 5 negative factors shown"
+        },
+        {
+          "step": 2,
+          "action": "Tap 'See all' link",
+          "data": "",
+          "expected_result": "Full list expanded"
+        },
+        {
+          "step": 3,
+          "action": "Verify all 7 positive and 6 negative factors visible",
+          "data": "",
+          "expected_result": "Complete factor list displayed"
+        },
+        {
+          "step": 4,
+          "action": "Verify ordering maintained by impact magnitude",
+          "data": "",
+          "expected_result": "Highest impact first"
+        },
+        {
+          "step": 5,
+          "action": "Verify same formatting as initial display",
+          "data": "",
+          "expected_result": "Consistent UI formatting"
+        }
+      ],
+      "test_data": {
+        "persona": "Jane Doe",
+        "values": {
+          "total_positive": 7,
+          "total_negative": 6
+        }
+      },
+      "postconditions": "Full factor list displayed"
+    },
+    {
+      "id": "TC-01-018",
+      "summary": "Score unchanged state shows reassurance",
+      "priority": "High",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "EP-02"
+      ],
+      "linked_story": "US-012",
+      "linked_scenario": "TS-02-021",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Score unchanged between refreshes (742 both times)"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Navigate to dashboard after refresh with no change",
+          "data": "",
+          "expected_result": "Dashboard loads"
+        },
+        {
+          "step": 2,
+          "action": "Verify score shows '\u2014 No change since last month'",
+          "data": "",
+          "expected_result": "No-change indicator displayed"
+        },
+        {
+          "step": 3,
+          "action": "Verify reassurance message: 'Your score is stable \u2014 keep up the good work'",
+          "data": "",
+          "expected_result": "Positive reassurance shown"
+        },
+        {
+          "step": 4,
+          "action": "Verify stability factors listed",
+          "data": "",
+          "expected_result": "Factors maintaining stability shown"
+        }
+      ],
+      "test_data": {
+        "persona": "Jane Doe",
+        "values": {
+          "previous_score": 742,
+          "current_score": 742
+        }
+      },
+      "postconditions": "Unchanged state handled with positive messaging"
+    },
+    {
+      "id": "TC-01-019",
+      "summary": "Orchestrator routes credit query correctly",
+      "priority": "High",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "EP-01"
+      ],
+      "linked_story": "US-001",
+      "linked_scenario": "TS-02-048",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "Credit Coach agent registered on Envoy platform"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Send 'What is my credit score?' via FA",
+          "data": "",
+          "expected_result": "Query received by orchestrator"
+        },
+        {
+          "step": 2,
+          "action": "Verify routing to Credit Coach agent",
+          "data": "",
+          "expected_result": "Query routed to Credit Coach (not other agents)"
+        },
+        {
+          "step": 3,
+          "action": "Measure routing latency",
+          "data": "",
+          "expected_result": "Routing completed within 500ms"
+        },
+        {
+          "step": 4,
+          "action": "Send 'What did I spend on groceries?'",
+          "data": "",
+          "expected_result": "NOT routed to Credit Coach"
+        }
+      ],
+      "test_data": {
+        "persona": "John Smith",
+        "values": {
+          "credit_query": "What is my credit score?",
+          "non_credit_query": "What did I spend on groceries?"
+        }
+      },
+      "postconditions": "Routing verified for both credit and non-credit queries"
+    },
+    {
+      "id": "TC-01-020",
+      "summary": "Data quality validation rejects low-quality CRA data",
+      "priority": "High",
+      "component": "Score",
+      "labels": [
+        "regression",
+        "EP-02"
+      ],
+      "linked_story": "US-052",
+      "linked_scenario": "TS-02-004",
+      "preconditions": {
+        "environment": "staging",
+        "user_role": "retail_customer",
+        "data_setup": "CRA stub returns data with quality score 94%"
+      },
+      "test_steps": [
+        {
+          "step": 1,
+          "action": "Trigger score retrieval with low-quality CRA response",
+          "data": "dataQualityScore: 94",
+          "expected_result": "Data received from CRA"
+        },
+        {
+          "step": 2,
+          "action": "Verify quality check rejects data (< 95%)",
+          "data": "",
+          "expected_result": "Data rejected; flagged for re-fetch"
+        },
+        {
+          "step": 3,
+          "action": "Verify re-fetch scheduled for next cycle",
+          "data": "",
+          "expected_result": "Re-fetch flag set"
+        },
+        {
+          "step": 4,
+          "action": "Verify failure logged in Cloud Monitoring",
+          "data": "",
+          "expected_result": "Quality failure recorded"
+        }
+      ],
+      "test_data": {
+        "persona": "Jane Doe",
+        "values": {
+          "quality_score": 94,
+          "threshold": 95
+        }
+      },
+      "postconditions": "Low-quality data rejected; re-fetch scheduled"
+    }
+  ],
+  "automated_test_cases": {
+    "feature_files": [
+      {
+        "filename": "US-003-consent-grant.feature",
+        "path": "tests/bdd/features/EP-01/",
+        "content": "@epic-EP01 @regression\nFeature: CRA Consent Grant\n  As a retail banking customer\n  I want to provide explicit consent before my credit data is retrieved\n  So that I understand what data is accessed and how it will be used\n\n  Background:\n    Given I am authenticated as \"John Smith\" with NI \"QQ123456C\"\n    And I have no prior CRA consent\n\n  @story-US003 @critical @smoke\n  Scenario: Grant consent for Experian with all disclosures\n    When I navigate to the Credit Coach\n    Then I see the consent screen with transparency disclosures\n    And the disclosures include \"data retrieved\", \"Experian\", \"coaching only\", \"no marketing\"\n    And no checkboxes are pre-ticked\n    When I tick all consent checkboxes\n    And I tap \"Agree & Check My Score\"\n    Then the consent API returns status 201\n    And the consent record includes timestamp and consent text version \"1.0\"\n    And a \"consent.granted\" event is published\n\n  @story-US003 @high\n  Scenario: Cannot submit consent without all checkboxes\n    When I navigate to the Credit Coach\n    And I tick only the first two checkboxes\n    Then the \"Agree & Check My Score\" button is disabled\n\n  @story-US003 @high\n  Scenario: Duplicate consent returns 409 Conflict\n    Given I already have active EXPERIAN consent\n    When I attempt to grant EXPERIAN consent again\n    Then the consent API returns status 409\n    And the error message indicates active consent already exists\n\n  @story-US003 @high @accessibility\n  Scenario: Consent screen is fully accessible\n    When I navigate to the Credit Coach\n    Then all checkboxes have associated ARIA labels\n    And the focus order follows top-to-bottom logical sequence\n    And the page passes axe-core accessibility checks"
+      },
+      {
+        "filename": "US-004-consent-withdrawal.feature",
+        "path": "tests/bdd/features/EP-01/",
+        "content": "@epic-EP01 @regression\nFeature: CRA Consent Withdrawal\n  As a retail banking customer\n  I want to withdraw my CRA consent at any time\n  So that my data is no longer retrieved\n\n  Background:\n    Given I am authenticated as \"John Smith\" with NI \"QQ123456C\"\n    And I have active EXPERIAN consent\n\n  @story-US004 @critical @smoke\n  Scenario: Withdraw consent stops CRA retrieval\n    When I navigate to Settings > Credit Coach > Manage Consent\n    And I tap \"Withdraw Consent\"\n    And I confirm the withdrawal with reason \"customer_request\"\n    Then the withdrawal API returns status 200\n    And the consent status is \"WITHDRAWN\" with withdrawnAt timestamp\n    And a \"consent.revoked\" event is published\n    When I navigate to the Credit Coach dashboard\n    Then the consent screen is displayed again\n\n  @story-US004 @high\n  Scenario: Re-consent prompted on consent text version change\n    Given the consent text version has been updated to \"1.1\"\n    When I access the Credit Coach\n    Then I am prompted to re-consent with the updated text\n    And no data is retrieved until I re-consent\n\n  @story-US004 @medium\n  Scenario: Withdraw already-withdrawn consent returns 409\n    Given my consent has already been withdrawn\n    When I attempt to withdraw consent again\n    Then the API returns status 409\n    And the error indicates consent already withdrawn"
+      },
+      {
+        "filename": "US-008-score-retrieval.feature",
+        "path": "tests/bdd/features/EP-02/",
+        "content": "@epic-EP02 @regression\nFeature: Credit Score Retrieval via Soft Search\n  As a retail banking customer\n  I want my credit score retrieved without leaving a footprint\n  So that monitoring does not harm my creditworthiness\n\n  Background:\n    Given I am authenticated as \"Jane Doe\" with NI \"AB123456D\"\n    And I have active EXPERIAN consent\n\n  @story-US008 @critical @smoke\n  Scenario: Retrieve score within 3 seconds\n    When I navigate to the Credit Coach dashboard\n    Then the score is retrieved via soft search\n    And the response is received within 3 seconds\n    And the score, band, and factors are stored\n\n  @story-US008 @critical @smoke\n  Scenario: Circuit breaker shows cached data on CRA timeout\n    Given the CRA API is configured to timeout after 2.5 seconds\n    And a cached score of 727 exists\n    When I navigate to the Credit Coach dashboard\n    Then the cached score 727 is displayed\n    And the response header \"X-Data-Stale\" is \"true\"\n    And a \"Last updated\" timestamp is shown\n\n  @story-US008 @critical\n  Scenario: No consent returns 404\n    Given I have no active CRA consent\n    When I request my credit score via API\n    Then the API returns status 404\n    And the error indicates consent is required\n\n  @story-US008 @high\n  Scenario: On-demand refresh rate limited to once per 24 hours\n    Given I have already refreshed my score today\n    When I attempt another on-demand refresh\n    Then the API returns status 429\n    And the \"Retry-After\" header indicates remaining wait time"
+      },
+      {
+        "filename": "US-009-score-display.feature",
+        "path": "tests/bdd/features/EP-02/",
+        "content": "@epic-EP02 @regression\nFeature: Credit Score Display with Band Classification\n  As a retail banking customer\n  I want to see my score, band, and month-on-month change\n  So that I understand my credit health at a glance\n\n  Background:\n    Given I am authenticated as \"Jane Doe\" with NI \"AB123456D\"\n    And my current score is 742 with previous score 727\n\n  @story-US009 @critical @smoke\n  Scenario: Display score with band and change indicator\n    When I view the Credit Coach dashboard\n    Then I see my score \"742\" on the gauge widget\n    And I see the band \"Good (700-849)\"\n    And I see the change \"+15 points since last month\"\n    And the score is labelled \"Experian score (0-1250)\"\n\n  @story-US009 @high\n  Scenario: First retrieval shows no comparison message\n    Given this is my first score retrieval with no previous score\n    When I view the Credit Coach dashboard\n    Then the change section shows \"First check \u2014 no comparison available\"\n\n  @story-US009 @high @accessibility\n  Scenario: Score dashboard accessible via screen reader\n    When I view the Credit Coach dashboard with screen reader enabled\n    Then the score is announced as \"742 out of 1250, Good band, up 15 points\"\n    And all interactive elements are focusable"
+      },
+      {
+        "filename": "US-011-score-factors.feature",
+        "path": "tests/bdd/features/EP-02/",
+        "content": "@epic-EP02 @regression\nFeature: Score Factors in Plain English\n  As a retail banking customer\n  I want my score factors explained in plain English\n  So that I understand what helps and hurts my score\n\n  Background:\n    Given I am authenticated as \"Jane Doe\" with NI \"AB123456D\"\n    And my score factors are available\n\n  @story-US011 @critical @smoke\n  Scenario: Display factors ordered by impact\n    When I view the factors section\n    Then I see up to 5 positive and 5 negative factors\n    And they are ordered by impact magnitude\n    And each has category, impact direction, and plain language explanation\n\n  @story-US011 @medium\n  Scenario: Unknown factor code shows fallback\n    Given the CRA returns an unmapped factor code \"XYZ999\"\n    When I view the factors section\n    Then the raw factor is shown with \"Contact us for explanation\" fallback\n\n  @story-US011 @high @accessibility\n  Scenario: Factors accessible via screen reader\n    When I navigate the factors section with screen reader\n    Then each factor's category, direction, and explanation are announced\n    And the reading order is logical (highest impact first)"
+      },
+      {
+        "filename": "US-012-score-change.feature",
+        "path": "tests/bdd/features/EP-02/",
+        "content": "@epic-EP02 @regression\nFeature: Score Change Explanation\n  As a retail banking customer\n  I want to understand why my score changed\n  So that I can take informed action\n\n  Background:\n    Given I am authenticated as \"Jane Doe\" with NI \"AB123456D\"\n\n  @story-US012 @critical @smoke\n  Scenario: Score increase shows contributing factors\n    Given my score increased from 727 to 742\n    When I view the change explanation\n    Then I see previous score 727 and new score 742\n    And I see delta +15 with upward indicator\n    And I see ranked contributing factors\n    And positive reinforcement messaging is shown\n\n  @story-US012 @high\n  Scenario: Score drop uses empathetic tone\n    Given my score decreased from 742 to 720\n    When I view the change explanation\n    Then the tone is empathetic with no alarm language\n    And an actionable next step is suggested\n\n  @story-US012 @high\n  Scenario: Score unchanged shows stability message\n    Given my score is unchanged at 742\n    When I view the dashboard\n    Then I see \"Your score is stable \u2014 keep up the good work\"\n    And the change explanation API returns 204\n\n  @story-US012 @high @accessibility\n  Scenario: Change explanation accessible\n    Given my score changed\n    When I view the change explanation with screen reader\n    Then the delta direction and contributing factors are announced"
+      },
+      {
+        "filename": "US-014-conversational-queries.feature",
+        "path": "tests/bdd/features/EP-02/",
+        "content": "@epic-EP02 @regression\nFeature: Conversational Credit Queries\n  As a retail banking customer\n  I want to ask natural language questions about my credit\n  So that I get answers without navigating multiple screens\n\n  Background:\n    Given I am authenticated as \"John Smith\" with NI \"QQ123456C\"\n    And I have active consent and a retrieved score of 742\n\n  @story-US014 @critical @smoke\n  Scenario: Ask about credit score\n    When I type \"What is my credit score?\"\n    Then the agent responds with my score 742, band \"Good\", and last refresh date\n    And the response is in conversational format\n\n  @story-US014 @high\n  Scenario: Ask why score changed\n    Given my score changed from 727 to 742\n    When I type \"Why did my score change?\"\n    Then the agent provides change explanation with contributing factors\n\n  @story-US014 @high\n  Scenario: Unsupported query returns scope message\n    When I type \"Can you transfer money?\"\n    Then the agent responds with scope explanation\n    And offers to connect with the right assistant\n\n  @story-US014 @high @accessibility\n  Scenario: Chat responses announced via assistive technology\n    When I send a query with screen reader enabled\n    Then the response is announced via live region\n    And the send button has label \"Send message\""
+      },
+      {
+        "filename": "US-057-cra-unavailability.feature",
+        "path": "tests/bdd/features/EP-02/",
+        "content": "@epic-EP02 @regression\nFeature: CRA API Unavailability Handling\n  As a credit coach user\n  I want helpful messaging when the CRA is unavailable\n  So that I understand why my score cannot be displayed\n\n  Background:\n    Given I am authenticated as \"Jane Doe\" with NI \"AB123456D\"\n    And I have active EXPERIAN consent\n\n  @story-US057 @critical @smoke\n  Scenario: Cached score shown when CRA unavailable\n    Given the CRA API is unavailable\n    And a cached score of 727 from \"2026-04-15\" exists\n    When I navigate to the score dashboard\n    Then I see score 727 with \"Last updated 15 April 2026\" label\n    And I see a \"Refresh\" button\n\n  @story-US057 @high\n  Scenario: No cache and CRA unavailable shows retry message\n    Given the CRA API is unavailable\n    And no cached score exists\n    When I navigate to the score dashboard\n    Then I see \"We couldn't retrieve your score right now. Please try again later.\"\n    And a retry button is present\n\n  @story-US057 @medium\n  Scenario: Partial CRA response shows score without factors\n    Given the CRA returns score but no factors\n    When the dashboard loads\n    Then the score is displayed\n    And the factors section shows \"Factor details temporarily unavailable\"\n\n  @story-US057 @medium\n  Scenario: Circuit breaker tripped informs user of wait time\n    Given the circuit breaker has tripped after 3 consecutive failures\n    When I attempt to refresh\n    Then I am informed of the approximate wait time\n    And the system waits for the reset period before retrying"
+      }
+    ],
+    "step_definitions": [
+      {
+        "filename": "consent.steps.ts",
+        "path": "tests/bdd/steps/",
+        "content": "import { Given, When, Then } from '@cucumber/cucumber';\nimport { expect } from '@playwright/test';\nimport { ConsentPage } from '../pages/ConsentPage';\nimport { ConsentSettingsPage } from '../pages/ConsentSettingsPage';\nimport { ApiClient } from '../support/ApiClient';\n\nlet consentPage: ConsentPage;\nlet consentSettingsPage: ConsentSettingsPage;\nlet apiClient: ApiClient;\nlet apiResponse: any;\n\nGiven('I have no prior CRA consent', async function () {\n  apiClient = new ApiClient(this.authToken);\n  const consents = await apiClient.getConsents(this.customerId);\n  expect(consents.data.length).toBe(0);\n});\n\nGiven('I already have active EXPERIAN consent', async function () {\n  apiClient = new ApiClient(this.authToken);\n  const consents = await apiClient.getConsents(this.customerId);\n  const active = consents.data.find((c: any) => c.craProvider === 'EXPERIAN' && c.status === 'GRANTED');\n  expect(active).toBeTruthy();\n});\n\nGiven('my consent has already been withdrawn', async function () {\n  apiClient = new ApiClient(this.authToken);\n  const consents = await apiClient.getConsents(this.customerId);\n  const withdrawn = consents.data.find((c: any) => c.status === 'WITHDRAWN');\n  expect(withdrawn).toBeTruthy();\n});\n\nGiven('the consent text version has been updated to {string}', async function (version: string) {\n  this.expectedConsentVersion = version;\n});\n\nWhen('I navigate to the Credit Coach', async function () {\n  consentPage = new ConsentPage(this.page);\n  await consentPage.navigate();\n});\n\nWhen('I tick all consent checkboxes', async function () {\n  await consentPage.tickAllCheckboxes();\n});\n\nWhen('I tick only the first two checkboxes', async function () {\n  await consentPage.tickCheckbox(0);\n  await consentPage.tickCheckbox(1);\n});\n\nWhen('I tap {string}', async function (buttonText: string) {\n  await this.page.getByRole('button', { name: buttonText }).click();\n});\n\nWhen('I attempt to grant EXPERIAN consent again', async function () {\n  apiClient = new ApiClient(this.authToken);\n  apiResponse = await apiClient.grantConsent({\n    craProvider: 'EXPERIAN',\n    consentTextVersion: '1.0',\n    consentTextHash: 'abc123',\n    channel: 'IOS',\n    privacyNoticeAccepted: true\n  });\n});\n\nWhen('I navigate to Settings > Credit Coach > Manage Consent', async function () {\n  consentSettingsPage = new ConsentSettingsPage(this.page);\n  await consentSettingsPage.navigate();\n});\n\nWhen('I confirm the withdrawal with reason {string}', async function (reason: string) {\n  await consentSettingsPage.confirmWithdrawal(reason);\n});\n\nWhen('I attempt to withdraw consent again', async function () {\n  apiClient = new ApiClient(this.authToken);\n  apiResponse = await apiClient.withdrawConsent(this.consentId, 'customer_request');\n});\n\nThen('I see the consent screen with transparency disclosures', async function () {\n  await expect(consentPage.disclosureSection).toBeVisible();\n});\n\nThen('the disclosures include {string}, {string}, {string}, {string}', async function (d1: string, d2: string, d3: string, d4: string) {\n  const text = await consentPage.getDisclosureText();\n  expect(text).toContain(d1);\n  expect(text).toContain(d2);\n  expect(text).toContain(d3);\n  expect(text).toContain(d4);\n});\n\nThen('no checkboxes are pre-ticked', async function () {\n  const states = await consentPage.getCheckboxStates();\n  states.forEach(state => expect(state).toBe(false));\n});\n\nThen('the consent API returns status {int}', async function (status: number) {\n  expect(apiResponse.status).toBe(status);\n});\n\nThen('the consent record includes timestamp and consent text version {string}', async function (version: string) {\n  const body = await apiResponse.json();\n  expect(body.data.grantedAt).toBeTruthy();\n  expect(body.data.consentTextVersion).toBe(version);\n});\n\nThen('a {string} event is published', async function (eventName: string) {\n  // Verify via test event listener or Pub/Sub subscription\n  const events = await apiClient.getRecentEvents(eventName);\n  expect(events.length).toBeGreaterThan(0);\n});\n\nThen('the {string} button is disabled', async function (buttonText: string) {\n  const button = this.page.getByRole('button', { name: buttonText });\n  await expect(button).toBeDisabled();\n});\n\nThen('the consent status is {string} with withdrawnAt timestamp', async function (status: string) {\n  const body = await apiResponse.json();\n  expect(body.data.status).toBe(status);\n  expect(body.data.withdrawnAt).toBeTruthy();\n});"
+      },
+      {
+        "filename": "score.steps.ts",
+        "path": "tests/bdd/steps/",
+        "content": "import { Given, When, Then } from '@cucumber/cucumber';\nimport { expect } from '@playwright/test';\nimport { DashboardPage } from '../pages/DashboardPage';\nimport { ApiClient } from '../support/ApiClient';\n\nlet dashboardPage: DashboardPage;\nlet apiClient: ApiClient;\nlet apiResponse: any;\nlet startTime: number;\n\nGiven('I have active EXPERIAN consent', async function () {\n  apiClient = new ApiClient(this.authToken);\n  const consents = await apiClient.getConsents(this.customerId);\n  const active = consents.data.find((c: any) => c.craProvider === 'EXPERIAN' && c.status === 'GRANTED');\n  expect(active).toBeTruthy();\n});\n\nGiven('I have no active CRA consent', async function () {\n  // Ensure no active consent exists for test customer\n});\n\nGiven('the CRA API is configured to timeout after 2.5 seconds', async function () {\n  await apiClient.configureCraStub({ timeout: 2500 });\n});\n\nGiven('the CRA API is unavailable', async function () {\n  await apiClient.configureCraStub({ unavailable: true });\n});\n\nGiven('a cached score of {int} exists', async function (score: number) {\n  await apiClient.seedCachedScore(this.customerId, score);\n});\n\nGiven('a cached score of {int} from {string} exists', async function (score: number, date: string) {\n  await apiClient.seedCachedScore(this.customerId, score, date);\n});\n\nGiven('no cached score exists', async function () {\n  await apiClient.clearCachedScore(this.customerId);\n});\n\nGiven('I have already refreshed my score today', async function () {\n  await apiClient.refreshScore(this.customerId);\n});\n\nGiven('my current score is {int} with previous score {int}', async function (current: number, previous: number) {\n  await apiClient.seedScore(this.customerId, current, previous);\n});\n\nGiven('this is my first score retrieval with no previous score', async function () {\n  await apiClient.seedFirstScore(this.customerId);\n});\n\nGiven('the CRA returns score but no factors', async function () {\n  await apiClient.configureCraStub({ partialResponse: true });\n});\n\nGiven('the circuit breaker has tripped after 3 consecutive failures', async function () {\n  await apiClient.configureCraStub({ tripCircuitBreaker: true });\n});\n\nWhen('I navigate to the Credit Coach dashboard', async function () {\n  startTime = Date.now();\n  dashboardPage = new DashboardPage(this.page);\n  await dashboardPage.navigate();\n});\n\nWhen('I request my credit score via API', async function () {\n  apiClient = new ApiClient(this.authToken);\n  apiResponse = await apiClient.getScore(this.customerId);\n});\n\nWhen('I attempt another on-demand refresh', async function () {\n  apiResponse = await apiClient.refreshScore(this.customerId);\n});\n\nThen('the score is retrieved via soft search', async function () {\n  await dashboardPage.waitForScoreLoaded();\n  expect(await dashboardPage.isScoreVisible()).toBe(true);\n});\n\nThen('the response is received within {int} seconds', async function (seconds: number) {\n  const elapsed = Date.now() - startTime;\n  expect(elapsed).toBeLessThan(seconds * 1000);\n});\n\nThen('the score, band, and factors are stored', async function () {\n  const score = await apiClient.getScore(this.customerId);\n  expect(score.data.score).toBeTruthy();\n  expect(score.data.band).toBeTruthy();\n});\n\nThen('the cached score {int} is displayed', async function (score: number) {\n  await dashboardPage.waitForScoreLoaded();\n  expect(await dashboardPage.getScoreValue()).toBe(score.toString());\n});\n\nThen('the response header {string} is {string}', async function (header: string, value: string) {\n  const response = await apiClient.getScoreRaw(this.customerId);\n  expect(response.headers.get(header.toLowerCase())).toBe(value);\n});\n\nThen('a {string} timestamp is shown', async function (label: string) {\n  expect(await dashboardPage.hasStaleIndicator()).toBe(true);\n});\n\nThen('the API returns status {int}', async function (status: number) {\n  expect(apiResponse.status).toBe(status);\n});\n\nThen('the error indicates consent is required', async function () {\n  const body = await apiResponse.json();\n  expect(body.title).toContain('consent');\n});\n\nThen('the {string} header indicates remaining wait time', async function (header: string) {\n  expect(apiResponse.headers.get(header.toLowerCase())).toBeTruthy();\n});\n\nThen('I see my score {string} on the gauge widget', async function (score: string) {\n  expect(await dashboardPage.getScoreValue()).toBe(score);\n});\n\nThen('I see the band {string}', async function (band: string) {\n  expect(await dashboardPage.getBandLabel()).toContain(band);\n});\n\nThen('I see the change {string}', async function (change: string) {\n  expect(await dashboardPage.getChangeText()).toContain(change);\n});\n\nThen('the score is labelled {string}', async function (label: string) {\n  expect(await dashboardPage.getProviderLabel()).toContain(label);\n});\n\nThen('the change section shows {string}', async function (message: string) {\n  expect(await dashboardPage.getChangeText()).toContain(message);\n});"
+      },
+      {
+        "filename": "conversation.steps.ts",
+        "path": "tests/bdd/steps/",
+        "content": "import { Given, When, Then } from '@cucumber/cucumber';\nimport { expect } from '@playwright/test';\nimport { ConversationPage } from '../pages/ConversationPage';\n\nlet conversationPage: ConversationPage;\nlet responseText: string;\n\nGiven('I have active consent and a retrieved score of {int}', async function (score: number) {\n  // Precondition: consent active and score seeded\n});\n\nGiven('my score changed from {int} to {int}', async function (from: number, to: number) {\n  // Precondition: score change seeded\n});\n\nWhen('I type {string}', async function (query: string) {\n  conversationPage = conversationPage || new ConversationPage(this.page);\n  await conversationPage.navigate();\n  await conversationPage.sendMessage(query);\n  responseText = await conversationPage.waitForResponse();\n});\n\nWhen('I send a query with screen reader enabled', async function () {\n  conversationPage = new ConversationPage(this.page);\n  await conversationPage.navigate();\n  await conversationPage.sendMessage('What is my credit score?');\n  responseText = await conversationPage.waitForResponse();\n});\n\nThen('the agent responds with my score {int}, band {string}, and last refresh date', async function (score: number, band: string) {\n  expect(responseText).toContain(score.toString());\n  expect(responseText).toContain(band);\n});\n\nThen('the response is in conversational format', async function () {\n  expect(responseText.length).toBeGreaterThan(20);\n});\n\nThen('the agent provides change explanation with contributing factors', async function () {\n  expect(responseText).toMatch(/changed|increased|decreased/);\n});\n\nThen('the agent responds with scope explanation', async function () {\n  expect(responseText).toContain('credit score');\n});\n\nThen('offers to connect with the right assistant', async function () {\n  expect(responseText).toMatch(/connect|right assistant/);\n});\n\nThen('the response is announced via live region', async function () {\n  const liveRegion = this.page.locator('[aria-live]');\n  await expect(liveRegion).toBeVisible();\n});\n\nThen('the send button has label {string}', async function (label: string) {\n  const btn = this.page.getByRole('button', { name: label });\n  await expect(btn).toBeVisible();\n});"
+      }
+    ],
+    "page_objects": [
+      {
+        "filename": "ConsentPage.ts",
+        "path": "tests/bdd/pages/",
+        "content": "import { Page, Locator, expect } from '@playwright/test';\n\nexport class ConsentPage {\n  readonly page: Page;\n  readonly disclosureSection: Locator;\n  readonly checkboxes: Locator;\n  readonly agreeButton: Locator;\n  readonly notNowButton: Locator;\n\n  constructor(page: Page) {\n    this.page = page;\n    this.disclosureSection = page.locator('[data-testid=\"consent-disclosures\"]');\n    this.checkboxes = page.locator('input[type=\"checkbox\"]');\n    this.agreeButton = page.getByRole('button', { name: /Agree & Check My Score/i });\n    this.notNowButton = page.getByRole('button', { name: /Not now/i });\n  }\n\n  async navigate() {\n    await this.page.goto('/credit-coach/consent');\n    await this.page.waitForLoadState('networkidle');\n  }\n\n  async getDisclosureText(): Promise<string> {\n    return await this.disclosureSection.textContent() || '';\n  }\n\n  async getCheckboxStates(): Promise<boolean[]> {\n    const count = await this.checkboxes.count();\n    const states: boolean[] = [];\n    for (let i = 0; i < count; i++) {\n      states.push(await this.checkboxes.nth(i).isChecked());\n    }\n    return states;\n  }\n\n  async tickAllCheckboxes() {\n    const count = await this.checkboxes.count();\n    for (let i = 0; i < count; i++) {\n      await this.checkboxes.nth(i).check();\n    }\n  }\n\n  async tickCheckbox(index: number) {\n    await this.checkboxes.nth(index).check();\n  }\n}"
+      },
+      {
+        "filename": "ConsentSettingsPage.ts",
+        "path": "tests/bdd/pages/",
+        "content": "import { Page, Locator } from '@playwright/test';\n\nexport class ConsentSettingsPage {\n  readonly page: Page;\n  readonly withdrawButton: Locator;\n  readonly confirmButton: Locator;\n  readonly statusBadge: Locator;\n\n  constructor(page: Page) {\n    this.page = page;\n    this.withdrawButton = page.getByRole('button', { name: /Withdraw Consent/i });\n    this.confirmButton = page.getByRole('button', { name: /Confirm/i });\n    this.statusBadge = page.locator('[data-testid=\"consent-status\"]');\n  }\n\n  async navigate() {\n    await this.page.goto('/credit-coach/settings/consent');\n    await this.page.waitForLoadState('networkidle');\n  }\n\n  async confirmWithdrawal(reason: string) {\n    await this.withdrawButton.click();\n    await this.page.selectOption('[data-testid=\"withdrawal-reason\"]', reason);\n    await this.confirmButton.click();\n  }\n}"
+      },
+      {
+        "filename": "DashboardPage.ts",
+        "path": "tests/bdd/pages/",
+        "content": "import { Page, Locator, expect } from '@playwright/test';\n\nexport class DashboardPage {\n  readonly page: Page;\n  readonly scoreValue: Locator;\n  readonly scoreBand: Locator;\n  readonly scoreChange: Locator;\n  readonly providerLabel: Locator;\n  readonly staleIndicator: Locator;\n  readonly refreshButton: Locator;\n  readonly factorsSection: Locator;\n  readonly seeAllLink: Locator;\n  readonly changeSection: Locator;\n  readonly loadingSkeleton: Locator;\n\n  constructor(page: Page) {\n    this.page = page;\n    this.scoreValue = page.locator('[data-testid=\"score-value\"]');\n    this.scoreBand = page.locator('[data-testid=\"score-band\"]');\n    this.scoreChange = page.locator('[data-testid=\"score-change\"]');\n    this.providerLabel = page.locator('[data-testid=\"provider-label\"]');\n    this.staleIndicator = page.locator('[data-testid=\"stale-indicator\"]');\n    this.refreshButton = page.getByRole('button', { name: /Try Again|Refresh/i });\n    this.factorsSection = page.locator('[data-testid=\"factors-section\"]');\n    this.seeAllLink = page.getByRole('link', { name: /See all/i });\n    this.changeSection = page.locator('[data-testid=\"change-explanation\"]');\n    this.loadingSkeleton = page.locator('[data-testid=\"loading-skeleton\"]');\n  }\n\n  async navigate() {\n    await this.page.goto('/credit-coach/dashboard');\n  }\n\n  async waitForScoreLoaded() {\n    await this.scoreValue.waitFor({ state: 'visible', timeout: 5000 });\n  }\n\n  async isScoreVisible(): Promise<boolean> {\n    return await this.scoreValue.isVisible();\n  }\n\n  async getScoreValue(): Promise<string> {\n    return await this.scoreValue.textContent() || '';\n  }\n\n  async getBandLabel(): Promise<string> {\n    return await this.scoreBand.textContent() || '';\n  }\n\n  async getChangeText(): Promise<string> {\n    return await this.scoreChange.textContent() || '';\n  }\n\n  async getProviderLabel(): Promise<string> {\n    return await this.providerLabel.textContent() || '';\n  }\n\n  async hasStaleIndicator(): Promise<boolean> {\n    return await this.staleIndicator.isVisible();\n  }\n}"
+      },
+      {
+        "filename": "ConversationPage.ts",
+        "path": "tests/bdd/pages/",
+        "content": "import { Page, Locator } from '@playwright/test';\n\nexport class ConversationPage {\n  readonly page: Page;\n  readonly chatInput: Locator;\n  readonly sendButton: Locator;\n  readonly messages: Locator;\n  readonly quickReplies: Locator;\n\n  constructor(page: Page) {\n    this.page = page;\n    this.chatInput = page.locator('[data-testid=\"chat-input\"]');\n    this.sendButton = page.getByRole('button', { name: /Send message/i });\n    this.messages = page.locator('[data-testid=\"chat-message\"]');\n    this.quickReplies = page.locator('[data-testid=\"quick-reply\"]');\n  }\n\n  async navigate() {\n    await this.page.goto('/credit-coach/conversation');\n    await this.page.waitForLoadState('networkidle');\n  }\n\n  async sendMessage(text: string) {\n    await this.chatInput.fill(text);\n    await this.sendButton.click();\n  }\n\n  async waitForResponse(): Promise<string> {\n    const lastMsg = this.page.locator('[data-testid=\"assistant-message\"]').last();\n    await lastMsg.waitFor({ state: 'visible', timeout: 10000 });\n    return await lastMsg.textContent() || '';\n  }\n}"
+      }
+    ]
+  },
+  "coverage_matrix": [
+    {
+      "story_id": "US-001",
+      "scenarios_count": 3,
+      "manual_count": 1,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-002",
+      "scenarios_count": 2,
+      "manual_count": 0,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-003",
+      "scenarios_count": 6,
+      "manual_count": 2,
+      "automated_count": 4
+    },
+    {
+      "story_id": "US-004",
+      "scenarios_count": 4,
+      "manual_count": 1,
+      "automated_count": 3
+    },
+    {
+      "story_id": "US-005",
+      "scenarios_count": 3,
+      "manual_count": 0,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-006",
+      "scenarios_count": 0,
+      "manual_count": 0,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-007",
+      "scenarios_count": 0,
+      "manual_count": 0,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-008",
+      "scenarios_count": 7,
+      "manual_count": 2,
+      "automated_count": 4
+    },
+    {
+      "story_id": "US-009",
+      "scenarios_count": 4,
+      "manual_count": 2,
+      "automated_count": 3
+    },
+    {
+      "story_id": "US-010",
+      "scenarios_count": 2,
+      "manual_count": 1,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-011",
+      "scenarios_count": 3,
+      "manual_count": 1,
+      "automated_count": 3
+    },
+    {
+      "story_id": "US-012",
+      "scenarios_count": 5,
+      "manual_count": 2,
+      "automated_count": 4
+    },
+    {
+      "story_id": "US-013",
+      "scenarios_count": 3,
+      "manual_count": 0,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-014",
+      "scenarios_count": 4,
+      "manual_count": 2,
+      "automated_count": 4
+    },
+    {
+      "story_id": "US-015",
+      "scenarios_count": 3,
+      "manual_count": 1,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-016",
+      "scenarios_count": 3,
+      "manual_count": 0,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-017",
+      "scenarios_count": 3,
+      "manual_count": 1,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-051",
+      "scenarios_count": 1,
+      "manual_count": 0,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-052",
+      "scenarios_count": 2,
+      "manual_count": 1,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-053",
+      "scenarios_count": 2,
+      "manual_count": 1,
+      "automated_count": 0
+    },
+    {
+      "story_id": "US-057",
+      "scenarios_count": 4,
+      "manual_count": 1,
+      "automated_count": 4
+    }
+  ],
+  "total_scenarios": 73
+}

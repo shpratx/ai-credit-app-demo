@@ -1,0 +1,259 @@
+openapi: "3.0.3"
+info:
+  title: "Credit Coach — Consent Service API"
+  version: "1.0.0"
+  description: |
+    Manages explicit CRA consent lifecycle. Owns the `credit_coach_consents` table.
+    Publishes events: `consent.granted`, `consent.revoked`.
+    
+    ## Bounded Context
+    Single responsibility: consent capture, storage, withdrawal, and audit.
+    No dependency on CreditScoreService or ConversationalAgentService.
+    
+    ## Regulatory
+    - UK GDPR Art. 6/7 (explicit consent)
+    - UK GDPR Art. 7(3) (right to withdraw)
+    - UK GDPR Art. 13 (transparency at collection)
+    - FCA SYSC 9.1.1R (record retention)
+  contact:
+    name: "Credit Coach API Team"
+    email: "api-support@example.com"
+servers:
+  - url: "https://api.lloydsbanking.com/api/v1"
+    description: "Production"
+  - url: "https://api-staging.lloydsbanking.com/api/v1"
+    description: "Staging"
+security:
+  - bearerAuth: []
+tags:
+  - name: Consent
+    description: "CRA consent lifecycle management"
+
+paths:
+  /credit-coach/consents:
+    post:
+      operationId: grantConsent
+      tags: [Consent]
+      summary: "Grant explicit CRA consent"
+      description: |
+        Records customer's explicit consent. Creates immutable audit record.
+        **Stories:** US-003 | **Events:** consent.granted
+      parameters:
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/idempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentGrantRequest'
+      responses:
+        "201":
+          description: "Consent granted"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentResponse'
+          headers:
+            Location:
+              schema: { type: string }
+        "400": { $ref: '#/components/responses/BadRequest' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "409":
+          description: "Active consent already exists for this CRA"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+        "422": { $ref: '#/components/responses/UnprocessableEntity' }
+        "429": { $ref: '#/components/responses/RateLimited' }
+        "500": { $ref: '#/components/responses/InternalError' }
+
+  /credit-coach/consents/{customerId}:
+    get:
+      operationId: getConsents
+      tags: [Consent]
+      summary: "Get customer's consent status"
+      description: "**Stories:** US-003, US-004"
+      parameters:
+        - $ref: '#/components/parameters/customerId'
+        - $ref: '#/components/parameters/correlationId'
+      responses:
+        "200":
+          description: "Consent status for all CRA providers"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentsListResponse'
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "403": { $ref: '#/components/responses/Forbidden' }
+        "500": { $ref: '#/components/responses/InternalError' }
+
+  /credit-coach/consents/{consentId}/withdraw:
+    post:
+      operationId: withdrawConsent
+      tags: [Consent]
+      summary: "Withdraw CRA consent"
+      description: |
+        Stops future score retrieval. History retained per FCA SYSC 9.1.1R.
+        **Stories:** US-004 | **Events:** consent.revoked
+      parameters:
+        - name: consentId
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/idempotencyKey'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  enum: [customer_request, data_concern, no_longer_needed, other]
+      responses:
+        "200":
+          description: "Consent withdrawn"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsentResponse' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "404": { $ref: '#/components/responses/NotFound' }
+        "409":
+          description: "Already withdrawn"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+        "500": { $ref: '#/components/responses/InternalError' }
+
+  /credit-coach/consents/health:
+    get:
+      operationId: consentServiceHealth
+      tags: [Consent]
+      summary: "Consent service health"
+      security: []
+      responses:
+        "200":
+          description: "Healthy"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, enum: [UP, DEGRADED] }
+                  database: { type: string, enum: [UP, DOWN] }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "OAuth 2.0 Bearer JWT (PKCE)"
+
+  parameters:
+    customerId:
+      name: customerId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    correlationId:
+      name: X-Correlation-Id
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    idempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+
+  schemas:
+    ConsentGrantRequest:
+      type: object
+      required: [craProvider, consentTextVersion, consentTextHash, channel, privacyNoticeAccepted]
+      properties:
+        craProvider: { type: string, enum: [EXPERIAN, EQUIFAX, TRANSUNION] }
+        consentTextVersion: { type: string }
+        consentTextHash: { type: string, description: "SHA-256 of displayed consent text" }
+        channel: { type: string, enum: [IOS, ANDROID, WEB] }
+        privacyNoticeAccepted: { type: boolean, description: "Art. 13 privacy notice confirmed" }
+
+    ConsentResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          required: [consentId, customerId, craProvider, status, grantedAt]
+          properties:
+            consentId: { type: string, format: uuid }
+            customerId: { type: string, format: uuid }
+            craProvider: { type: string, enum: [EXPERIAN, EQUIFAX, TRANSUNION] }
+            status: { type: string, enum: [GRANTED, WITHDRAWN] }
+            consentTextVersion: { type: string }
+            grantedAt: { type: string, format: date-time }
+            withdrawnAt: { type: string, format: date-time, nullable: true }
+        meta: { $ref: '#/components/schemas/ResponseMeta' }
+
+    ConsentsListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/ConsentResponse/properties/data' }
+        meta: { $ref: '#/components/schemas/ResponseMeta' }
+
+    ResponseMeta:
+      type: object
+      properties:
+        requestId: { type: string, format: uuid }
+        timestamp: { type: string, format: date-time }
+
+    ProblemDetails:
+      type: object
+      required: [type, title, status]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+
+  responses:
+    BadRequest:
+      description: "Invalid request"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    Unauthorized:
+      description: "Bearer JWT missing or invalid"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    Forbidden:
+      description: "Insufficient permissions"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    NotFound:
+      description: "Resource not found"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    UnprocessableEntity:
+      description: "Validation failed"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    RateLimited:
+      description: "Rate limit exceeded"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+      headers:
+        Retry-After: { schema: { type: integer } }
+    InternalError:
+      description: "Internal server error"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }

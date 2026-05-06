@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    max-width: 430px;
+    margin: 0 auto;
+    background: #F5F5F5;
+    min-height: 100vh;
+    font-family: 'GT Ultra Standard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+    color: #1A1A1A;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  /* Remove any page-level max-width/min-height that conflicts */
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+    min-height: auto !important;
+  }
+}
+
+@layer components {
+  .skeleton {
+    @apply animate-pulse bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 rounded-md;
+  }
+}

@@ -1,0 +1,203 @@
+openapi: "3.0.3"
+info:
+  title: "Credit Coach — Conversational Agent Service API"
+  version: "1.0.0"
+  description: |
+    Processes natural language credit queries via Envoy orchestrator and Vertex AI.
+    Stateless — session context managed by Envoy's persistent memory.
+    
+    ## Bounded Context
+    Single responsibility: intent classification, query routing, response generation.
+    Reads from CreditScoreService (via gRPC) to compose answers.
+    No owned database tables (stateless; session in Envoy).
+    
+    ## Integration
+    - Envoy Orchestrator: receives routed queries, returns responses
+    - Vertex AI: intent classification + response generation
+    - CreditScoreService: gRPC call for score/factor data to compose answers
+    
+    ## Regulatory
+    - PRA FS2/23 (explainability — disclaimers on estimates)
+    - FCA Consumer Duty (consumer understanding — plain language)
+  contact:
+    name: "Credit Coach API Team"
+    email: "api-support@example.com"
+servers:
+  - url: "https://api.lloydsbanking.com/api/v1"
+    description: "Production"
+  - url: "https://api-staging.lloydsbanking.com/api/v1"
+    description: "Staging"
+security:
+  - bearerAuth: []
+tags:
+  - name: Conversation
+    description: "Natural language credit query processing"
+
+paths:
+  /credit-coach/conversations:
+    post:
+      operationId: sendQuery
+      tags: [Conversation]
+      summary: "Send natural language credit query"
+      description: |
+        Processes query via Envoy orchestrator → Vertex AI intent classification.
+        If confidence ≥ 0.85: generates response. If < 0.85: asks clarification.
+        If out-of-scope: routes to appropriate FA agent.
+        
+        **Stories:** US-014, US-015
+        **Integration:** Envoy orchestrator, Vertex AI (Gemini)
+      parameters:
+        - $ref: '#/components/parameters/correlationId'
+        - $ref: '#/components/parameters/idempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ConversationRequest' }
+            example:
+              message: "How's my credit score?"
+              sessionId: "session-abc123"
+              context:
+                currentScreen: "/credit-coach/dashboard"
+      responses:
+        "200":
+          description: "Query processed"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConversationResponse' }
+              example:
+                data:
+                  responseText: "Your score is 742 (Good) — up 15 points from last month! Your biggest strength is payment history. The main area to improve is credit utilisation at 62%."
+                  intent: "score_query"
+                  confidence: 0.96
+                  suggestedActions:
+                    - label: "Why did it change?"
+                      action: "query:why_changed"
+                    - label: "How to improve?"
+                      action: "query:how_improve"
+                  disclaimer: null
+                meta:
+                  requestId: "req-123"
+                  timestamp: "2026-05-05T14:30:00Z"
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "422": { $ref: '#/components/responses/UnprocessableEntity' }
+        "429": { $ref: '#/components/responses/RateLimited' }
+        "500": { $ref: '#/components/responses/InternalError' }
+        "503":
+          description: "Orchestrator or Vertex AI unavailable"
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProblemDetails' }
+
+  /credit-coach/conversations/health:
+    get:
+      operationId: conversationServiceHealth
+      tags: [Conversation]
+      summary: "Conversation service health"
+      security: []
+      responses:
+        "200":
+          description: "Healthy"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, enum: [UP, DEGRADED] }
+                  orchestrator: { type: string, enum: [UP, DOWN] }
+                  vertexAi: { type: string, enum: [UP, DOWN] }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    correlationId:
+      name: X-Correlation-Id
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+    idempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, format: uuid }
+
+  schemas:
+    ConversationRequest:
+      type: object
+      required: [message, sessionId]
+      properties:
+        message: { type: string, maxLength: 500 }
+        sessionId: { type: string, description: "Envoy session for context retention" }
+        context:
+          type: object
+          properties:
+            currentScreen: { type: string }
+
+    ConversationResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          required: [responseText, intent, confidence]
+          properties:
+            responseText: { type: string, description: "Plain English response" }
+            intent:
+              type: string
+              enum: [score_query, factor_query, improvement_query, simulation_query, general_credit, out_of_scope]
+            confidence: { type: number, format: double, minimum: 0, maximum: 1 }
+            suggestedActions:
+              type: array
+              items:
+                type: object
+                properties:
+                  label: { type: string }
+                  action: { type: string }
+            routedToAgent: { type: string, nullable: true, description: "If out-of-scope, target agent" }
+            disclaimer: { type: string, nullable: true, description: "FS2/23 disclaimer if estimates" }
+            clarificationNeeded: { type: boolean, description: "true if confidence < 0.85" }
+            clarificationPrompt: { type: string, nullable: true, description: "Follow-up question if ambiguous" }
+        meta: { $ref: '#/components/schemas/ResponseMeta' }
+
+    ResponseMeta:
+      type: object
+      properties:
+        requestId: { type: string, format: uuid }
+        timestamp: { type: string, format: date-time }
+
+    ProblemDetails:
+      type: object
+      required: [type, title, status]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+
+  responses:
+    Unauthorized:
+      description: "Bearer JWT missing/invalid"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    UnprocessableEntity:
+      description: "Validation failed"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+    RateLimited:
+      description: "Rate limit exceeded"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }
+      headers:
+        Retry-After: { schema: { type: integer } }
+    InternalError:
+      description: "Internal error"
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ProblemDetails' }

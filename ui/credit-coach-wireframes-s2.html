@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Credit Coach — Wireframes (EP-03 & EP-04)</title>
+<style>
+:root{--lloyds-green:#006A4D;--lloyds-green-dark:#005238;--lloyds-green-light:#E6F2EE;--bg-app:#F5F5F5;--bg-surface:#FFFFFF;--text-primary:#1A1A1A;--text-secondary:#595959;--text-muted:#888888;--text-error:#C0392B;--border-light:#E0E0E0;--status-positive:#006A4D;--status-positive-bg:#E6F2EE;--status-negative:#C0392B;--status-negative-bg:#FDECEC;--status-info:#1565C0;--status-info-bg:#E3F2FD;--status-pending:#9C5A00;--status-pending-bg:#FFF3E0;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--shadow-sm:0 1px 4px rgba(0,0,0,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'GT Ultra Standard',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:16px;color:var(--text-primary);background:#fff;line-height:1.6}
+.page-title{font-size:32px;font-weight:700;text-align:center;padding:40px 16px 8px}
+.page-subtitle{font-size:14px;text-align:center;color:var(--text-secondary);padding:0 16px 40px}
+.screen-section{max-width:420px;margin:0 auto 60px;border:1px solid var(--border-light);border-radius:var(--radius-xl);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.10)}
+.screen-label{background:var(--bg-app);padding:12px 16px;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center}
+.screen-label .route{font-weight:400;color:var(--text-muted);font-size:12px}
+.screen-label .tag{background:var(--status-positive-bg);color:var(--status-positive);padding:2px 8px;border-radius:20px;font-size:11px}
+.mobile-shell{background:var(--bg-app);min-height:700px;display:flex;flex-direction:column}
+.top-bar{height:56px;background:var(--bg-surface);border-bottom:1px solid var(--border-light);display:flex;align-items:center;padding:0 16px;gap:12px}
+.top-bar .back-icon{width:24px;height:24px;color:var(--text-secondary);cursor:pointer}
+.top-bar .title{flex:1;font-size:17px;font-weight:700;text-align:center}
+.top-bar .action{font-size:18px;color:var(--text-secondary)}
+.content{flex:1;padding:16px;overflow-y:auto}
+.bottom-nav{height:60px;background:var(--bg-surface);border-top:1px solid var(--border-light);display:flex;align-items:center}
+.bottom-nav .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--text-muted);text-decoration:none}
+.bottom-nav .nav-item.active{color:var(--lloyds-green);font-weight:700}
+.card{background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.card-title{font-size:17px;font-weight:700;margin-bottom:4px}
+.btn-primary{background:var(--lloyds-green);color:#fff;font-size:16px;font-weight:700;height:52px;padding:0 28px;border:none;border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-secondary{background:transparent;color:var(--lloyds-green);font-size:16px;font-weight:700;height:52px;padding:0 28px;border:2px solid var(--lloyds-green);border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-positive{background:var(--status-positive-bg);color:var(--status-positive)}
+.badge-negative{background:var(--status-negative-bg);color:var(--status-negative)}
+.badge-info{background:var(--status-info-bg);color:var(--status-info)}
+.badge-pending{background:var(--status-pending-bg);color:var(--status-pending)}
+.progress-track{width:100%;height:8px;background:var(--border-light);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;background:var(--lloyds-green);border-radius:100px;transition:width 0.4s ease}
+.action-item{display:flex;gap:12px;padding:16px 0;border-bottom:1px solid var(--border-light)}
+.action-item:last-child{border:none}
+.action-rank{width:28px;height:28px;border-radius:50%;background:var(--lloyds-green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.action-rank.completed{background:var(--status-positive-bg);color:var(--status-positive)}
+.action-content{flex:1}
+.action-title{font-size:15px;font-weight:700;margin-bottom:2px}
+.action-desc{font-size:13px;color:var(--text-secondary);line-height:1.4}
+.action-meta{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.kv-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);font-size:14px}
+.kv-row:last-child{border:none}
+.kv-row .k{color:var(--text-secondary)}
+.kv-row .v{font-weight:700}
+.milestone-card{background:var(--lloyds-green-light);border:1px solid #A8D5C5;border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;text-align:center}
+.milestone-icon{font-size:36px;margin-bottom:8px}
+.milestone-title{font-size:17px;font-weight:700;color:var(--lloyds-green)}
+.milestone-desc{font-size:14px;color:var(--text-secondary);margin-top:4px}
+.chart-placeholder{background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;height:220px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;margin-bottom:16px}
+.chart-line{position:absolute;bottom:40px;left:20px;right:20px;height:120px}
+.chart-dot{width:8px;height:8px;border-radius:50%;background:var(--lloyds-green);position:absolute}
+.annotation{font-size:11px;color:var(--text-muted);font-style:italic;margin-top:4px}
+.a11y-note{font-size:10px;color:#1565C0;background:#E3F2FD;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
+.story-ref{font-size:10px;color:var(--status-pending);background:var(--status-pending-bg);padding:2px 6px;border-radius:4px;display:inline-block}
+hr.section-divider{border:none;border-top:3px solid var(--lloyds-green);margin:60px auto;max-width:200px}
+.debt-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-light)}
+.debt-row:last-child{border:none}
+.debt-icon{width:40px;height:40px;border-radius:10px;background:var(--bg-app);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.debt-info{flex:1}
+.debt-lender{font-size:15px;font-weight:700}
+.debt-type{font-size:12px;color:var(--text-muted)}
+.debt-amount{text-align:right}
+.debt-balance{font-size:15px;font-weight:700}
+.debt-payment{font-size:12px;color:var(--text-secondary)}
+.spending-insight{display:flex;align-items:center;gap:12px;padding:14px;background:var(--lloyds-green-light);border-radius:var(--radius-md);margin-bottom:12px}
+.spending-insight-icon{width:36px;height:36px;border-radius:50%;background:var(--bg-surface);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">AI Credit Coach — Wireframes</h1>
+<p class="page-subtitle">EP-03 & EP-04 · Sprint 2 · Improvement Plans & Score History</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 1: IMPROVEMENT PLAN (ACTIVE) -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 1: Improvement Plan (Active)</span>
+  <span class="route">/credit-coach/plan</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Your Plan</span>
+    <span class="action">⟳</span>
+  </div>
+  <div class="content">
+    <!-- Plan Summary -->
+    <div class="card" style="background:var(--lloyds-green);color:#fff;border:none">
+      <div style="font-size:13px;opacity:0.75">Personalised for you · Updated 3 May 2026</div>
+      <div style="font-size:24px;font-weight:700;margin:8px 0">+45 points possible</div>
+      <div style="font-size:14px;opacity:0.85">3 actions · Estimated 2–4 months</div>
+      <div style="margin-top:16px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;opacity:0.7;margin-bottom:4px">
+          <span>Progress</span><span>1 of 3 completed</span>
+        </div>
+        <div class="progress-track" style="background:rgba(255,255,255,0.25)">
+          <div class="progress-fill" style="width:33%;background:#fff"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ranked Actions -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span class="card-title">Your actions</span>
+        <a href="#" style="font-size:13px;color:var(--lloyds-green);font-weight:700">History →</a>
+      </div>
+
+      <div class="action-item">
+        <div class="action-rank completed">✓</div>
+        <div class="action-content">
+          <div class="action-title" style="text-decoration:line-through;opacity:0.6">Set up Direct Debit for credit card</div>
+          <div class="action-desc">Ensures on-time payments every month</div>
+          <div class="action-meta">
+            <span class="badge badge-positive">+10 pts</span>
+            <span class="badge" style="background:#f5f5f5;color:var(--text-muted)">Completed 28 Apr</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-rank">1</div>
+        <div class="action-content">
+          <div class="action-title">Reduce credit card utilisation</div>
+          <div class="action-desc">Pay down £1,200 to get below 30% of your £5,000 limit. Your utilisation is currently 62%.</div>
+          <div class="action-meta">
+            <span class="badge badge-positive">+25 pts</span>
+            <span class="badge badge-pending">~2 months</span>
+          </div>
+          <p style="font-size:12px;color:var(--text-secondary);margin-top:8px;font-style:italic"><strong>Why:</strong> Utilisation above 30% is the biggest factor hurting your score. Reducing it typically improves scores by 20–30 points.</p>
+        </div>
+      </div>
+
+      <div class="action-item">
+        <div class="action-rank">2</div>
+        <div class="action-content">
+          <div class="action-title">Avoid new credit applications</div>
+          <div class="action-desc">Wait 6 months for your 2 recent hard searches to age off.</div>
+          <div class="action-meta">
+            <span class="badge badge-positive">+10 pts</span>
+            <span class="badge badge-pending">~6 months</span>
+          </div>
+          <p style="font-size:12px;color:var(--text-secondary);margin-top:8px;font-style:italic"><strong>Why:</strong> Each hard search temporarily reduces your score. Letting them age improves your profile.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="annotation">These are estimates based on typical scoring patterns. Actual results may vary. · PRA FS2/23 explainability</p>
+    <span class="a11y-note">A11Y: Actions navigable as list items · Rank announced · "Why" expandable via TalkBack</span>
+    <span class="story-ref">US-018, US-020, US-055 · FR-07, FR-08, FR-09</span>
+
+    <button class="btn-secondary" style="margin-top:16px;height:44px;font-size:14px">Mark action as done</button>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 2: MILESTONE CELEBRATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 2: Milestone Celebration</span>
+  <span class="route">/credit-coach/milestone (modal)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px;justify-content:center;align-items:center;padding:24px">
+  <div style="background:var(--bg-surface);border-radius:20px;padding:32px 24px;text-align:center;box-shadow:0 8px 40px rgba(0,0,0,0.15);width:100%">
+    <div style="font-size:48px;margin-bottom:12px">🎉</div>
+    <div style="font-size:24px;font-weight:700;color:var(--lloyds-green)">Score reached 750!</div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:12px;line-height:1.5">Your credit score has crossed into the "Very Good" band. Your hard work is paying off — you've improved by 44 points since you started.</p>
+    <div style="margin-top:20px;padding:16px;background:var(--lloyds-green-light);border-radius:var(--radius-md)">
+      <div style="font-size:13px;color:var(--text-secondary)">Your journey</div>
+      <div style="font-size:20px;font-weight:700;margin-top:4px">698 → 750</div>
+      <div style="font-size:13px;color:var(--lloyds-green);font-weight:700;margin-top:4px">+52 points in 4 months</div>
+    </div>
+    <button class="btn-primary" style="margin-top:24px">Keep going!</button>
+    <button style="background:none;border:none;color:var(--text-secondary);font-size:14px;margin-top:12px;cursor:pointer;text-decoration:underline">Dismiss</button>
+  </div>
+  <span class="a11y-note" style="margin-top:12px">A11Y: Modal traps focus · Announced via aria-live="assertive" · Dismiss via Escape key</span>
+  <span class="story-ref">US-021 · FR-10</span>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 3: SPENDING-TO-CREDIT IMPACT -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 3: Spending-to-Credit Impact</span>
+  <span class="route">/credit-coach/spending-impact</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:600px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Spending & Credit</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">How your spending affects your credit</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">Based on your Financial Assistant spending data, here's how changes could improve your affordability score.</p>
+    </div>
+
+    <div class="spending-insight">
+      <div class="spending-insight-icon">🍽️</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700">Dining out · £450/month</div>
+        <div style="font-size:13px;color:var(--text-secondary)">Reducing by £150/month → <strong style="color:var(--status-positive)">+12% affordability</strong></div>
+      </div>
+    </div>
+
+    <div class="spending-insight">
+      <div class="spending-insight-icon">📱</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700">Subscriptions · £120/month</div>
+        <div style="font-size:13px;color:var(--text-secondary)">Reducing by £40/month → <strong style="color:var(--status-positive)">+4% affordability</strong></div>
+      </div>
+    </div>
+
+    <div class="spending-insight">
+      <div class="spending-insight-icon">🛒</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700">Shopping · £280/month</div>
+        <div style="font-size:13px;color:var(--text-secondary)">Reducing by £100/month → <strong style="color:var(--status-positive)">+8% affordability</strong></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.5">
+        <strong>What is affordability?</strong><br>
+        Lenders check if you can comfortably repay a loan after your essential spending. Higher affordability = better loan offers and rates.
+      </div>
+    </div>
+    <p class="annotation">Spending data from your Financial Assistant · Affordability estimates are indicative</p>
+    <span class="a11y-note">A11Y: Each insight is a list item · Percentages announced with context</span>
+    <span class="story-ref">US-023 · FR-47</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 4: PERFECT CREDIT (NO ACTIONS NEEDED) -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 4: Perfect Credit — No Actions Needed</span>
+  <span class="route">/credit-coach/plan (no-actions)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Your Plan</span>
+    <span class="action"></span>
+  </div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px">
+    <div style="font-size:48px;margin-bottom:16px">⭐</div>
+    <div style="font-size:20px;font-weight:700">Your credit is excellent!</div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:12px;max-width:280px;line-height:1.6">There are no improvement actions needed right now. Here's how to maintain your great score:</p>
+    <div class="card" style="text-align:left;margin-top:20px;width:100%">
+      <div style="font-size:14px;line-height:1.8">
+        ✓ Keep paying on time<br>
+        ✓ Keep utilisation below 30%<br>
+        ✓ Avoid unnecessary credit applications<br>
+        ✓ Keep your oldest accounts open
+      </div>
+    </div>
+    <span class="a11y-note" style="margin-top:12px">A11Y: Congratulatory message announced · Maintenance tips as list</span>
+    <span class="story-ref">US-019 · FR-07 (no-actions edge case)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 5: SCORE TREND CHART -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 5: Score Trend Chart</span>
+  <span class="route">/credit-coach/history</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Score History</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <!-- Period selector -->
+    <div style="display:flex;gap:8px;margin-bottom:16px">
+      <button style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--lloyds-green);background:var(--lloyds-green);color:#fff;font-size:13px;font-weight:700">12 months</button>
+      <button style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border-light);background:transparent;color:var(--text-secondary);font-size:13px">6 months</button>
+      <button style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--border-light);background:transparent;color:var(--text-secondary);font-size:13px">24 months</button>
+    </div>
+
+    <!-- Chart area -->
+    <div class="chart-placeholder">
+      <div style="position:absolute;top:12px;left:20px;font-size:12px;color:var(--text-muted)">Score</div>
+      <div style="position:absolute;top:12px;right:20px">
+        <span class="badge badge-positive">↑ +44 pts</span>
+      </div>
+      <!-- Simulated line chart -->
+      <svg viewBox="0 0 360 120" style="position:absolute;bottom:30px;left:20px;right:20px;width:calc(100% - 40px);height:120px">
+        <polyline points="0,100 30,95 60,90 90,85 120,75 150,70 180,60 210,55 240,45 270,40 300,30 330,20" fill="none" stroke="#006A4D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="330" cy="20" r="5" fill="#006A4D"/>
+        <!-- Annotation marker -->
+        <circle cx="240" cy="45" r="4" fill="#1565C0" stroke="#fff" stroke-width="2"/>
+        <line x1="240" y1="49" x2="240" y2="70" stroke="#1565C0" stroke-width="1" stroke-dasharray="3"/>
+      </svg>
+      <!-- X-axis labels -->
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-muted);padding:0 4px">
+        <span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span>
+      </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="card">
+      <div class="card-title">Summary</div>
+      <div class="kv-row"><span class="k">Current score</span><span class="v">742</span></div>
+      <div class="kv-row"><span class="k">Highest</span><span class="v">742 (May 2026)</span></div>
+      <div class="kv-row"><span class="k">Lowest</span><span class="v">698 (Jun 2025)</span></div>
+      <div class="kv-row"><span class="k">Average</span><span class="v">718</span></div>
+      <div class="kv-row"><span class="k">Trend</span><span class="v" style="color:var(--status-positive)">↑ Improving</span></div>
+    </div>
+
+    <!-- Annotations -->
+    <div class="card">
+      <div class="card-title">Key events</div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border-light)">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--status-info);margin-top:6px;flex-shrink:0"></div>
+        <div>
+          <div style="font-size:14px;font-weight:700">Mar 2026 · Credit card balance reduced</div>
+          <div style="font-size:13px;color:var(--text-secondary)">Paid down £1,200 — score increased by 12 points</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:12px 0">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--status-positive);margin-top:6px;flex-shrink:0"></div>
+        <div>
+          <div style="font-size:14px;font-weight:700">Jan 2026 · Action completed</div>
+          <div style="font-size:13px;color:var(--text-secondary)">Set up Direct Debit — consistent payments since</div>
+        </div>
+      </div>
+    </div>
+    <span class="a11y-note">A11Y: Chart has text alternative "Score trend: 698 in June 2025 to 742 in May 2026, improving" · Annotations as list</span>
+    <span class="story-ref">US-024, US-025 · FR-04, FR-27</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 6: CROSS-LENDER DEBT OVERVIEW -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 6: Cross-Lender Debt Overview</span>
+  <span class="route">/credit-coach/debt</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Your Debt</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <!-- Debt summary hero -->
+    <div class="card" style="background:var(--bg-app);border:none;box-shadow:none;padding:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:16px">
+        <div>
+          <div style="font-size:13px;color:var(--text-secondary)">Total debt</div>
+          <div style="font-size:24px;font-weight:700">£28,500</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:13px;color:var(--text-secondary)">Monthly payments</div>
+          <div style="font-size:24px;font-weight:700">£850</div>
+        </div>
+      </div>
+      <div class="kv-row" style="border:none;padding:8px 0">
+        <span class="k">Debt-to-income ratio</span>
+        <span class="v">34% <span class="badge badge-pending" style="margin-left:4px">Fair</span></span>
+      </div>
+    </div>
+
+    <!-- Account list -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span class="card-title">Accounts (5)</span>
+        <span style="font-size:12px;color:var(--text-muted)">From Experian · 1 May 2026</span>
+      </div>
+
+      <div class="debt-row">
+        <div class="debt-icon">💳</div>
+        <div class="debt-info">
+          <div class="debt-lender">Barclays</div>
+          <div class="debt-type">Credit card · 64% used</div>
+          <div class="progress-track" style="height:4px;margin-top:6px;width:80%"><div class="progress-fill" style="width:64%;background:var(--status-pending)"></div></div>
+        </div>
+        <div class="debt-amount">
+          <div class="debt-balance">£3,200</div>
+          <div class="debt-payment">£150/mo</div>
+        </div>
+      </div>
+
+      <div class="debt-row">
+        <div class="debt-icon">🏦</div>
+        <div class="debt-info">
+          <div class="debt-lender">Lloyds</div>
+          <div class="debt-type">Personal loan</div>
+        </div>
+        <div class="debt-amount">
+          <div class="debt-balance">£12,000</div>
+          <div class="debt-payment">£350/mo</div>
+        </div>
+      </div>
+
+      <div class="debt-row">
+        <div class="debt-icon">🏠</div>
+        <div class="debt-info">
+          <div class="debt-lender">Nationwide</div>
+          <div class="debt-type">Mortgage</div>
+        </div>
+        <div class="debt-amount">
+          <div class="debt-balance">£12,000</div>
+          <div class="debt-payment">£280/mo</div>
+        </div>
+      </div>
+
+      <div class="debt-row">
+        <div class="debt-icon" style="background:var(--status-negative-bg)">⚠️</div>
+        <div class="debt-info">
+          <div class="debt-lender">HSBC <span class="badge badge-info" style="font-size:10px;margin-left:4px">Disputed</span></div>
+          <div class="debt-type">Store card · Dispute in progress</div>
+        </div>
+        <div class="debt-amount">
+          <div class="debt-balance">£800</div>
+          <div class="debt-payment">£35/mo</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:12px;background:var(--status-info-bg);border-radius:var(--radius-md);font-size:13px;color:#0D47A1;line-height:1.5">
+      <strong>About this data:</strong> Sourced from Experian. May not reflect very recent changes. If you believe any information is incorrect, <a href="#" style="color:#0D47A1;font-weight:700">contact Experian to dispute it</a>.
+    </div>
+    <span class="a11y-note" style="margin-top:8px">A11Y: Accounts as list · Disputed account announced with "dispute in progress" status · Utilisation bar has text alternative</span>
+    <span class="story-ref">US-026, US-056 · FR-28</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 7: PLAN GENERATING (LOADING) -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 7: Plan Generating (Loading)</span>
+  <span class="route">/credit-coach/plan (generating)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:450px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Your Plan</span>
+    <span class="action"></span>
+  </div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px">
+    <div style="width:48px;height:48px;border:3px solid var(--lloyds-green-light);border-top-color:var(--lloyds-green);border-radius:50%;animation:spin 0.7s linear infinite;margin-bottom:20px"></div>
+    <div style="font-size:18px;font-weight:700">Creating your plan</div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;max-width:280px">We're analysing your credit profile to generate personalised improvement actions. This usually takes a few seconds.</p>
+    <span class="a11y-note" style="margin-top:16px">A11Y: "Generating your improvement plan, please wait" · aria-live="polite"</span>
+    <span class="story-ref">US-058 · FR-07 (async generation)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 8: LOW CONFIDENCE / PLAN UPDATED NOTIFICATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 8: Low Confidence Recommendations + Plan Updated Banner</span>
+  <span class="route">/credit-coach/plan (low-confidence)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:600px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Your Plan</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <!-- Plan updated banner (US-022) -->
+    <div style="padding:12px 16px;background:var(--status-info-bg);border:1px solid #90CAF9;border-radius:var(--radius-md);margin-bottom:16px;display:flex;gap:10px;align-items:flex-start">
+      <span>🔄</span>
+      <div style="font-size:13px;color:#0D47A1;line-height:1.4">
+        <strong>Plan updated</strong> — Your score changed by +15 points, so we've refreshed your actions to reflect your new profile.
+      </div>
+    </div>
+
+    <!-- Low confidence header -->
+    <div class="card" style="border-color:var(--status-pending);border-width:1.5px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span class="badge badge-pending">Low confidence</span>
+        <span style="font-size:12px;color:var(--text-muted)">Limited data available</span>
+      </div>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.5">We have limited credit history to work with, so these are <strong>suggestions</strong> rather than personalised actions. As your credit file builds, recommendations will become more accurate.</p>
+    </div>
+
+    <!-- Suggestions (not "Actions") -->
+    <div class="card">
+      <div class="card-title">Suggestions</div>
+      <div class="action-item">
+        <div class="action-rank" style="background:var(--status-pending-bg);color:var(--status-pending)">1</div>
+        <div class="action-content">
+          <div class="action-title">Consider a credit-builder card</div>
+          <div class="action-desc">A small credit card used for regular purchases and paid in full each month can help build your credit history.</div>
+          <div class="action-meta">
+            <span class="badge badge-pending">~15–25 pts</span>
+            <span class="badge" style="background:#f5f5f5;color:var(--text-muted)">3–6 months</span>
+          </div>
+        </div>
+      </div>
+      <div class="action-item">
+        <div class="action-rank" style="background:var(--status-pending-bg);color:var(--status-pending)">2</div>
+        <div class="action-content">
+          <div class="action-title">Register on the electoral roll</div>
+          <div class="action-desc">Being on the electoral roll at your current address helps CRAs verify your identity and can improve your score.</div>
+          <div class="action-meta">
+            <span class="badge badge-pending">~10–20 pts</span>
+            <span class="badge" style="background:#f5f5f5;color:var(--text-muted)">1–2 months</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="annotation">Low confidence: estimates have wider ranges. Based on general scoring patterns, not your specific profile. · PRA FS2/23</p>
+    <span class="a11y-note">A11Y: "Low confidence" badge announced · Suggestions labelled differently from actions</span>
+    <span class="story-ref">US-019, US-022, US-058 · FR-07, FR-08, FR-11, FR-38</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 9: PLAN GENERATION FAILED -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 9: Plan Generation Failed</span>
+  <span class="route">/credit-coach/plan (error)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:400px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Your Plan</span>
+    <span class="action"></span>
+  </div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px">
+    <div style="width:64px;height:64px;border-radius:16px;background:var(--status-pending-bg);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px">📋</div>
+    <div style="font-size:18px;font-weight:700">We need more data</div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;max-width:280px;line-height:1.6">We couldn't generate a personalised plan yet. This usually happens when your credit file is new or has limited history.</p>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:12px;max-width:280px">Check back after your next score refresh — more data will help us create better recommendations.</p>
+    <button class="btn-secondary" style="margin-top:24px;width:auto;padding:0 24px;height:44px;font-size:14px">View your score →</button>
+    <span class="a11y-note" style="margin-top:16px">A11Y: Error state announced · Link to score dashboard as fallback action</span>
+    <span class="story-ref">US-058 · FR-07 (generation failed)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 10: SCORE HISTORY — INSUFFICIENT DATA -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 10: Score History — Insufficient Data</span>
+  <span class="route">/credit-coach/history (< 2 months)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:450px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Score History</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div style="text-align:center;padding:24px 0">
+        <div style="font-size:36px;margin-bottom:12px">📈</div>
+        <div style="font-size:17px;font-weight:700">Your trend is building</div>
+        <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;line-height:1.5">We need at least 2 months of score data to show a meaningful trend. Your first score was recorded on 3 May 2026.</p>
+        <div style="margin-top:20px;padding:16px;background:var(--bg-app);border-radius:var(--radius-md)">
+          <div style="font-size:13px;color:var(--text-secondary)">Current score</div>
+          <div style="font-size:28px;font-weight:700;margin-top:4px">742</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:4px">Next data point: ~3 June 2026</div>
+        </div>
+      </div>
+    </div>
+    <span class="a11y-note">A11Y: "Score history not yet available, 1 data point recorded" announced</span>
+    <span class="story-ref">US-024 · FR-04, FR-27 (insufficient data edge)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TRACEABILITY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div style="max-width:600px;margin:40px auto;padding:0 16px">
+<h2 style="font-size:20px;font-weight:700;margin-bottom:16px">Screen-to-Story Traceability</h2>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<thead><tr style="border-bottom:2px solid var(--border-light)">
+<th style="text-align:left;padding:8px">Screen</th>
+<th style="text-align:left;padding:8px">Stories</th>
+<th style="text-align:left;padding:8px">Requirements</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">1. Improvement Plan (Active)</td><td style="padding:8px">US-018, US-020, US-055</td><td style="padding:8px">FR-07, FR-08, FR-09</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">2. Milestone Celebration</td><td style="padding:8px">US-021</td><td style="padding:8px">FR-10</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">3. Spending-to-Credit Impact</td><td style="padding:8px">US-023</td><td style="padding:8px">FR-47</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">4. Perfect Credit (No Actions)</td><td style="padding:8px">US-019</td><td style="padding:8px">FR-07 (edge)</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">5. Score Trend Chart</td><td style="padding:8px">US-024, US-025</td><td style="padding:8px">FR-04, FR-27</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">6. Cross-Lender Debt Overview</td><td style="padding:8px">US-026, US-056</td><td style="padding:8px">FR-28</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">7. Plan Generating (Loading)</td><td style="padding:8px">US-058</td><td style="padding:8px">FR-07 (async)</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">8. Low Confidence + Plan Updated</td><td style="padding:8px">US-019, US-022, US-058</td><td style="padding:8px">FR-07, FR-08, FR-11, FR-38</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">9. Plan Generation Failed</td><td style="padding:8px">US-058</td><td style="padding:8px">FR-07 (error)</td></tr>
+<tr><td style="padding:8px">10. Score History — Insufficient Data</td><td style="padding:8px">US-024</td><td style="padding:8px">FR-04, FR-27 (edge)</td></tr>
+</tbody>
+</table>
+
+<h2 style="font-size:20px;font-weight:700;margin:32px 0 16px">Design Decisions</h2>
+<ul style="font-size:13px;color:var(--text-secondary);line-height:2">
+<li><strong>Explanation per action ("Why"):</strong> PRA FS2/23 requires explainability for AI recommendations. Each action includes reasoning.</li>
+<li><strong>Disclaimer on plan:</strong> FCA Consumer Duty — estimates must be clearly labelled as such.</li>
+<li><strong>Disputed account badge:</strong> Domain KB PD24 — customers can dispute CRA data. UI must show dispute status clearly.</li>
+<li><strong>Debt-to-income ratio:</strong> Domain KB PD3 — DBR is a key affordability metric. Shown with band classification.</li>
+<li><strong>Spending impact from FA:</strong> Product Vision Section 3.2 — augments existing FA spending insights with credit context.</li>
+<li><strong>Chart text alternative:</strong> WCAG 2.1 AA — charts must have text descriptions for screen readers.</li>
+<li><strong>Milestone modal:</strong> Design System Section 5.14 — uses modal pattern with focus trap and Escape dismiss.</li>
+</ul>
+</div>
+
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</body>
+</html>

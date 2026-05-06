@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Credit Coach — Wireframes (EP-05 & EP-06)</title>
+<style>
+:root{--lloyds-green:#006A4D;--lloyds-green-dark:#005238;--lloyds-green-light:#E6F2EE;--bg-app:#F5F5F5;--bg-surface:#FFFFFF;--text-primary:#1A1A1A;--text-secondary:#595959;--text-muted:#888888;--text-error:#C0392B;--border-light:#E0E0E0;--status-positive:#006A4D;--status-positive-bg:#E6F2EE;--status-negative:#C0392B;--status-negative-bg:#FDECEC;--status-info:#1565C0;--status-info-bg:#E3F2FD;--status-pending:#9C5A00;--status-pending-bg:#FFF3E0;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--shadow-sm:0 1px 4px rgba(0,0,0,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'GT Ultra Standard',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:16px;color:var(--text-primary);background:#fff;line-height:1.6}
+.page-title{font-size:32px;font-weight:700;text-align:center;padding:40px 16px 8px}
+.page-subtitle{font-size:14px;text-align:center;color:var(--text-secondary);padding:0 16px 40px}
+.screen-section{max-width:420px;margin:0 auto 60px;border:1px solid var(--border-light);border-radius:var(--radius-xl);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.10)}
+.screen-label{background:var(--bg-app);padding:12px 16px;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
+.screen-label .route{font-weight:400;color:var(--text-muted);font-size:12px}
+.screen-label .tag{background:var(--status-positive-bg);color:var(--status-positive);padding:2px 8px;border-radius:20px;font-size:11px}
+.mobile-shell{background:var(--bg-app);min-height:700px;display:flex;flex-direction:column}
+.top-bar{height:56px;background:var(--bg-surface);border-bottom:1px solid var(--border-light);display:flex;align-items:center;padding:0 16px;gap:12px}
+.top-bar .back-icon{width:24px;height:24px;color:var(--text-secondary);cursor:pointer}
+.top-bar .title{flex:1;font-size:17px;font-weight:700;text-align:center}
+.top-bar .action{font-size:18px;color:var(--text-secondary)}
+.content{flex:1;padding:16px;overflow-y:auto}
+.bottom-nav{height:60px;background:var(--bg-surface);border-top:1px solid var(--border-light);display:flex;align-items:center}
+.bottom-nav .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--text-muted);text-decoration:none}
+.bottom-nav .nav-item.active{color:var(--lloyds-green);font-weight:700}
+.card{background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.card-title{font-size:17px;font-weight:700;margin-bottom:4px}
+.btn-primary{background:var(--lloyds-green);color:#fff;font-size:16px;font-weight:700;height:52px;padding:0 28px;border:none;border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-secondary{background:transparent;color:var(--lloyds-green);font-size:16px;font-weight:700;height:52px;padding:0 28px;border:2px solid var(--lloyds-green);border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-positive{background:var(--status-positive-bg);color:var(--status-positive)}
+.badge-negative{background:var(--status-negative-bg);color:var(--status-negative)}
+.badge-info{background:var(--status-info-bg);color:var(--status-info)}
+.badge-pending{background:var(--status-pending-bg);color:var(--status-pending)}
+.kv-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);font-size:14px}
+.kv-row:last-child{border:none}
+.kv-row .k{color:var(--text-secondary)}
+.kv-row .v{font-weight:700}
+.field{margin-bottom:20px}
+.field label{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+.field input,.field select{width:100%;height:52px;padding:0 16px;border:1.5px solid #ccc;border-radius:var(--radius-md);font-size:16px;background:var(--bg-surface)}
+.field .helper{font-size:13px;color:var(--text-secondary);margin-top:4px}
+.sim-result{text-align:center;padding:24px;background:var(--lloyds-green-light);border-radius:var(--radius-lg);margin:16px 0}
+.sim-arrow{font-size:24px;color:var(--lloyds-green);margin:8px 0}
+.offer-card{background:var(--bg-surface);border:2px solid var(--lloyds-green);border-radius:var(--radius-xl);padding:24px;margin-bottom:16px;position:relative}
+.offer-badge{position:absolute;top:-10px;right:16px;background:var(--lloyds-green);color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700}
+.chat-input-bar{padding:12px 16px;background:var(--bg-surface);border-top:1px solid var(--border-light);display:flex;gap:10px;align-items:center}
+.chat-input{flex:1;height:44px;padding:10px 14px;border:1.5px solid var(--border-light);border-radius:22px;font-size:15px;outline:none}
+.chat-send{width:44px;height:44px;border-radius:50%;background:var(--lloyds-green);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.scenario-chip{padding:10px 16px;border-radius:var(--radius-md);border:1.5px solid var(--border-light);background:var(--bg-surface);font-size:14px;cursor:pointer;transition:all 0.15s}
+.scenario-chip:hover,.scenario-chip.selected{border-color:var(--lloyds-green);background:var(--lloyds-green-light)}
+.annotation{font-size:11px;color:var(--text-muted);font-style:italic;margin-top:4px}
+.a11y-note{font-size:10px;color:#1565C0;background:#E3F2FD;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
+.story-ref{font-size:10px;color:var(--status-pending);background:var(--status-pending-bg);padding:2px 6px;border-radius:4px;display:inline-block}
+hr.section-divider{border:none;border-top:3px solid var(--lloyds-green);margin:60px auto;max-width:200px}
+.secci-section{background:var(--bg-app);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:16px;margin:12px 0;font-size:13px;line-height:1.6}
+.secci-section .secci-title{font-size:14px;font-weight:700;margin-bottom:8px}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">AI Credit Coach — Wireframes</h1>
+<p class="page-subtitle">EP-05 & EP-06 · Sprint 3 · Simulator & Pre-Approved Offers</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 1: SIMULATOR — SCENARIO SELECTION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 1: Simulator — Scenario Selection</span>
+  <span class="route">/credit-coach/simulator</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">What If?</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">Simulate a scenario</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">See how different actions could affect your credit score. Choose a scenario or type your own question.</p>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+      <div class="scenario-chip selected">💳 Pay down credit card debt</div>
+      <div class="scenario-chip">🔒 Close an old account</div>
+      <div class="scenario-chip">📝 Open new credit</div>
+      <div class="scenario-chip">⚠️ Miss a payment</div>
+      <div class="scenario-chip">📉 Reduce utilisation to 30%</div>
+    </div>
+
+    <!-- Selected scenario detail -->
+    <div class="card" style="border-color:var(--lloyds-green)">
+      <div class="card-title">Pay down credit card debt</div>
+      <div class="field" style="margin-top:16px">
+        <label>How much would you pay off?</label>
+        <input type="text" value="£1,200" placeholder="Enter amount">
+        <div class="helper">Your current balance: £3,200 on Barclays (limit £5,000)</div>
+      </div>
+      <button class="btn-primary">See the impact</button>
+    </div>
+
+    <p class="annotation">Simulations are estimates based on typical scoring models. Your actual score may differ. · PRA SS1/23 model risk</p>
+    <span class="a11y-note">A11Y: Scenarios as radio group · Selected state announced · Input has associated label</span>
+    <span class="story-ref">US-027, US-028 · FR-12</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 2: SIMULATOR — RESULTS -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 2: Simulator — Results</span>
+  <span class="route">/credit-coach/simulator/result</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:650px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Simulation Result</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div class="sim-result">
+      <div style="font-size:13px;color:var(--text-secondary)">If you pay off £1,200</div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin:16px 0">
+        <div>
+          <div style="font-size:13px;color:var(--text-muted)">Current</div>
+          <div style="font-size:28px;font-weight:700">742</div>
+        </div>
+        <div class="sim-arrow">→</div>
+        <div>
+          <div style="font-size:13px;color:var(--status-positive)">Estimated</div>
+          <div style="font-size:28px;font-weight:700;color:var(--status-positive)">767</div>
+        </div>
+      </div>
+      <span class="badge badge-positive" style="font-size:14px;padding:6px 14px">+25 points</span>
+      <div style="margin-top:12px">
+        <span class="badge badge-info">High confidence</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">How this works</div>
+      <div class="kv-row"><span class="k">Utilisation drops from</span><span class="v">64% → 40%</span></div>
+      <div class="kv-row"><span class="k">Band change</span><span class="v">Good → Very Good</span></div>
+      <div class="kv-row"><span class="k">Timeframe</span><span class="v">~1–2 months</span></div>
+      <div class="kv-row"><span class="k">Confidence</span><span class="v"><span class="badge badge-info">High</span></span></div>
+    </div>
+
+    <div style="padding:12px;background:var(--status-pending-bg);border-radius:var(--radius-md);font-size:13px;color:#7D4600;line-height:1.5;margin-bottom:16px">
+      <strong>⚠️ This is an estimate, not a guarantee.</strong> Actual score changes depend on multiple factors including other account activity and CRA scoring model updates.
+    </div>
+
+    <button class="btn-primary">Try another scenario</button>
+    <button class="btn-secondary" style="margin-top:12px">Add to my plan</button>
+
+    <span class="a11y-note" style="margin-top:12px">A11Y: Result announced "Estimated score 767, increase of 25 points, high confidence" · Disclaimer read before actions</span>
+    <span class="story-ref">US-029 · FR-13, FR-14</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 3: SIMULATOR — NATURAL LANGUAGE INPUT -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 3: Natural Language Simulation</span>
+  <span class="route">/credit-coach/simulator (NL mode)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:400px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">What If?</span>
+    <span class="action"></span>
+  </div>
+  <div class="content" style="display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:0">
+    <div style="background:var(--bg-surface);padding:12px 16px;border-radius:18px 18px 4px 18px;align-self:flex-end;max-width:80%;margin-bottom:12px;font-size:15px;color:#fff;background:var(--lloyds-green)">What if I pay off my overdraft?</div>
+    <div style="background:var(--bg-surface);padding:12px 16px;border-radius:4px 18px 18px 18px;align-self:flex-start;max-width:85%;border:1px solid var(--border-light);font-size:15px;margin-bottom:12px">
+      <strong>If you clear your £800 overdraft:</strong><br><br>
+      📊 Estimated score: <strong style="color:var(--status-positive)">752 (+10 pts)</strong><br>
+      ⏱️ Timeframe: Immediate once reported<br>
+      🎯 Confidence: Medium<br><br>
+      <em style="font-size:13px;color:var(--text-secondary)">This removes a revolving credit balance, reducing your overall utilisation.</em>
+    </div>
+    <div style="display:flex;gap:8px;padding:8px 0;overflow-x:auto">
+      <button style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--lloyds-green);background:transparent;color:var(--lloyds-green);font-size:13px;font-weight:700;white-space:nowrap">What about closing it?</button>
+      <button style="padding:8px 14px;border-radius:20px;border:1.5px solid var(--lloyds-green);background:transparent;color:var(--lloyds-green);font-size:13px;font-weight:700;white-space:nowrap">Try another</button>
+    </div>
+  </div>
+  <div class="chat-input-bar">
+    <input class="chat-input" placeholder="Ask 'What if...'">
+    <button class="chat-send">→</button>
+  </div>
+  <div style="padding:4px 16px 8px"><span class="story-ref">US-030 · FR-15</span></div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 4: SIMULATOR — TIMEOUT/ERROR -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 4: Simulator — Error/Timeout</span>
+  <span class="route">/credit-coach/simulator (error)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:400px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">What If?</span>
+    <span class="action"></span>
+  </div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px">
+    <div style="width:56px;height:56px;border-radius:14px;background:var(--status-pending-bg);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px">⏱️</div>
+    <div style="font-size:17px;font-weight:700">Simulation taking too long</div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;max-width:280px">This scenario is complex. Try a simpler one, or check back later.</p>
+    <div class="card" style="margin-top:20px;width:100%;text-align:left">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px">Try these instead:</div>
+      <div style="font-size:14px;line-height:2">
+        • Pay down debt<br>
+        • Close an account<br>
+        • Reduce utilisation
+      </div>
+    </div>
+    <button class="btn-primary" style="margin-top:16px">Try again</button>
+    <span class="a11y-note" style="margin-top:12px">A11Y: Error announced via aria-live · Suggestions as fallback actions</span>
+    <span class="story-ref">US-059 · FR-12 (timeout/error)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 5: PRE-APPROVED OFFER PRESENTATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 5: Pre-Approved Offer</span>
+  <span class="route">/credit-coach/offers</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Your Offers</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div style="padding:12px;background:var(--status-positive-bg);border-radius:var(--radius-md);font-size:14px;color:#004D36;margin-bottom:16px;display:flex;gap:8px;align-items:center">
+      <span>✓</span>
+      <span><strong>Pre-approved</strong> — You're guaranteed acceptance if you apply.</span>
+    </div>
+
+    <div class="offer-card">
+      <div class="offer-badge">Pre-approved</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-bottom:4px">Lloyds Personal Loan</div>
+      <div style="font-size:28px;font-weight:700">£12,000</div>
+      <div style="font-size:14px;color:var(--text-secondary);margin-top:4px">at <strong>8.9% APR</strong> (fixed)</div>
+
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border-light)">
+        <div class="kv-row"><span class="k">Monthly payment</span><span class="v">£258.43</span></div>
+        <div class="kv-row"><span class="k">Term</span><span class="v">60 months</span></div>
+        <div class="kv-row"><span class="k">Total amount payable</span><span class="v">£15,505.80</span></div>
+        <div class="kv-row"><span class="k">Total charge for credit</span><span class="v">£3,505.80</span></div>
+      </div>
+
+      <button class="btn-primary" style="margin-top:20px">Apply now — one tap</button>
+      <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px">14-day cooling-off period applies after acceptance</p>
+    </div>
+
+    <!-- Representative Example (FCA CONC 3.5.5R) -->
+    <div class="secci-section">
+      <div class="secci-title">Representative Example</div>
+      Borrow <strong>£12,000</strong> over <strong>60 months</strong> at an interest rate of <strong>8.9% p.a.</strong> (fixed). Representative <strong>8.9% APR</strong>. Monthly repayment: <strong>£258.43</strong>. Total amount payable: <strong>£15,505.80</strong>. Total charge for credit: <strong>£3,505.80</strong>.
+    </div>
+
+    <p class="annotation">Financial promotion: CONC 3.5.5R representative example with all 6 required values · Representative APR most prominent · FCA Consumer Duty (consumer understanding)</p>
+    <span class="a11y-note">A11Y: Offer amount announced first · "Pre-approved" badge read · All financial figures have labels · Touch target 52px on Apply button</span>
+    <span class="story-ref">US-033, US-034 · FR-16, FR-17, FR-34, FR-32</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 6: SECCI / PRE-CONTRACT INFORMATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 6: Pre-Contract Credit Information (SECCI)</span>
+  <span class="route">/credit-coach/offers/{id}/secci</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Loan Details</span>
+    <span class="action">📄</span>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">Pre-Contract Credit Information</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-top:4px">Please read carefully before accepting</p>
+
+      <div style="margin-top:16px">
+        <div class="kv-row"><span class="k">Type of credit</span><span class="v">Fixed-sum unsecured personal loan</span></div>
+        <div class="kv-row"><span class="k">Total amount of credit</span><span class="v">£12,000.00</span></div>
+        <div class="kv-row"><span class="k">Duration</span><span class="v">60 months</span></div>
+        <div class="kv-row"><span class="k">Rate of interest</span><span class="v">8.9% p.a. (fixed)</span></div>
+        <div class="kv-row"><span class="k">APR</span><span class="v" style="color:var(--lloyds-green)">8.9% APR</span></div>
+        <div class="kv-row"><span class="k">Monthly repayment</span><span class="v">£258.43</span></div>
+        <div class="kv-row"><span class="k">Total amount payable</span><span class="v" style="font-size:16px">£15,505.80</span></div>
+        <div class="kv-row"><span class="k">Total charge for credit</span><span class="v">£3,505.80</span></div>
+        <div class="kv-row"><span class="k">Early repayment</span><span class="v">No fee (0%)</span></div>
+        <div class="kv-row"><span class="k">Late payment fee</span><span class="v">£12 per missed payment</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Your rights</div>
+      <div style="font-size:14px;line-height:1.8;margin-top:8px">
+        <strong>Right to withdraw:</strong> You have 14 days from acceptance to withdraw without giving a reason. Repay the principal + accrued interest within 30 days.<br><br>
+        <strong>Right to early repayment:</strong> You can repay early at any time with no penalty (CCA s.94).<br><br>
+        <strong>Right to information:</strong> You can request a copy of your agreement and statement at any time.
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:16px">
+      <input type="checkbox" style="width:20px;height:20px;accent-color:var(--lloyds-green);margin-top:2px;flex-shrink:0">
+      <span style="font-size:14px;line-height:1.5">I have read and understood the pre-contract credit information and wish to proceed</span>
+    </div>
+
+    <button class="btn-primary">Accept & Apply</button>
+    <button class="btn-secondary" style="margin-top:12px">Download as PDF</button>
+
+    <p class="annotation">CCA s.55A pre-contract information · CONC 4.2.5R adequate explanations · CCA s.66A 14-day withdrawal · CCA s.94 early repayment · Late fee cap £12 per CONC 7.7.5R</p>
+    <span class="a11y-note">A11Y: All financial terms have associated descriptions · Checkbox required before Accept enabled · PDF download accessible</span>
+    <span class="story-ref">US-034 · FR-32, FR-33, FR-35</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 7: NO OFFERS AVAILABLE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 7: No Offers Available</span>
+  <span class="route">/credit-coach/offers (empty)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:450px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Your Offers</span>
+    <span class="action"></span>
+  </div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px">
+    <div style="width:64px;height:64px;border-radius:16px;background:var(--status-info-bg);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px">🎯</div>
+    <div style="font-size:18px;font-weight:700">No offers right now</div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;max-width:280px;line-height:1.6">Based on your current credit profile, we don't have a pre-approved offer for you yet. Keep improving your score and we'll let you know when you qualify.</p>
+    <button class="btn-secondary" style="margin-top:24px;width:auto;padding:0 24px;height:44px;font-size:14px">View your plan →</button>
+    <span class="story-ref" style="margin-top:12px">US-033 · FR-16 (no match)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 8: OFFERS SUPPRESSED (FINANCIAL DISTRESS) -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 8: Offers Suppressed — Financial Distress</span>
+  <span class="route">/credit-coach/offers (suppressed)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Credit Coach</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div class="card" style="border:none;box-shadow:none;text-align:center;padding:32px 20px">
+      <div style="font-size:36px;margin-bottom:12px">💚</div>
+      <div style="font-size:18px;font-weight:700">We're here to help</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:12px;line-height:1.6">We're focused on helping you improve your financial health right now. Your improvement plan and score monitoring are still available.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Free support available</div>
+      <div style="margin-top:12px;font-size:14px;line-height:2">
+        <a href="tel:08001381111" style="color:var(--lloyds-green);font-weight:700;text-decoration:none">📞 StepChange — 0800 138 1111</a><br>
+        <a href="#" style="color:var(--lloyds-green);font-weight:700;text-decoration:none">🌐 Citizens Advice — citizensadvice.org.uk</a><br>
+        <a href="tel:08088084000" style="color:var(--lloyds-green);font-weight:700;text-decoration:none">📞 National Debtline — 0808 808 4000</a>
+      </div>
+    </div>
+
+    <p class="annotation">Offers suppressed due to financial distress indicators · CONC 7.3 (treat customers in difficulty fairly) · FCA Consumer Duty (avoid foreseeable harm) · No credit products shown</p>
+    <span class="a11y-note">A11Y: Supportive tone · Phone numbers as tappable links · No credit promotion content on this screen</span>
+    <span class="story-ref">US-060 · FR-37, FR-36</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 9: APPLICATION SUCCESS CONFIRMATION -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 9: Application Submitted — Confirmation</span>
+  <span class="route">/credit-coach/offers/{id}/confirmed</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px">
+  <div class="top-bar">
+    <span class="back-icon"></span>
+    <span class="title">Application Sent</span>
+    <span class="action"></span>
+  </div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:32px 24px">
+    <div style="width:64px;height:64px;border-radius:50%;background:var(--status-positive-bg);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px">✓</div>
+    <div style="font-size:20px;font-weight:700">Application submitted</div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:12px;line-height:1.6;max-width:300px">Your pre-approved loan application has been submitted. As this was pre-approved, you're guaranteed acceptance.</p>
+
+    <div class="card" style="width:100%;text-align:left;margin-top:20px">
+      <div class="kv-row"><span class="k">Amount</span><span class="v">£12,000</span></div>
+      <div class="kv-row"><span class="k">Rate</span><span class="v">8.9% APR (fixed)</span></div>
+      <div class="kv-row"><span class="k">Monthly payment</span><span class="v">£258.43</span></div>
+      <div class="kv-row"><span class="k">Reference</span><span class="v">LBG-CC-2026-0542</span></div>
+    </div>
+
+    <div style="padding:12px;background:var(--status-info-bg);border-radius:var(--radius-md);font-size:13px;color:#0D47A1;line-height:1.5;width:100%;text-align:left;margin-top:12px">
+      <strong>14-day cooling-off period</strong><br>
+      You have 14 days from today to withdraw without giving a reason. If you change your mind, go to Settings → My Applications → Withdraw.
+    </div>
+
+    <button class="btn-primary" style="margin-top:20px">Done</button>
+    <button style="background:none;border:none;color:var(--lloyds-green);font-size:14px;font-weight:700;margin-top:12px;cursor:pointer;text-decoration:underline">View agreement (PDF)</button>
+
+    <span class="a11y-note" style="margin-top:12px">A11Y: Success announced via aria-live="assertive" · Reference number selectable for copy</span>
+    <span class="story-ref">US-032, US-034 · FR-17, FR-19, FR-33</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 10: APPLICATION ERROR -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 10: Application Error</span>
+  <span class="route">/credit-coach/offers/{id}/error</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:450px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Application</span>
+    <span class="action"></span>
+  </div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;text-align:center;padding:40px 24px">
+    <div style="width:56px;height:56px;border-radius:14px;background:var(--status-negative-bg);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px">⚠️</div>
+    <div style="font-size:17px;font-weight:700">Something went wrong</div>
+    <p style="font-size:14px;color:var(--text-secondary);margin-top:8px;max-width:280px;line-height:1.6">We couldn't submit your application right now. Your pre-approved offer is still valid — please try again.</p>
+
+    <div class="card" style="width:100%;text-align:left;margin-top:20px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:8px">What to check:</div>
+      <div style="font-size:14px;line-height:1.8;color:var(--text-secondary)">
+        • Your internet connection is stable<br>
+        • Your personal details are up to date<br>
+        • Try again in a few minutes
+      </div>
+    </div>
+
+    <button class="btn-primary" style="margin-top:20px">Try again</button>
+    <button style="background:none;border:none;color:var(--lloyds-green);font-size:14px;font-weight:700;margin-top:12px;cursor:pointer;text-decoration:underline">Contact us for help</button>
+
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">Your offer remains valid. No application has been recorded.</p>
+    <span class="a11y-note" style="margin-top:8px">A11Y: Error announced immediately · Retry is primary action · "Contact us" as fallback</span>
+    <span class="story-ref">US-035 · FR-19 (error path)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 11: SIMULATOR — CONTRADICTORY SCENARIO -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 11: Simulator — Contradictory Scenario</span>
+  <span class="route">/credit-coach/simulator (conflict)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:400px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">What If?</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div style="background:var(--bg-surface);padding:12px 16px;border-radius:4px 18px 18px 18px;border:1px solid var(--border-light);font-size:15px;margin-bottom:16px">
+      I can't simulate both closing all your accounts <strong>and</strong> opening new credit at the same time — these actions conflict with each other.<br><br>
+      <strong>Try one at a time:</strong>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="scenario-chip">🔒 What if I close my oldest account?</div>
+      <div class="scenario-chip">📝 What if I open a new credit card?</div>
+    </div>
+
+    <p style="font-size:13px;color:var(--text-muted);margin-top:16px">Tip: Simulate one action at a time for the most accurate results.</p>
+    <span class="a11y-note" style="margin-top:8px">A11Y: Conflict explanation read first · Alternative scenarios as actionable options</span>
+    <span class="story-ref">US-059 · FR-12 (contradictory input)</span>
+  </div>
+  <div class="chat-input-bar">
+    <input class="chat-input" placeholder="Ask 'What if...'">
+    <button class="chat-send">→</button>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TRACEABILITY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div style="max-width:600px;margin:40px auto;padding:0 16px">
+<h2 style="font-size:20px;font-weight:700;margin-bottom:16px">Screen-to-Story Traceability</h2>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<thead><tr style="border-bottom:2px solid var(--border-light)">
+<th style="text-align:left;padding:8px">Screen</th>
+<th style="text-align:left;padding:8px">Stories</th>
+<th style="text-align:left;padding:8px">Requirements</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">1. Simulator — Scenario Selection</td><td style="padding:8px">US-027, US-028</td><td style="padding:8px">FR-12</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">2. Simulator — Results</td><td style="padding:8px">US-029</td><td style="padding:8px">FR-13, FR-14</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">3. Natural Language Simulation</td><td style="padding:8px">US-030</td><td style="padding:8px">FR-15</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">4. Simulator — Error/Timeout</td><td style="padding:8px">US-059</td><td style="padding:8px">FR-12 (error)</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">5. Pre-Approved Offer</td><td style="padding:8px">US-033, US-034</td><td style="padding:8px">FR-16, FR-17, FR-34</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">6. SECCI / Pre-Contract Info</td><td style="padding:8px">US-034</td><td style="padding:8px">FR-32, FR-33, FR-35</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">7. No Offers Available</td><td style="padding:8px">US-033</td><td style="padding:8px">FR-16 (no match)</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">8. Offers Suppressed (Distress)</td><td style="padding:8px">US-060</td><td style="padding:8px">FR-37, FR-36</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">9. Application Confirmation</td><td style="padding:8px">US-032, US-034</td><td style="padding:8px">FR-17, FR-19, FR-33</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">10. Application Error</td><td style="padding:8px">US-035</td><td style="padding:8px">FR-19 (error)</td></tr>
+<tr><td style="padding:8px">11. Contradictory Scenario</td><td style="padding:8px">US-059</td><td style="padding:8px">FR-12 (conflict)</td></tr>
+</tbody>
+</table>
+
+<h2 style="font-size:20px;font-weight:700;margin:32px 0 16px">Regulatory Compliance Notes</h2>
+<ul style="font-size:13px;color:var(--text-secondary);line-height:2">
+<li><strong>CONC 3.5.5R:</strong> Representative example with all 6 values (amount, term, rate, APR, monthly, total) shown on offer screen</li>
+<li><strong>CONC 3.5.3R:</strong> Representative APR is the most prominent rate figure on the offer card</li>
+<li><strong>CCA s.55A:</strong> SECCI screen provides full pre-contract credit information before acceptance</li>
+<li><strong>CCA s.66A:</strong> 14-day cooling-off period clearly communicated on offer and SECCI screens</li>
+<li><strong>CCA s.94:</strong> Right to early repayment (0% fee) disclosed in SECCI</li>
+<li><strong>CONC 7.7.5R:</strong> Late payment fee capped at £12 — disclosed in SECCI</li>
+<li><strong>CONC 5.2A:</strong> Affordability assessment completed before offer generation (not shown to customer but referenced in audit trail)</li>
+<li><strong>CONC 7.3:</strong> Offers suppressed during financial distress — debt advice signposted (StepChange, Citizens Advice, National Debtline)</li>
+<li><strong>FCA Consumer Duty:</strong> Consumer understanding outcome — plain language, total cost prominent, no jargon</li>
+<li><strong>PRA SS1/23:</strong> Simulation model confidence level disclosed; estimates clearly labelled</li>
+<li><strong>PRA FS2/23:</strong> Simulation logic explainable — "How this works" section shows factor changes</li>
+</ul>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Credit Coach — Wireframes (EP-01 & EP-02)</title>
+<style>
+:root{--lloyds-green:#006A4D;--lloyds-green-dark:#005238;--lloyds-green-light:#E6F2EE;--bg-app:#F5F5F5;--bg-surface:#FFFFFF;--text-primary:#1A1A1A;--text-secondary:#595959;--text-muted:#888888;--text-error:#C0392B;--border-light:#E0E0E0;--border-focus:#006A4D;--status-positive:#006A4D;--status-positive-bg:#E6F2EE;--status-negative:#C0392B;--status-negative-bg:#FDECEC;--status-info:#1565C0;--status-info-bg:#E3F2FD;--status-pending:#9C5A00;--status-pending-bg:#FFF3E0;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--shadow-sm:0 1px 4px rgba(0,0,0,0.08);--shadow-md:0 2px 8px rgba(0,0,0,0.10)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'GT Ultra Standard',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:16px;color:var(--text-primary);background:#fff;line-height:1.6}
+.page-title{font-size:32px;font-weight:700;text-align:center;padding:40px 16px 8px;color:var(--text-primary)}
+.page-subtitle{font-size:14px;text-align:center;color:var(--text-secondary);padding:0 16px 40px}
+.screen-section{max-width:420px;margin:0 auto 60px;border:1px solid var(--border-light);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-md)}
+.screen-label{background:var(--bg-app);padding:12px 16px;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center}
+.screen-label .route{font-weight:400;color:var(--text-muted);font-size:12px}
+.screen-label .tag{background:var(--status-positive-bg);color:var(--status-positive);padding:2px 8px;border-radius:20px;font-size:11px}
+/* Mobile shell */
+.mobile-shell{background:var(--bg-app);min-height:700px;display:flex;flex-direction:column}
+.top-bar{height:56px;background:var(--bg-surface);border-bottom:1px solid var(--border-light);display:flex;align-items:center;padding:0 16px;gap:12px}
+.top-bar .back-icon{width:24px;height:24px;color:var(--text-secondary)}
+.top-bar .title{flex:1;font-size:17px;font-weight:700;text-align:center}
+.top-bar .action{width:24px;height:24px;color:var(--text-secondary)}
+.content{flex:1;padding:16px;overflow-y:auto}
+.bottom-nav{height:60px;background:var(--bg-surface);border-top:1px solid var(--border-light);display:flex;align-items:center}
+.bottom-nav .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--text-muted);text-decoration:none}
+.bottom-nav .nav-item.active{color:var(--lloyds-green);font-weight:700}
+/* Components */
+.card{background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.card-title{font-size:17px;font-weight:700;margin-bottom:4px}
+.card-subtitle{font-size:13px;color:var(--text-secondary)}
+.btn-primary{background:var(--lloyds-green);color:#fff;font-size:16px;font-weight:700;height:52px;padding:0 28px;border:none;border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary:hover{background:var(--lloyds-green-dark)}
+.btn-secondary{background:transparent;color:var(--lloyds-green);font-size:16px;font-weight:700;height:52px;padding:0 28px;border:2px solid var(--lloyds-green);border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center}
+.field{margin-bottom:20px}
+.field label{display:block;font-size:14px;font-weight:700;margin-bottom:6px}
+.field .helper{font-size:13px;color:var(--text-secondary);margin-top:4px}
+.field input,.field select{width:100%;height:52px;padding:0 16px;border:1.5px solid #ccc;border-radius:var(--radius-md);font-size:16px;background:var(--bg-surface)}
+.score-hero{background:var(--lloyds-green);border-radius:var(--radius-xl);padding:24px;color:#fff;text-align:center;margin-bottom:16px}
+.score-hero .score-value{font-size:48px;font-weight:700;letter-spacing:-0.02em}
+.score-hero .score-band{font-size:14px;opacity:0.85;margin-top:4px}
+.score-hero .score-change{font-size:13px;opacity:0.75;margin-top:8px}
+.factor-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-light)}
+.factor-row:last-child{border:none}
+.factor-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.factor-icon.positive{background:var(--status-positive-bg);color:var(--status-positive)}
+.factor-icon.negative{background:var(--status-negative-bg);color:var(--status-negative)}
+.factor-text{flex:1;font-size:14px}
+.factor-impact{font-size:12px;font-weight:700;padding:3px 8px;border-radius:20px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-positive{background:var(--status-positive-bg);color:var(--status-positive)}
+.badge-negative{background:var(--status-negative-bg);color:var(--status-negative)}
+.badge-info{background:var(--status-info-bg);color:var(--status-info)}
+.alert{display:flex;align-items:flex-start;gap:12px;padding:16px;border-radius:10px;font-size:14px;border:1px solid}
+.alert-info{background:var(--status-info-bg);border-color:#90CAF9;color:#0D47A1}
+.alert-success{background:var(--status-positive-bg);border-color:#A8D5C5;color:#004D36}
+.consent-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border-light)}
+.consent-item:last-child{border:none}
+.consent-check{width:20px;height:20px;accent-color:var(--lloyds-green);margin-top:2px;flex-shrink:0}
+.consent-text{font-size:14px;line-height:1.5}
+.progress-track{width:100%;height:8px;background:var(--border-light);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;background:var(--lloyds-green);border-radius:100px}
+.kv-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light);font-size:14px}
+.kv-row:last-child{border:none}
+.kv-row .k{color:var(--text-secondary)}
+.kv-row .v{font-weight:700}
+/* Chat */
+.chat-container{display:flex;flex-direction:column;height:100%;background:var(--bg-app)}
+.chat-messages{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.msg-user{align-self:flex-end;max-width:80%;background:var(--lloyds-green);color:#fff;padding:12px 16px;border-radius:18px 18px 4px 18px;font-size:15px}
+.msg-assistant{align-self:flex-start;max-width:85%;background:var(--bg-surface);color:var(--text-primary);padding:12px 16px;border-radius:4px 18px 18px 18px;font-size:15px;border:1px solid var(--border-light)}
+.chat-input-bar{padding:12px 16px;background:var(--bg-surface);border-top:1px solid var(--border-light);display:flex;gap:10px;align-items:center}
+.chat-input{flex:1;height:44px;padding:10px 14px;border:1.5px solid var(--border-light);border-radius:22px;font-size:15px;outline:none}
+.chat-send{width:44px;height:44px;border-radius:50%;background:var(--lloyds-green);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.quick-replies{display:flex;gap:8px;padding:8px 0;overflow-x:auto}
+.quick-reply{padding:8px 14px;border-radius:20px;border:1.5px solid var(--lloyds-green);background:transparent;color:var(--lloyds-green);font-size:13px;font-weight:700;white-space:nowrap;cursor:pointer}
+/* Annotations */
+.annotation{font-size:11px;color:var(--text-muted);font-style:italic;margin-top:4px}
+.a11y-note{font-size:10px;color:#1565C0;background:#E3F2FD;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
+.story-ref{font-size:10px;color:var(--status-pending);background:var(--status-pending-bg);padding:2px 6px;border-radius:4px;display:inline-block}
+hr.section-divider{border:none;border-top:3px solid var(--lloyds-green);margin:60px auto;max-width:200px}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">AI Credit Coach — Wireframes</h1>
+<p class="page-subtitle">EP-01 & EP-02 · Sprint 1 · Lloyds Design System · Mobile-First</p>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 1: CRA CONSENT CAPTURE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 1: CRA Consent Capture</span>
+  <span class="route">/credit-coach/consent</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Credit Coach</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">Check your credit score</div>
+      <p class="card-subtitle" style="margin-top:8px;font-size:14px;line-height:1.5">We'll retrieve your credit score from Experian using a soft search — this won't affect your credit file.</p>
+      
+      <div style="margin-top:20px">
+        <div class="alert alert-info" style="margin-bottom:16px">
+          <span>ℹ️</span>
+          <div>
+            <strong>What we'll access:</strong><br>
+            • Your credit score and band<br>
+            • Score factors (what's helping/hurting)<br>
+            • Used for coaching only — never marketing
+          </div>
+        </div>
+
+        <div style="margin-top:16px">
+          <div class="consent-item">
+            <input type="checkbox" class="consent-check" checked>
+            <span class="consent-text">I consent to Lloyds retrieving my credit score from Experian for credit coaching purposes only</span>
+          </div>
+          <div class="consent-item">
+            <input type="checkbox" class="consent-check" checked>
+            <span class="consent-text">I understand this is a soft search and will not appear on my credit file</span>
+          </div>
+          <div class="consent-item">
+            <input type="checkbox" class="consent-check">
+            <span class="consent-text">I have read the <a href="#" style="color:var(--lloyds-green)">privacy notice</a> explaining how my data will be used</span>
+          </div>
+        </div>
+
+        <p class="annotation">Consent text version: 1.0 · SHA-256 hash stored · Immutable audit record</p>
+        <span class="a11y-note">A11Y: All checkboxes have associated labels · Focus order: top→bottom</span>
+        <span class="story-ref">US-003, US-004 · FR-29, FR-40, FR-43, FR-44</span>
+      </div>
+
+      <button class="btn-primary" style="margin-top:24px">Agree & Check My Score</button>
+      <button class="btn-secondary" style="margin-top:12px">Not now</button>
+      <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:12px">You can withdraw consent at any time in Settings</p>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 2: CREDIT SCORE DASHBOARD -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 2: Credit Score Dashboard</span>
+  <span class="route">/credit-coach/dashboard</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Credit Score</span>
+    <span class="action">⟳</span>
+  </div>
+  <div class="content">
+    <!-- Score Hero Card -->
+    <div class="score-hero">
+      <div style="font-size:13px;opacity:0.75">Experian · Updated 3 May 2026</div>
+      <div class="score-value">742</div>
+      <div class="score-band">Good (700–849)</div>
+      <div class="score-change">↑ 15 points since last month</div>
+      <div style="margin-top:16px">
+        <div class="progress-track" style="background:rgba(255,255,255,0.25)">
+          <div class="progress-fill" style="width:59%;background:#fff"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;opacity:0.6;margin-top:4px">
+          <span>0</span><span>Poor</span><span>Fair</span><span>Good</span><span>Excellent</span><span>1250</span>
+        </div>
+      </div>
+    </div>
+    <span class="a11y-note">A11Y: Score announced as "742 out of 1250, Good band, up 15 points"</span>
+    <span class="story-ref">US-009, US-010 · FR-02, FR-25</span>
+
+    <!-- Score Factors Summary -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <span class="card-title">What's affecting your score</span>
+        <a href="#" style="font-size:13px;color:var(--lloyds-green);font-weight:700">See all →</a>
+      </div>
+      
+      <div class="factor-row">
+        <div class="factor-icon positive">✓</div>
+        <div class="factor-text">Payment history is strong — no missed payments in 6 years</div>
+        <span class="badge badge-positive">+High</span>
+      </div>
+      <div class="factor-row">
+        <div class="factor-icon positive">✓</div>
+        <div class="factor-text">Long credit history — oldest account is 8 years old</div>
+        <span class="badge badge-positive">+Med</span>
+      </div>
+      <div class="factor-row">
+        <div class="factor-icon negative">!</div>
+        <div class="factor-text">Credit utilisation is 62% — above the recommended 30%</div>
+        <span class="badge badge-negative">−High</span>
+      </div>
+      <div class="factor-row">
+        <div class="factor-icon negative">!</div>
+        <div class="factor-text">2 new credit applications in the last 6 months</div>
+        <span class="badge badge-negative">−Low</span>
+      </div>
+      <span class="a11y-note">A11Y: Factors use icon + text + badge — never colour alone</span>
+      <span class="story-ref">US-011 · FR-03</span>
+    </div>
+
+    <!-- Score Change Explanation -->
+    <div class="card">
+      <div class="card-title">Why your score changed</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">Your score increased by 15 points this month because:</p>
+      <div style="margin-top:12px">
+        <div class="kv-row">
+          <span class="k">Credit card balance reduced</span>
+          <span class="v" style="color:var(--status-positive)">+12 pts</span>
+        </div>
+        <div class="kv-row">
+          <span class="k">On-time payment recorded</span>
+          <span class="v" style="color:var(--status-positive)">+5 pts</span>
+        </div>
+        <div class="kv-row">
+          <span class="k">New credit application</span>
+          <span class="v" style="color:var(--status-negative)">−2 pts</span>
+        </div>
+      </div>
+      <span class="story-ref">US-012 · FR-06</span>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="display:flex;gap:12px;margin-top:8px">
+      <button class="btn-secondary" style="flex:1;height:44px;font-size:14px">View History</button>
+      <button class="btn-primary" style="flex:1;height:44px;font-size:14px">Ask a Question</button>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 3: SCORE FACTORS (FULL LIST) -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 3: Score Factors (Full List)</span>
+  <span class="route">/credit-coach/factors</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Score Factors</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <p style="font-size:14px;color:var(--text-secondary);margin-bottom:16px">These factors affect your Experian credit score. Factors are listed by impact — highest first.</p>
+
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;color:var(--status-positive);margin-bottom:12px">HELPING YOUR SCORE</div>
+      <div class="factor-row">
+        <div class="factor-icon positive">✓</div>
+        <div>
+          <div class="factor-text" style="font-weight:700">Payment history</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:2px">No missed payments in 6 years. This is the strongest factor in your score (35% weighting).</div>
+        </div>
+      </div>
+      <div class="factor-row">
+        <div class="factor-icon positive">✓</div>
+        <div>
+          <div class="factor-text" style="font-weight:700">Credit history length</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:2px">Oldest account: 8 years. Average age: 4.5 years. Longer history = more reliable.</div>
+        </div>
+      </div>
+      <div class="factor-row">
+        <div class="factor-icon positive">✓</div>
+        <div>
+          <div class="factor-text" style="font-weight:700">Credit mix</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:2px">You have a healthy mix: mortgage, credit card, and personal loan.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="font-size:13px;font-weight:700;color:var(--status-negative);margin-bottom:12px">HURTING YOUR SCORE</div>
+      <div class="factor-row">
+        <div class="factor-icon negative">!</div>
+        <div>
+          <div class="factor-text" style="font-weight:700">Credit utilisation (62%)</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:2px">You're using 62% of your available credit. Aim for below 30% for the best impact.</div>
+        </div>
+      </div>
+      <div class="factor-row">
+        <div class="factor-icon negative">!</div>
+        <div>
+          <div class="factor-text" style="font-weight:700">Recent applications (2)</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:2px">2 hard searches in the last 6 months. Each stays on your file for 12 months.</div>
+        </div>
+      </div>
+    </div>
+    <span class="a11y-note">A11Y: Screen reader announces "5 factors: 3 positive, 2 negative" on entry</span>
+    <span class="story-ref">US-011, US-053 · FR-03</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 4: CONVERSATIONAL CREDIT QUERIES -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 4: Conversational Credit Queries</span>
+  <span class="route">/credit-coach/conversation</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:650px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Credit Coach</span>
+    <span class="action">⋮</span>
+  </div>
+  <div class="chat-container" style="flex:1">
+    <div class="chat-messages">
+      <div class="msg-user">How's my credit score?</div>
+      <div class="msg-assistant">
+        <strong>Your score is 742 (Good)</strong><br><br>
+        That's up 15 points from last month! 🎉<br><br>
+        Your biggest strength is your payment history — no missed payments in 6 years.<br><br>
+        The main thing holding you back is credit utilisation at 62%. Reducing this below 30% could boost your score significantly.
+      </div>
+      <div class="msg-user">What can I do to improve it?</div>
+      <div class="msg-assistant">
+        Here are your top 3 actions ranked by impact:<br><br>
+        <strong>1. Reduce credit card balance</strong> — Pay down £1,200 to get below 30% utilisation. Estimated impact: +25 points in 2 months.<br><br>
+        <strong>2. Don't apply for new credit</strong> — Wait 6 months for recent searches to age. Estimated impact: +10 points.<br><br>
+        <strong>3. Keep paying on time</strong> — Your streak is excellent. Maintaining it protects your score.<br><br>
+        <em style="font-size:13px;color:var(--text-secondary)">These are estimates based on typical scoring patterns. Actual results may vary.</em>
+      </div>
+    </div>
+    <div class="quick-replies">
+      <button class="quick-reply">What's my score?</button>
+      <button class="quick-reply">Why did it change?</button>
+      <button class="quick-reply">How to improve?</button>
+    </div>
+    <div class="chat-input-bar">
+      <input class="chat-input" placeholder="Ask about your credit...">
+      <button class="chat-send">→</button>
+    </div>
+  </div>
+</div>
+<div style="padding:8px 16px;background:var(--bg-app)">
+  <span class="a11y-note">A11Y: Chat messages announced via live region · Send button: "Send message" label</span>
+  <span class="story-ref">US-014, US-015 · FR-26, FR-15</span>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 5: CONSENT MANAGEMENT (SETTINGS) -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 5: Consent Management</span>
+  <span class="route">/credit-coach/settings/consent</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:600px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Credit Coach Settings</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">Data sharing consent</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">You've given consent for Lloyds to retrieve your credit score from Experian.</p>
+      
+      <div style="margin-top:16px">
+        <div class="kv-row">
+          <span class="k">Provider</span>
+          <span class="v">Experian</span>
+        </div>
+        <div class="kv-row">
+          <span class="k">Consent given</span>
+          <span class="v">3 May 2026</span>
+        </div>
+        <div class="kv-row">
+          <span class="k">Purpose</span>
+          <span class="v">Credit coaching only</span>
+        </div>
+        <div class="kv-row">
+          <span class="k">Search type</span>
+          <span class="v">Soft search (no footprint)</span>
+        </div>
+        <div class="kv-row">
+          <span class="k">Status</span>
+          <span class="v"><span class="badge badge-positive">Active</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Refresh frequency</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">How often we check your score with Experian.</p>
+      <div class="field" style="margin-top:12px;margin-bottom:0">
+        <select style="width:100%;height:44px;padding:0 16px;border:1.5px solid #ccc;border-radius:8px;font-size:14px">
+          <option selected>Monthly (recommended)</option>
+          <option>Fortnightly</option>
+          <option>Weekly</option>
+        </select>
+      </div>
+      <span class="story-ref">US-016, US-017 · FR-05</span>
+    </div>
+
+    <div class="card" style="border-color:var(--status-negative);border-width:1.5px">
+      <div class="card-title" style="color:var(--status-negative)">Withdraw consent</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-top:8px">If you withdraw consent, we'll stop retrieving your score. Your existing score history will be retained for 6 years per regulatory requirements, unless you request deletion.</p>
+      <button class="btn-secondary" style="margin-top:16px;border-color:var(--status-negative);color:var(--status-negative)">Withdraw Consent</button>
+      <span class="story-ref">US-004 · FR-29, FR-30</span>
+    </div>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 6: ERROR STATE — CRA UNAVAILABLE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 6: Error State — CRA Unavailable</span>
+  <span class="route">/credit-coach/dashboard (error)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Credit Score</span>
+    <span class="action">⟳</span>
+  </div>
+  <div class="content">
+    <!-- Cached score with stale indicator -->
+    <div class="score-hero" style="opacity:0.7">
+      <div style="font-size:13px;opacity:0.75">⚠️ Last updated 15 April 2026 (stale)</div>
+      <div class="score-value">727</div>
+      <div class="score-band">Good (700–849)</div>
+    </div>
+
+    <div class="alert" style="background:var(--status-pending-bg);border-color:#FFCC80;color:#7D4600;margin-bottom:16px">
+      <span>⚠️</span>
+      <div>
+        <strong>Couldn't refresh your score</strong><br>
+        Experian is temporarily unavailable. We're showing your last known score. Try refreshing in a few minutes.
+      </div>
+    </div>
+
+    <button class="btn-primary">Try Again</button>
+    <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:12px">If this persists, your score will update automatically at the next scheduled refresh.</p>
+    <span class="story-ref">US-057 · FR-01 (error path)</span>
+    <span class="a11y-note">A11Y: Alert announced immediately on screen load via aria-live="assertive"</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 7: LOADING / SKELETON STATE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 7: Loading State (Skeleton)</span>
+  <span class="route">/credit-coach/dashboard (loading)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Credit Score</span>
+    <span class="action"></span>
+  </div>
+  <div class="content">
+    <div style="background:linear-gradient(90deg,#f0f0f0 25%,#e8e8e8 50%,#f0f0f0 75%);height:200px;border-radius:16px;margin-bottom:16px"></div>
+    <div class="card">
+      <div style="background:#f0f0f0;height:20px;width:60%;border-radius:6px;margin-bottom:16px"></div>
+      <div style="background:#f0f0f0;height:48px;border-radius:6px;margin-bottom:12px"></div>
+      <div style="background:#f0f0f0;height:48px;border-radius:6px;margin-bottom:12px"></div>
+      <div style="background:#f0f0f0;height:48px;border-radius:6px"></div>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);text-align:center">Retrieving your credit score...</p>
+    <span class="a11y-note">A11Y: aria-busy="true" on content region · "Loading credit score" announced</span>
+    <span class="story-ref">US-008 · FR-01 (loading state)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 8: EMPTY STATE — FIRST TIME (NO SCORE YET) -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 8: Empty State — First Score Retrieval</span>
+  <span class="route">/credit-coach/dashboard (first-time)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:500px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Credit Score</span>
+    <span class="action"></span>
+  </div>
+  <div class="content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px 24px">
+    <div style="width:64px;height:64px;border-radius:16px;background:var(--lloyds-green-light);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:16px">📊</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:8px">Retrieving your first score</div>
+    <p style="font-size:14px;color:var(--text-secondary);max-width:280px;line-height:1.6">We're fetching your credit score from Experian. This usually takes a few seconds.</p>
+    <div style="margin-top:24px;width:40px;height:40px;border:3px solid var(--lloyds-green-light);border-top-color:var(--lloyds-green);border-radius:50%;animation:spin 0.7s linear infinite"></div>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:16px">This is a soft search — it won't affect your credit file</p>
+    <span class="a11y-note" style="margin-top:16px">A11Y: "Retrieving your credit score, please wait" announced · aria-live="polite"</span>
+    <span class="story-ref">US-008 · FR-01 (first-time empty state)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- SCREEN 9: SCORE UNCHANGED STATE -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div class="screen-section">
+<div class="screen-label">
+  <span>Screen 9: Score Unchanged (No Change This Month)</span>
+  <span class="route">/credit-coach/dashboard (no-change)</span>
+  <span class="tag">NEW</span>
+</div>
+<div class="mobile-shell" style="min-height:550px">
+  <div class="top-bar">
+    <span class="back-icon">←</span>
+    <span class="title">Credit Score</span>
+    <span class="action">⟳</span>
+  </div>
+  <div class="content">
+    <div class="score-hero">
+      <div style="font-size:13px;opacity:0.75">Experian · Updated 3 May 2026</div>
+      <div class="score-value">742</div>
+      <div class="score-band">Good (700–849)</div>
+      <div class="score-change">— No change since last month</div>
+      <div style="margin-top:16px">
+        <div class="progress-track" style="background:rgba(255,255,255,0.25)">
+          <div class="progress-fill" style="width:59%;background:#fff"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-success" style="margin-bottom:16px">
+      <span>✓</span>
+      <div>
+        <strong>Your score is stable</strong><br>
+        No changes this month — that's a good sign. Your credit health is steady. Keep up your current habits.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">What's keeping your score steady</div>
+      <div class="factor-row">
+        <div class="factor-icon positive">✓</div>
+        <div class="factor-text">All payments made on time</div>
+      </div>
+      <div class="factor-row">
+        <div class="factor-icon positive">✓</div>
+        <div class="factor-text">Credit utilisation unchanged</div>
+      </div>
+      <div class="factor-row">
+        <div class="factor-icon positive">✓</div>
+        <div class="factor-text">No new credit applications</div>
+      </div>
+    </div>
+    <span class="a11y-note">A11Y: "Score unchanged at 742, Good band" announced on entry</span>
+    <span class="story-ref">US-012 · FR-06 (no-change edge case)</span>
+  </div>
+  <div class="bottom-nav">
+    <a class="nav-item" href="#">🏠 Home</a>
+    <a class="nav-item" href="#">💳 Cards</a>
+    <a class="nav-item active" href="#">📊 Credit</a>
+    <a class="nav-item" href="#">💬 Chat</a>
+    <a class="nav-item" href="#">⚙️ More</a>
+  </div>
+</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- TRACEABILITY -->
+<!-- ═══════════════════════════════════════════════════ -->
+<div style="max-width:600px;margin:40px auto;padding:0 16px">
+<h2 style="font-size:20px;font-weight:700;margin-bottom:16px">Screen-to-Story Traceability</h2>
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<thead><tr style="border-bottom:2px solid var(--border-light)">
+<th style="text-align:left;padding:8px">Screen</th>
+<th style="text-align:left;padding:8px">Stories</th>
+<th style="text-align:left;padding:8px">Requirements</th>
+</tr></thead>
+<tbody>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">1. Consent Capture</td><td style="padding:8px">US-003, US-004</td><td style="padding:8px">FR-29, FR-40, FR-43, FR-44</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">2. Score Dashboard</td><td style="padding:8px">US-009, US-010, US-011, US-012</td><td style="padding:8px">FR-02, FR-03, FR-06, FR-25</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">3. Score Factors</td><td style="padding:8px">US-011, US-053</td><td style="padding:8px">FR-03</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">4. Conversational UI</td><td style="padding:8px">US-014, US-015</td><td style="padding:8px">FR-26</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">5. Consent Settings</td><td style="padding:8px">US-004, US-016, US-017</td><td style="padding:8px">FR-05, FR-29, FR-30</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">6. Error State</td><td style="padding:8px">US-057</td><td style="padding:8px">FR-01 (error path)</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">7. Loading State</td><td style="padding:8px">US-008</td><td style="padding:8px">FR-01 (loading)</td></tr>
+<tr style="border-bottom:1px solid var(--border-light)"><td style="padding:8px">8. First-Time Empty State</td><td style="padding:8px">US-008</td><td style="padding:8px">FR-01 (first retrieval)</td></tr>
+<tr><td style="padding:8px">9. Score Unchanged</td><td style="padding:8px">US-012</td><td style="padding:8px">FR-06 (no-change edge)</td></tr>
+</tbody>
+</table>
+
+<h2 style="font-size:20px;font-weight:700;margin:32px 0 16px">Design System References</h2>
+<ul style="font-size:13px;color:var(--text-secondary);line-height:2">
+<li>Colours: Lloyds Green (#006A4D), surfaces, semantic status palette</li>
+<li>Typography: GT Ultra Standard/Medium Bold, type scale per design system</li>
+<li>Components: Cards (12px radius), Buttons (8px radius, 52px height), Inputs, Badges, Alerts, Chat bubbles</li>
+<li>Spacing: 4px base grid (16px card padding, 24px section gaps)</li>
+<li>Accessibility: WCAG 2.1 AA, 48dp touch targets, focus rings, screen reader labels</li>
+<li>Chat UI: Section 5.18 of Lloyds Design System (message bubbles, quick replies, input bar)</li>
+</ul>
+
+<h2 style="font-size:20px;font-weight:700;margin:32px 0 16px">Regulatory Notes</h2>
+<ul style="font-size:13px;color:var(--text-secondary);line-height:2">
+<li>Consent screen: GDPR Art. 6/7 (explicit consent), UK GDPR Art. 13 (transparency at collection)</li>
+<li>Score display: FCA Consumer Duty (consumer understanding outcome)</li>
+<li>Soft search: CONC 5.2A (no credit footprint for monitoring)</li>
+<li>Data retention: FCA SYSC 9.1.1R (6-year retention noted in consent settings)</li>
+<li>Estimates disclaimer: PRA FS2/23 (explainability — label as estimates)</li>
+</ul>
+</div>
+
+</body>
+</html>

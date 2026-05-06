@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/consent_db
+    username: consent_user
+    password: consent_pass
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    com.lloyds.creditcoach: DEBUG
+    org.springframework.web: DEBUG

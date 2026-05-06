@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/scores_db
+    username: scores_user
+    password: scores_pass
+  jpa:
+    show-sql: true
+
+logging:
+  level:
+    com.lloyds.creditcoach: DEBUG
+    io.github.resilience4j: DEBUG

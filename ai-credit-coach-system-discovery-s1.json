@@ -1,0 +1,1025 @@
+{
+  "epic_ids": [
+    "EP-01",
+    "EP-02"
+  ],
+  "mode": "greenfield",
+  "sprint": "S1",
+  "discovery": {
+    "existing_docs_analysed": [
+      "kb-L2-payments-domain (Banking Domain - Payments and Lending)",
+      "enterprise-architecture-kb.md (Lloyds Enterprise Architecture)",
+      "ai-credit-coach-epics.json (Epic & Feature Decomposition)",
+      "ai-credit-coach-stories.json (User Stories US-001 to US-017, US-051-053, US-057)",
+      "ai-credit-coach-requirements.json (50 FRs, 27 NFRs, 13 Constraints)"
+    ]
+  },
+  "change_impact": {
+    "screens_new": [
+      {
+        "route": "/credit-coach/consent",
+        "purpose": "Explicit CRA consent capture with transparency disclosures, per-CRA toggles, purpose limitation explanation",
+        "stories": [
+          "US-003",
+          "US-004"
+        ]
+      },
+      {
+        "route": "/credit-coach/dashboard",
+        "purpose": "Credit score display with gauge widget, band classification, month-on-month change, and factor summary",
+        "stories": [
+          "US-009",
+          "US-010",
+          "US-011",
+          "US-012"
+        ]
+      },
+      {
+        "route": "/credit-coach/factors",
+        "purpose": "Full score factors list in plain English with see-all expansion and why-this-matters tooltips",
+        "stories": [
+          "US-011",
+          "US-053"
+        ]
+      },
+      {
+        "route": "/credit-coach/score-change",
+        "purpose": "Score change explanation screen showing delta, contributing factor changes, and actionable next steps",
+        "stories": [
+          "US-012"
+        ]
+      },
+      {
+        "route": "/credit-coach/conversation",
+        "purpose": "Conversational credit query interface within FA unified UI for natural language credit questions",
+        "stories": [
+          "US-014",
+          "US-015"
+        ]
+      },
+      {
+        "route": "/credit-coach/settings/consent",
+        "purpose": "Consent withdrawal and re-consent management screen",
+        "stories": [
+          "US-004"
+        ]
+      },
+      {
+        "route": "/admin/credit-coach/refresh-config",
+        "purpose": "Admin configuration UI for score refresh frequency per CRA agreement",
+        "stories": [
+          "US-017"
+        ]
+      },
+      {
+        "route": "/credit-coach/components",
+        "purpose": "Shared design system component library: score cards, progress indicators, alert banners, offer cards, chart components. Reusable across all Credit Coach screens.",
+        "stories": [
+          "US-005",
+          "US-051"
+        ]
+      }
+    ],
+    "apis_new": [
+      {
+        "endpoint": "/api/v1/credit-coach/consent",
+        "method": "POST",
+        "purpose": "Record explicit CRA consent with timestamp, text version, and customer ID",
+        "request_schema": {
+          "customer_id": "string (UUID)",
+          "cra_provider": "string (EXPERIAN|EQUIFAX|TRANSUNION)",
+          "consent_granted": "boolean",
+          "consent_text_version": "string",
+          "channel": "string (IOS|ANDROID)"
+        },
+        "response_schema": {
+          "consent_id": "string (UUID)",
+          "status": "string (GRANTED|DENIED)",
+          "created_at": "string (ISO 8601)",
+          "next_action": "string"
+        },
+        "stories": [
+          "US-003"
+        ]
+      },
+      {
+        "endpoint": "/api/v1/credit-coach/consent/{customer_id}",
+        "method": "GET",
+        "purpose": "Retrieve current consent status for a customer across all CRAs",
+        "request_schema": {},
+        "response_schema": {
+          "consents": [
+            {
+              "cra_provider": "string",
+              "status": "string",
+              "granted_at": "string",
+              "text_version": "string"
+            }
+          ]
+        },
+        "stories": [
+          "US-003",
+          "US-004"
+        ]
+      },
+      {
+        "endpoint": "/api/v1/credit-coach/consent/{consent_id}/withdraw",
+        "method": "POST",
+        "purpose": "Withdraw consent and trigger CRA data deletion workflow",
+        "request_schema": {
+          "reason": "string (optional)"
+        },
+        "response_schema": {
+          "status": "string (WITHDRAWN)",
+          "withdrawn_at": "string (ISO 8601)",
+          "deletion_workflow_id": "string (UUID)"
+        },
+        "stories": [
+          "US-004"
+        ]
+      },
+      {
+        "endpoint": "/api/v1/credit-coach/score/{customer_id}",
+        "method": "GET",
+        "purpose": "Retrieve current credit score, band, factors, and month-on-month change",
+        "request_schema": {},
+        "response_schema": {
+          "score": "integer",
+          "band": "string (POOR|FAIR|GOOD|EXCELLENT)",
+          "cra_source": "string",
+          "scale_max": "integer",
+          "retrieved_at": "string (ISO 8601)",
+          "previous_score": "integer|null",
+          "delta": "integer|null",
+          "factors_positive": [
+            {
+              "category": "string",
+              "description": "string",
+              "impact": "string"
+            }
+          ],
+          "factors_negative": [
+            {
+              "category": "string",
+              "description": "string",
+              "impact": "string"
+            }
+          ],
+          "is_stale": "boolean",
+          "stale_reason": "string|null"
+        },
+        "stories": [
+          "US-008",
+          "US-009",
+          "US-010",
+          "US-011",
+          "US-057"
+        ]
+      },
+      {
+        "endpoint": "/api/v1/credit-coach/score/{customer_id}/refresh",
+        "method": "POST",
+        "purpose": "Trigger on-demand score refresh from CRA (soft search)",
+        "request_schema": {},
+        "response_schema": {
+          "refresh_id": "string (UUID)",
+          "status": "string (PENDING|COMPLETED|FAILED)",
+          "estimated_completion": "string (ISO 8601)"
+        },
+        "stories": [
+          "US-008",
+          "US-057"
+        ]
+      },
+      {
+        "endpoint": "/api/v1/credit-coach/score/{customer_id}/history",
+        "method": "GET",
+        "purpose": "Retrieve score history time-series for trend analysis",
+        "request_schema": {
+          "from_date": "string (ISO 8601, optional)",
+          "to_date": "string (ISO 8601, optional)",
+          "cra_source": "string (optional)",
+          "cursor": "string (optional)",
+          "limit": "integer (optional, default 24)"
+        },
+        "response_schema": {
+          "data_points": [
+            {
+              "score": "integer",
+              "band": "string",
+              "date": "string",
+              "cra_source": "string",
+              "factors_snapshot_id": "string"
+            }
+          ],
+          "next_cursor": "string|null",
+          "total_count": "integer"
+        },
+        "stories": [
+          "US-013"
+        ]
+      },
+      {
+        "endpoint": "/api/v1/credit-coach/score/{customer_id}/change-explanation",
+        "method": "GET",
+        "purpose": "Get explanation of score change between last two refreshes",
+        "request_schema": {},
+        "response_schema": {
+          "previous_score": "integer",
+          "current_score": "integer",
+          "delta": "integer",
+          "direction": "string (UP|DOWN|UNCHANGED)",
+          "contributing_factors": [
+            {
+              "category": "string",
+              "previous_value": "string",
+              "current_value": "string",
+              "impact": "string"
+            }
+          ],
+          "message": "string",
+          "suggested_action": "string|null"
+        },
+        "stories": [
+          "US-012"
+        ]
+      },
+      {
+        "endpoint": "/api/v1/credit-coach/conversation",
+        "method": "POST",
+        "purpose": "Process natural language credit query via Envoy orchestrator",
+        "request_schema": {
+          "customer_id": "string (UUID)",
+          "message": "string",
+          "session_id": "string (UUID)",
+          "context": "object (optional)"
+        },
+        "response_schema": {
+          "response_text": "string",
+          "response_type": "string (ANSWER|CLARIFICATION|HANDOFF)",
+          "data": "object|null",
+          "suggested_followups": [
+            "string"
+          ]
+        },
+        "stories": [
+          "US-014",
+          "US-015"
+        ]
+      },
+      {
+        "endpoint": "/api/v1/credit-coach/admin/refresh-schedule",
+        "method": "PUT",
+        "purpose": "Update score refresh frequency configuration per CRA",
+        "request_schema": {
+          "cra_provider": "string",
+          "frequency_days": "integer (min 7, max 30)",
+          "batch_window_start": "string (HH:mm)",
+          "batch_window_end": "string (HH:mm)"
+        },
+        "response_schema": {
+          "status": "string (UPDATED)",
+          "effective_from": "string (ISO 8601)"
+        },
+        "stories": [
+          "US-017"
+        ]
+      }
+    ],
+    "handlers_new": [
+      {
+        "handler": "ConsentGrantCommandHandler",
+        "purpose": "Process consent grant, validate text version, persist immutable record",
+        "pattern": "Command",
+        "stories": [
+          "US-003"
+        ]
+      },
+      {
+        "handler": "ConsentWithdrawCommandHandler",
+        "purpose": "Process consent withdrawal, trigger deletion workflow, mark record as withdrawn",
+        "pattern": "Command",
+        "stories": [
+          "US-004"
+        ]
+      },
+      {
+        "handler": "ScoreRetrievalCommandHandler",
+        "purpose": "Orchestrate CRA API call, validate data quality, store score, emit events",
+        "pattern": "Command",
+        "stories": [
+          "US-008",
+          "US-052"
+        ]
+      },
+      {
+        "handler": "ScoreQueryHandler",
+        "purpose": "Query current score with cache-first strategy and stale data fallback",
+        "pattern": "Query",
+        "stories": [
+          "US-009",
+          "US-010",
+          "US-057"
+        ]
+      },
+      {
+        "handler": "ScoreHistoryQueryHandler",
+        "purpose": "Query time-series score data with date range and CRA filters",
+        "pattern": "Query",
+        "stories": [
+          "US-013"
+        ]
+      },
+      {
+        "handler": "ScoreChangeExplanationQueryHandler",
+        "purpose": "Compute delta analysis between consecutive scores and generate plain English explanation",
+        "pattern": "Query",
+        "stories": [
+          "US-012"
+        ]
+      },
+      {
+        "handler": "FactorTranslationQueryHandler",
+        "purpose": "Map CRA factor codes to plain English descriptions with impact ordering",
+        "pattern": "Query",
+        "stories": [
+          "US-011",
+          "US-053"
+        ]
+      },
+      {
+        "handler": "ConversationalQueryHandler",
+        "purpose": "Route NL credit queries through Envoy orchestrator, maintain session context",
+        "pattern": "Query",
+        "stories": [
+          "US-014",
+          "US-015"
+        ]
+      },
+      {
+        "handler": "ScoreRefreshSchedulerHandler",
+        "purpose": "Execute batch score refresh for enrolled customers with staggering and retry",
+        "pattern": "Command",
+        "stories": [
+          "US-016"
+        ]
+      },
+      {
+        "handler": "ScoreRetrievedEventHandler",
+        "purpose": "React to score.retrieved event: update cache, check for changes, trigger downstream",
+        "pattern": "Event",
+        "stories": [
+          "US-008",
+          "US-016"
+        ]
+      },
+      {
+        "handler": "ScoreChangedEventHandler",
+        "purpose": "React to score.changed event: compute explanation, notify subscribers",
+        "pattern": "Event",
+        "stories": [
+          "US-012",
+          "US-007"
+        ]
+      },
+      {
+        "handler": "ConsentGrantedEventHandler",
+        "purpose": "React to consent.granted event: trigger initial score retrieval",
+        "pattern": "Event",
+        "stories": [
+          "US-003",
+          "US-008"
+        ]
+      },
+      {
+        "handler": "ConsentRevokedEventHandler",
+        "purpose": "React to consent.revoked event: stop refresh schedule, trigger data deletion",
+        "pattern": "Event",
+        "stories": [
+          "US-004"
+        ]
+      },
+      {
+        "handler": "DataQualityValidationHandler",
+        "purpose": "Validate CRA data freshness (<30 days) and quality score (>=95%)",
+        "pattern": "Command",
+        "stories": [
+          "US-052"
+        ]
+      },
+      {
+        "handler": "AgentRegistrationCommandHandler",
+        "purpose": "Register Credit Coach agent manifest on Envoy platform with intent rules",
+        "pattern": "Command",
+        "stories": [
+          "US-001",
+          "US-002"
+        ]
+      }
+    ],
+    "tables_new": [
+      {
+        "table": "credit_coach_consents",
+        "columns": [
+          {
+            "name": "id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "customer_id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "cra_provider",
+            "type": "VARCHAR(20)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "status",
+            "type": "VARCHAR(20)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "consent_text_version",
+            "type": "VARCHAR(10)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "consent_text_hash",
+            "type": "VARCHAR(64)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "granted_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": true,
+            "encrypted": false
+          },
+          {
+            "name": "withdrawn_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": true,
+            "encrypted": false
+          },
+          {
+            "name": "channel",
+            "type": "VARCHAR(10)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "ip_address",
+            "type": "VARCHAR(45)",
+            "nullable": false,
+            "encrypted": true
+          },
+          {
+            "name": "device_fingerprint",
+            "type": "VARCHAR(255)",
+            "nullable": false,
+            "encrypted": true
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false,
+            "encrypted": false
+          }
+        ],
+        "purpose": "Immutable audit trail of customer consent grants and withdrawals. Retained indefinitely per NFR-10.",
+        "stories": [
+          "US-003",
+          "US-004"
+        ]
+      },
+      {
+        "table": "credit_scores",
+        "columns": [
+          {
+            "name": "id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "customer_id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "score_value",
+            "type": "INTEGER",
+            "nullable": false,
+            "encrypted": true
+          },
+          {
+            "name": "band",
+            "type": "VARCHAR(20)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "cra_source",
+            "type": "VARCHAR(20)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "scale_min",
+            "type": "INTEGER",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "scale_max",
+            "type": "INTEGER",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "data_quality_score",
+            "type": "DECIMAL(5,2)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "retrieved_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "refresh_id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false,
+            "encrypted": false
+          }
+        ],
+        "purpose": "Encrypted score history. Retained 6 years per FCA SYSC 9.1.1R. Partitioned by customer_id.",
+        "stories": [
+          "US-008",
+          "US-009",
+          "US-013",
+          "US-006"
+        ]
+      },
+      {
+        "table": "credit_score_factors",
+        "columns": [
+          {
+            "name": "id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "score_id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "factor_code",
+            "type": "VARCHAR(50)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "category",
+            "type": "VARCHAR(50)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "direction",
+            "type": "VARCHAR(10)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "impact_magnitude",
+            "type": "INTEGER",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "raw_value",
+            "type": "VARCHAR(255)",
+            "nullable": true,
+            "encrypted": true
+          },
+          {
+            "name": "plain_english_description",
+            "type": "TEXT",
+            "nullable": true,
+            "encrypted": false
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false,
+            "encrypted": false
+          }
+        ],
+        "purpose": "Factor breakdown per score retrieval. Links to credit_scores via score_id FK.",
+        "stories": [
+          "US-011",
+          "US-012",
+          "US-053"
+        ]
+      },
+      {
+        "table": "score_refresh_schedules",
+        "columns": [
+          {
+            "name": "id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "customer_id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "cra_provider",
+            "type": "VARCHAR(20)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "frequency_days",
+            "type": "INTEGER",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "next_refresh_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "last_refresh_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": true,
+            "encrypted": false
+          },
+          {
+            "name": "last_refresh_status",
+            "type": "VARCHAR(20)",
+            "nullable": true,
+            "encrypted": false
+          },
+          {
+            "name": "retry_count",
+            "type": "INTEGER",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "is_active",
+            "type": "BOOLEAN",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "updated_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false,
+            "encrypted": false
+          }
+        ],
+        "purpose": "Per-customer refresh scheduling with retry tracking. Drives batch scheduler.",
+        "stories": [
+          "US-016",
+          "US-017"
+        ]
+      },
+      {
+        "table": "cra_api_audit_log",
+        "columns": [
+          {
+            "name": "id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "customer_id",
+            "type": "UUID",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "cra_provider",
+            "type": "VARCHAR(20)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "request_type",
+            "type": "VARCHAR(20)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "request_timestamp",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "response_status",
+            "type": "VARCHAR(20)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "response_time_ms",
+            "type": "INTEGER",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "data_quality_score",
+            "type": "DECIMAL(5,2)",
+            "nullable": true,
+            "encrypted": false
+          },
+          {
+            "name": "error_code",
+            "type": "VARCHAR(50)",
+            "nullable": true,
+            "encrypted": false
+          },
+          {
+            "name": "circuit_breaker_state",
+            "type": "VARCHAR(20)",
+            "nullable": false,
+            "encrypted": false
+          },
+          {
+            "name": "created_at",
+            "type": "TIMESTAMP WITH TIME ZONE",
+            "nullable": false,
+            "encrypted": false
+          }
+        ],
+        "purpose": "Audit trail of all CRA API interactions for compliance and operational monitoring.",
+        "stories": [
+          "US-008",
+          "US-052",
+          "US-057"
+        ]
+      }
+    ],
+    "integrations_new": [
+      {
+        "system": "Experian CRA API",
+        "protocol": "REST (HTTPS/TLS 1.3)",
+        "purpose": "Retrieve credit score, band, and contributing factors via soft search (no credit footprint)",
+        "circuit_breaker": "3 consecutive failures within 30s triggers OPEN state; 60s recovery timeout; fallback to Memorystore cached data",
+        "stories": [
+          "US-008",
+          "US-016",
+          "US-052",
+          "US-057"
+        ]
+      },
+      {
+        "system": "Envoy Orchestrator",
+        "protocol": "gRPC (mTLS)",
+        "purpose": "Agent registration, intent classification routing, conversation context management, human handoff",
+        "circuit_breaker": "5 failures/60s triggers OPEN; 30s recovery; graceful error returned to mobile app",
+        "stories": [
+          "US-001",
+          "US-002",
+          "US-014",
+          "US-015"
+        ]
+      },
+      {
+        "system": "Google Cloud Pub/Sub",
+        "protocol": "gRPC (GCP native)",
+        "purpose": "Async event publishing for score.retrieved, score.changed, consent.granted, consent.revoked topics",
+        "circuit_breaker": "N/A (managed service with built-in retry)",
+        "stories": [
+          "US-007",
+          "US-008",
+          "US-016"
+        ]
+      },
+      {
+        "system": "Memorystore (Redis)",
+        "protocol": "Redis protocol (TLS)",
+        "purpose": "Cache current score data (24hr TTL) for sub-second dashboard loads and CRA unavailability fallback",
+        "circuit_breaker": "Cache miss falls through to Cloud SQL; no circuit breaker needed",
+        "stories": [
+          "US-008",
+          "US-009",
+          "US-057"
+        ]
+      },
+      {
+        "system": "Vertex AI",
+        "protocol": "gRPC (Vertex AI SDK)",
+        "purpose": "Intent classification model for credit query routing (Sprint 1); simulation and recommendation models (future sprints)",
+        "circuit_breaker": "2.5s timeout; fallback to rule-based intent matching",
+        "stories": [
+          "US-002",
+          "US-014"
+        ]
+      }
+    ],
+    "events_new": [
+      {
+        "topic": "credit-coach.score.retrieved",
+        "publisher": "CreditScoreRetrievalService",
+        "subscribers": [
+          "ScoreHistoryService",
+          "CacheUpdateService",
+          "AnalyticsPipeline"
+        ],
+        "purpose": "Emitted on every successful CRA score retrieval; triggers cache update and history storage"
+      },
+      {
+        "topic": "credit-coach.score.changed",
+        "publisher": "ScoreChangeDetectionService",
+        "subscribers": [
+          "ChangeExplanationService",
+          "AnalyticsPipeline",
+          "AlertService (future S4)"
+        ],
+        "purpose": "Emitted when score differs from previous retrieval; triggers change explanation generation"
+      },
+      {
+        "topic": "credit-coach.consent.granted",
+        "publisher": "ConsentService",
+        "subscribers": [
+          "ScoreRetrievalService",
+          "RefreshSchedulerService"
+        ],
+        "purpose": "Emitted on consent grant; triggers initial score retrieval and schedule creation"
+      },
+      {
+        "topic": "credit-coach.consent.revoked",
+        "publisher": "ConsentService",
+        "subscribers": [
+          "RefreshSchedulerService",
+          "DataDeletionService",
+          "CacheInvalidationService"
+        ],
+        "purpose": "Emitted on consent withdrawal; triggers schedule deactivation and data purge workflow"
+      }
+    ]
+  },
+  "architecture_decisions": [
+    {
+      "id": "ADR-01",
+      "title": "Microservice Boundaries \u2014 Credit Score Service, Consent Service, Alert Service",
+      "context": "Sprint 1 delivers consent management, score retrieval, score display, conversational queries, and refresh scheduling. These have different data sensitivity levels, scaling profiles, and deployment cadences.",
+      "decision": "Three bounded-context microservices: (1) ConsentService \u2014 owns credit_coach_consents table, handles grant/withdraw/re-consent lifecycle; (2) CreditScoreService \u2014 owns credit_scores, credit_score_factors, score_refresh_schedules, cra_api_audit_log tables, handles CRA integration, score retrieval, history, and change explanation; (3) ConversationalAgentService \u2014 stateless orchestrator adapter routing NL queries to appropriate handlers via Envoy. AlertService deferred to Sprint 4.",
+      "consequences": "Clear ownership boundaries enable independent deployment and scaling. ConsentService can scale independently during onboarding spikes. CreditScoreService handles CRA rate limiting independently. Adds inter-service communication overhead (mitigated by gRPC + service mesh).",
+      "kb_reference": "EA Section 9 Backend: 'Microservice per bounded context'; EA Section 3.2: 'Microservices confirmed via TCS DevOps Awards'"
+    },
+    {
+      "id": "ADR-02",
+      "title": "CRA Integration Pattern \u2014 Synchronous with Circuit Breaker + Redis Cache",
+      "context": "CRA APIs (Experian) are external dependencies with variable latency and availability. NFR-01 requires <3s end-to-end. 10M+ customers need score access without overwhelming CRA rate limits.",
+      "decision": "Synchronous REST call to CRA with circuit breaker (Resilience4j): 2.5s timeout, 3 failures in 30s window triggers OPEN state, 60s half-open recovery. On OPEN/timeout: serve cached score from Memorystore (Redis) with 24hr TTL and 'Last updated' timestamp. Batch refresh uses staggered scheduling to respect CRA rate limits.",
+      "consequences": "Customers always see a score (fresh or cached with staleness indicator). Circuit breaker prevents cascade failures. 24hr cache TTL means worst-case staleness is 24hrs + refresh interval. CRA cost controlled via batch scheduling rather than on-demand calls.",
+      "kb_reference": "EA Section 9 Backend: 'Implement circuit breakers for external CRA calls'; EA Section 1.2: Memorystore (Redis)"
+    },
+    {
+      "id": "ADR-03",
+      "title": "Score History Data Model \u2014 Time-Series in Cloud SQL (PostgreSQL)",
+      "context": "Score history needs 6-year retention (FCA SYSC 9.1.1R), encrypted at rest, queryable by date range and CRA source. Options: Cloud SQL (PostgreSQL) vs BigQuery.",
+      "decision": "Cloud SQL (PostgreSQL) for transactional score storage with partitioning by customer_id. Reasons: (1) ACID transactions needed for score writes; (2) Low-latency queries for dashboard (<1s); (3) Row-level encryption via pgcrypto for Restricted data; (4) Simpler operational model for CRUD. BigQuery used only for analytics pipeline (via Dataflow from Pub/Sub events). Archive to Cloud Storage Coldline after 2 years active.",
+      "consequences": "Cloud SQL handles transactional workload well up to 10M customers with proper partitioning and connection pooling. Analytics queries go to BigQuery (no impact on transactional performance). Archival strategy keeps active dataset manageable.",
+      "kb_reference": "EA Section 9 Backend: 'Store state in Cloud SQL (PostgreSQL) for transactional data; Use BigQuery for analytics/reporting'"
+    },
+    {
+      "id": "ADR-04",
+      "title": "Envoy Agent Registration and Orchestrator Routing",
+      "context": "Credit Coach must integrate with existing FA agentic architecture. Orchestrator routes queries to specialist agents based on intent classification.",
+      "decision": "Register Credit Coach as specialist agent via Envoy standardised agent template. Agent manifest defines: supported intents (credit_score_query, credit_factor_query, credit_change_query, credit_health_query), confidence thresholds (>0.85 for direct routing, 0.6-0.85 for clarification), handoff protocol (context passed as structured JSON), and privacy boundaries (CRA data not persisted in Envoy memory, only session-scoped). Intent classification uses Vertex AI model fine-tuned on credit query corpus.",
+      "consequences": "Leverages existing orchestrator infrastructure \u2014 no new routing layer needed. Multi-brand deployment automatic via Envoy marketplace. Privacy boundaries prevent CRA data leaking into persistent memory. Requires intent model training data (credit-specific queries).",
+      "kb_reference": "EA Section 2.2: Envoy Platform; EA Section 2.3: Agentic AI Architecture \u2014 'Routes to specialist agents'"
+    },
+    {
+      "id": "ADR-05",
+      "title": "Event-Driven Architecture \u2014 Pub/Sub Topics for Score Lifecycle",
+      "context": "Score retrieval triggers multiple downstream actions (cache update, history storage, change detection, analytics). Tight coupling would create fragile dependencies.",
+      "decision": "Four Pub/Sub topics for Sprint 1: credit-coach.score.retrieved, credit-coach.score.changed, credit-coach.consent.granted, credit-coach.consent.revoked. Publishers emit events; subscribers react independently. Dataflow pipeline streams events to BigQuery for analytics. Dead-letter topics for failed message processing with alerting.",
+      "consequences": "Loose coupling enables independent scaling and deployment of subscribers. New subscribers (AlertService in S4) can be added without modifying publishers. Eventual consistency acceptable for analytics; score display uses synchronous path. Dead-letter handling prevents message loss.",
+      "kb_reference": "EA Section 9 Backend: 'Use Pub/Sub for async events (score changes, alerts)'; EA Section 4: 'Event-driven architecture (Pub/Sub \u2192 Dataflow \u2192 BigQuery)'"
+    },
+    {
+      "id": "ADR-06",
+      "title": "Multi-Brand Support \u2014 Brand-Agnostic Backend, Brand-Specific Theming",
+      "context": "Credit Coach must serve Lloyds Bank, Halifax, and Bank of Scotland from shared infrastructure. Each brand has distinct visual identity.",
+      "decision": "Backend services are completely brand-agnostic \u2014 no brand logic in APIs or data model. Brand context passed as header (X-Brand-Id) from mobile app. Frontend component library uses brand-specific theme tokens (colours, typography, spacing) injected at runtime. Score gauge, factor cards, consent screens all use same component structure with brand theming. Accessibility compliance (WCAG 2.1 AA) validated per-brand in CI pipeline.",
+      "consequences": "Single deployment serves all brands \u2014 reduces operational overhead. Brand-specific bugs isolated to theming layer. New brands can be added by defining theme tokens only. CI must run accessibility checks against all three brand themes.",
+      "kb_reference": "EA Section 6: 'Shared backend services, brand-specific frontend theming/configuration. Agents built once, deployed across brands.'"
+    },
+    {
+      "id": "ADR-07",
+      "title": "Consent Management \u2014 Dedicated Immutable Table with Audit Trail",
+      "context": "GDPR Art. 6 requires demonstrable consent. Consent records must be retained indefinitely (NFR-10), be retrievable within 24hrs for audit, and support re-consent on text version changes.",
+      "decision": "Dedicated credit_coach_consents table with append-only semantics (no UPDATE/DELETE on consent records). Status changes create new rows. Consent text versions stored separately with hash for integrity verification. Withdrawal marks status as WITHDRAWN but retains the record. ConsentService owns this table exclusively \u2014 no other service writes to it. Admin API for regulatory audit retrieval.",
+      "consequences": "Immutable audit trail satisfies GDPR demonstrability requirement. Append-only design prevents accidental data loss. Table grows indefinitely but consent records are small (~500 bytes each). Index on customer_id + cra_provider for fast lookups.",
+      "kb_reference": "EA Section 9 Data: 'Consent management as a first-class concern'; Domain KB PD14: GDPR in Lending"
+    },
+    {
+      "id": "ADR-08",
+      "title": "CRA Data Encryption and Domain Separation",
+      "context": "FR-42 mandates CRA data and bank transaction data must never be co-mingled in storage. CRA data classified Restricted requires AES-256 encryption at rest and TLS 1.3 in transit.",
+      "decision": "Separate Cloud SQL instance for CRA data domain with CMEK (Customer-Managed Encryption Keys) via Cloud KMS. IAM policies deny cross-domain access at infrastructure level. CRA data and bank data combined only in presentation layer at runtime (mobile app). Column-level encryption (pgcrypto) for score_value and raw_value fields. Separate GCP project for CRA data domain with dedicated service accounts.",
+      "consequences": "Strong isolation prevents accidental data co-mingling. CMEK enables key rotation without downtime. Separate GCP project adds operational overhead but satisfies regulatory requirement. Presentation-layer combination means no persistent joined dataset exists.",
+      "kb_reference": "EA Section 9 Data: 'Separate data domains (bank data vs external CRA data)'; EA Section 5.1: 'Encryption at rest (AES-256), CMEK via Cloud KMS'"
+    },
+    {
+      "id": "ADR-09",
+      "title": "Data Classification \u2014 Score Values vs PII",
+      "context": "Audit flagged credit_scores.data_quality_score and credit_score_factors.score_id as potentially sensitive. Need to clarify what requires encryption.",
+      "decision": "Encrypt: raw CRA score value (credit_scores.score_value), IP addresses, device fingerprints. Do NOT encrypt: internal quality metrics (data_quality_score), foreign keys (score_id), plain English descriptions (not PII \u2014 they describe factors like 'Payment history is strong', not customer data). Score values are Restricted; factor descriptions are Confidential.",
+      "consequences": "Reduced encryption overhead on non-PII columns. Clear data classification boundary. Factor descriptions can be cached in Redis without encryption concerns.",
+      "kb_reference": "Enterprise Architecture KB Section 5.1 (Security Layers \u2014 data classification), Domain KB PD14 (GDPR \u2014 data minimisation, encrypt what's necessary)"
+    }
+  ],
+  "risks": [
+    {
+      "risk": "CRA partnership agreement (Experian) not commercially finalised before Sprint 1 development begins",
+      "impact": "high",
+      "mitigation": "Build against CRA API specification with mock/stub service. Contract-first development enables parallel workstreams. Escalate commercial timeline to programme board."
+    },
+    {
+      "risk": "DPIA not completed before build (CON-08 constraint) delays Sprint 1 start",
+      "impact": "high",
+      "mitigation": "Engage DPO immediately in Sprint 0. Use DPIA template from ICO. Parallel-track DPIA with Sprint 1 design work. Gate deployment (not development) on DPIA completion. If DPIA delayed, deploy to staging only with synthetic data."
+    },
+    {
+      "risk": "CRA API rate limits insufficient for 10M+ customer monthly batch refresh",
+      "impact": "medium",
+      "mitigation": "Negotiate CRA API rate limits during partnership agreement. Implement aggressive Redis caching (24hr TTL for scores, 1hr for factors). Batch refresh requests using Cloud Scheduler (spread across day, not burst). Monitor API quota usage with Cloud Monitoring alerts at 80% threshold."
+    },
+    {
+      "risk": "Envoy platform (launched May 2026) may have undocumented limitations for agent registration",
+      "impact": "medium",
+      "mitigation": "Early spike (Week 1) to validate agent registration flow on Envoy. Engage Envoy platform team for integration support. Fallback: direct API integration bypassing orchestrator if Envoy blocks."
+    },
+    {
+      "risk": "Intent classification accuracy below 95% threshold for credit query routing",
+      "impact": "medium",
+      "mitigation": "Train intent classifier on banking-specific credit query corpus. Implement confidence threshold (0.85) \u2014 below threshold, ask clarifying question rather than misroute. A/B test with 5% of traffic in first week. Fallback: route ambiguous queries to human agent via existing handoff mechanism."
+    },
+    {
+      "risk": "Cloud SQL performance degradation at scale with encrypted columns and 10M+ customer partitioning",
+      "impact": "medium",
+      "mitigation": "Load test with synthetic 10M customer dataset in pre-production. Implement connection pooling (PgBouncer). Consider Cloud SQL Enterprise Plus for higher IOPS. Partition strategy validated early."
+    },
+    {
+      "risk": "Consent text version changes trigger mass re-consent requirement disrupting active users",
+      "impact": "low",
+      "mitigation": "Version consent text changes carefully with legal review. Minor wording changes don't require re-consent (only material changes to purpose/scope). Implement graceful re-consent flow that doesn't block dashboard access."
+    }
+  ],
+  "dependency_order": [
+    "1. Infrastructure provisioning: GCP project, Cloud SQL instance (CRA domain), Memorystore, Pub/Sub topics, IAM policies, KMS keys (US-006, US-007)",
+    "2. Envoy agent registration and intent classification configuration (US-001, US-002)",
+    "3. Consent Service: consent capture API, withdrawal API, consent table (US-003, US-004)",
+    "4. Design System: accessible UI component library with multi-brand theming (US-005, US-051)",
+    "5. CRA Score Retrieval Service: CRA API integration, circuit breaker, data quality validation, cache layer (US-008, US-052, US-057)",
+    "6. Score Display: dashboard screen, band classification, thin file handling (US-009, US-010)",
+    "7. Score Factors: plain English translation, see-all expansion (US-011, US-053)",
+    "8. Score Change Explanation: delta analysis, contributing factor comparison (US-012)",
+    "9. Score History: time-series storage and retrieval API (US-013)",
+    "10. Conversational Interface: NL query handling, ambiguous query clarification (US-014, US-015)",
+    "11. Refresh Scheduler: batch scheduling, staggering, retry logic, admin config (US-016, US-017)"
+  ],
+  "reasoning": "Sprint 1 establishes the complete vertical slice from infrastructure through to user-facing value. The build order follows a strict dependency chain: infrastructure first (data domain, messaging), then consent (legal prerequisite for any CRA data), then CRA integration (data source), then display layers (consuming the data), and finally scheduling (operational automation). This ensures each layer has its dependencies available when development begins. The architecture prioritises: (1) regulatory compliance (consent-first, encryption, domain separation); (2) resilience (circuit breakers, cache fallback, retry logic); (3) scalability (event-driven, partitioned data, staggered batch); (4) accessibility (WCAG 2.1 AA from day one); (5) multi-brand reuse (brand-agnostic backend, themed frontend). Every story from EP-01 (US-001 to US-007, US-051) and EP-02 (US-008 to US-017, US-052, US-053, US-057) maps to at least one API, handler, table, or integration in this discovery."
+}

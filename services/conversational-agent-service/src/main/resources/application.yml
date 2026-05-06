@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: conversational-agent-service
+
+server:
+  port: 8082
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when-authorized
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      envoy:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+      vertexai:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 30s
+
+app:
+  envoy:
+    base-url: ${ENVOY_URL:http://localhost:9090}
+  vertex-ai:
+    project-id: ${GCP_PROJECT_ID:lloyds-credit-coach}
+    location: europe-west2
+    model: gemini-1.5-pro

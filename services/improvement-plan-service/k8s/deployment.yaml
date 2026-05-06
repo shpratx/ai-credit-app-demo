@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: improvement-plan-service
+  namespace: credit-coach
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: improvement-plan-service
+  template:
+    metadata:
+      labels:
+        app: improvement-plan-service
+    spec:
+      containers:
+        - name: improvement-plan-service
+          image: europe-west2-docker.pkg.dev/lloyds-credit-coach/services/improvement-plan-service:latest
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+            - name: CLOUD_SQL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: plan-db-credentials
+                  key: host
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: plan-db-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: plan-db-credentials
+                  key: password
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8082
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8082
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
