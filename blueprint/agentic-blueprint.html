@@ -450,6 +450,58 @@
         <div class="agent">
           <button class="agent-toggle" onclick="toggleAgent(this)">
             <span class="agent-num">A4</span>
+            <span class="agent-label">L1 inception sprint planner</span>
+            <span class="agent-chevron">▼</span>
+          </button>
+          <div class="agent-params">
+            <div class="desc-text">Plan delivery sprints by analysing existing code, design and architecture documents, application baselines, and the requirements traceability matrix to produce a structured sprint plan.</div>
+            <div class="param-grid">
+              <div class="param-row">
+                <span class="param-label">Input</span>
+                <div class="chips">
+                  <span class="chip in">Existing code</span>
+                  <span class="chip in">Existing design and architecture docs</span>
+                  <span class="chip in">Existing application baselines</span>
+                  <span class="chip in">Requirements Traceability Matrix</span>
+                </div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Input Tool</span>
+                <div class="chips"><span class="chip in-tool"><img src="github_icon.png" alt="GitHub">Github</span></div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Output</span>
+                <div class="chips"><span class="chip out">Sprint Plan</span></div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Output Tool</span>
+                <div class="chips"><span class="chip na">NA (In Memory)</span></div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Knowledge Bases</span>
+                <div class="chips">
+                  <span class="chip kb">kb-L0-agent-quality-standards</span>
+                  <span class="chip kb">kb-L1-enterprise-architecture</span>
+                </div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Guardrail</span>
+                <span class="param-na">NA</span>
+              </div>
+              <div class="param-row">
+                <span class="param-label">LLM</span>
+                <div class="chips"><span class="chip llm"><img src="claude_icon.svg" alt="Claude">Claude Sonnet 4.6</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="agent-arrow"><div class="aa-line"></div><div class="aa-arrowhead"></div></div>
+
+        <!-- A5 -->
+        <div class="agent">
+          <button class="agent-toggle" onclick="toggleAgent(this)">
+            <span class="agent-num">A5</span>
             <span class="agent-label">L1 inception requirements to epics generator</span>
             <span class="agent-chevron">▼</span>
           </button>
@@ -458,7 +510,10 @@
             <div class="param-grid">
               <div class="param-row">
                 <span class="param-label">Input</span>
-                <div class="chips"><span class="chip in">Requirements Traceability Matrix</span></div>
+                <div class="chips">
+                  <span class="chip in">Requirements Traceability Matrix</span>
+                  <span class="chip in">Sprint Plan</span>
+                </div>
               </div>
               <div class="param-row">
                 <span class="param-label">Input Tool</span>
