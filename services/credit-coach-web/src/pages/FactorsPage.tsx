@@ -31,13 +31,9 @@ function FactorsPage() {
 
   return (
     <main
-      className="min-h-screen bg-background p-4 max-w-[420px] mx-auto"
+      className="min-h-screen bg-background max-w-[420px] mx-auto"
       aria-label={`${data.factors.length} factors: ${positive.length} positive, ${negative.length} negative`}
     >
-      <header className="h-14 flex items-center justify-center border-b border-border bg-surface -mx-4 -mt-4 px-4 mb-4">
-        <h1 className="text-card-title font-bold">Score Factors</h1>
-      </header>
-
       <p className="text-body-sm text-text-secondary mb-4">
         These factors affect your Experian credit score. Factors are listed by impact — highest first.
       </p>

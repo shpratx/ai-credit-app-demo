@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Credit Coach — EP-07 & EP-08 Wireframes</title>
+<style>
+:root{--lloyds-green:#006A4D;--lloyds-green-dark:#005238;--lloyds-green-light:#E6F2EE;--bg-app:#F5F5F5;--bg-surface:#FFFFFF;--text-primary:#1A1A1A;--text-secondary:#595959;--text-muted:#888888;--text-error:#C0392B;--border-light:#E0E0E0;--status-positive:#006A4D;--status-positive-bg:#E6F2EE;--status-negative:#C0392B;--status-negative-bg:#FDECEC;--status-info:#1565C0;--status-info-bg:#E3F2FD;--status-pending:#9C5A00;--status-pending-bg:#FFF3E0;--radius-md:8px;--radius-lg:12px;--radius-xl:16px;--shadow-sm:0 1px 4px rgba(0,0,0,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'GT Ultra Standard',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:16px;color:var(--text-primary);background:#fff;line-height:1.6}
+.page-title{font-size:32px;font-weight:700;text-align:center;padding:40px 16px 8px}
+.page-subtitle{font-size:14px;text-align:center;color:var(--text-secondary);padding:0 16px 40px}
+.screen-section{max-width:420px;margin:0 auto 60px;border:1px solid var(--border-light);border-radius:var(--radius-xl);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.10)}
+.screen-label{background:var(--bg-app);padding:12px 16px;font-size:13px;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center}
+.screen-label .route{font-weight:400;color:var(--text-muted);font-size:12px}
+.screen-label .tag{background:var(--status-positive-bg);color:var(--status-positive);padding:2px 8px;border-radius:20px;font-size:11px}
+.mobile-shell{background:var(--bg-app);min-height:700px;display:flex;flex-direction:column}
+.top-bar{height:56px;background:var(--lloyds-green);display:flex;align-items:center;padding:0 16px;gap:12px}
+.top-bar .back-icon{width:24px;height:24px;color:#fff}
+.top-bar .title{flex:1;font-size:17px;font-weight:700;text-align:center;color:#fff}
+.top-bar .action{width:24px;height:24px;color:#fff}
+.content{flex:1;padding:16px;overflow-y:auto}
+.bottom-nav{height:60px;background:var(--bg-surface);border-top:1px solid var(--border-light);display:flex;align-items:center}
+.bottom-nav .nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--text-muted);text-decoration:none}
+.bottom-nav .nav-item.active{color:var(--lloyds-green);font-weight:700}
+.card{background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
+.card-title{font-size:17px;font-weight:700;margin-bottom:4px}
+.card-subtitle{font-size:13px;color:var(--text-secondary)}
+.btn-primary{background:var(--lloyds-green);color:#fff;font-size:16px;font-weight:700;height:52px;padding:0 28px;border:none;border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-secondary{background:transparent;color:var(--lloyds-green);font-size:16px;font-weight:700;height:52px;padding:0 28px;border:2px solid var(--lloyds-green);border-radius:var(--radius-md);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center}
+.progress-track{width:100%;height:8px;background:var(--border-light);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;background:var(--lloyds-green);border-radius:100px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-positive{background:var(--status-positive-bg);color:var(--status-positive)}
+.badge-pending{background:var(--status-pending-bg);color:var(--status-pending)}
+.badge-info{background:var(--status-info-bg);color:var(--status-info)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border-light)}
+.toggle-row:last-child{border:none}
+.toggle-label{font-size:15px;color:var(--text-primary)}
+.toggle-sublabel{font-size:13px;color:var(--text-secondary);margin-top:2px}
+.toggle{width:52px;height:28px;background:#ccc;border-radius:100px;position:relative;flex-shrink:0}
+.toggle.on{background:var(--lloyds-green)}
+.toggle-thumb{width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
+.toggle.on .toggle-thumb{left:27px}
+.list-item{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid var(--border-light)}
+.list-item:last-child{border:none}
+.list-item-icon{width:40px;height:40px;border-radius:10px;background:var(--lloyds-green-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.list-item-text{flex:1}
+.list-item-text .primary{font-size:15px}
+.list-item-text .secondary{font-size:13px;color:var(--text-secondary);margin-top:2px}
+.chevron{color:var(--text-muted);font-size:16px}
+.annotation{font-size:11px;color:var(--text-muted);font-style:italic;margin-top:4px}
+.a11y-note{font-size:10px;color:#1565C0;background:#E3F2FD;padding:2px 6px;border-radius:4px;display:inline-block;margin-top:4px}
+.story-ref{font-size:10px;color:var(--status-pending);background:var(--status-pending-bg);padding:2px 6px;border-radius:4px;display:inline-block}
+hr.section-divider{border:none;border-top:3px solid var(--lloyds-green);margin:60px auto;max-width:200px}
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.badge-item{display:flex;flex-direction:column;align-items:center;text-align:center;padding:16px 8px;background:var(--bg-surface);border:1px solid var(--border-light);border-radius:var(--radius-lg)}
+.badge-item.earned{border-color:var(--lloyds-green);background:var(--lloyds-green-light)}
+.badge-item .badge-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:8px}
+.badge-item.earned .badge-icon{background:var(--lloyds-green);color:#fff}
+.badge-item.locked .badge-icon{background:var(--border-light);color:var(--text-muted)}
+.badge-item .badge-name{font-size:12px;font-weight:700;margin-bottom:4px}
+.badge-item .badge-date{font-size:10px;color:var(--text-muted)}
+.spending-bar{display:flex;height:24px;border-radius:100px;overflow:hidden;margin:12px 0}
+.spending-bar .seg{height:100%}
+.spending-bar .seg-essentials{background:#006A4D}
+.spending-bar .seg-discretionary{background:#00875F}
+.spending-bar .seg-debt{background:#9C5A00}
+.spending-legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.spending-legend .leg{display:flex;align-items:center;gap:6px;font-size:12px}
+.spending-legend .dot{width:10px;height:10px;border-radius:50%}
+.radio-group{display:flex;flex-direction:column;gap:0}
+.radio-item{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-light)}
+.radio-item:last-child{border:none}
+.radio-circle{width:22px;height:22px;border-radius:50%;border:2px solid #ccc;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.radio-circle.selected{border-color:var(--lloyds-green)}
+.radio-circle.selected::after{content:'';width:12px;height:12px;border-radius:50%;background:var(--lloyds-green)}
+.radio-label{font-size:15px}
+.radio-sublabel{font-size:13px;color:var(--text-secondary)}
+.notif-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border-light)}
+.notif-item:last-child{border:none}
+.notif-item.unread{background:var(--lloyds-green-light);margin:0 -16px;padding:14px 16px;border-radius:8px}
+.notif-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.notif-icon.score{background:var(--status-positive-bg);color:var(--status-positive)}
+.notif-icon.fraud{background:var(--status-negative-bg);color:var(--status-negative)}
+.notif-icon.tip{background:var(--status-info-bg);color:var(--status-info)}
+.notif-icon.badge-n{background:var(--status-pending-bg);color:var(--status-pending)}
+.notif-text{flex:1}
+.notif-text .notif-title{font-size:14px;font-weight:700}
+.notif-text .notif-body{font-size:13px;color:var(--text-secondary);margin-top:2px}
+.notif-text .notif-time{font-size:11px;color:var(--text-muted);margin-top:4px}
+</style>
+</head>
+<body>
+
+<h1 class="page-title">AI Credit Coach — EP-07 & EP-08 Wireframes</h1>
+<p class="page-subtitle">Sprint 4: Gamification, Budgeting Integration, Multi-Language, Accessibility & Resilience</p>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- EP-07: GAMIFICATION & BUDGETING -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<!-- Screen 1: Achievements / Badges -->
+<div class="screen-section">
+  <div class="screen-label">
+    <span>S1 — Achievements & Badges</span>
+    <span class="route">/credit-coach/achievements</span>
+    <span class="tag">EP-07</span>
+  </div>
+  <div class="mobile-shell">
+    <div class="top-bar">
+      <span class="back-icon">←</span>
+      <span class="title">Achievements</span>
+      <span class="action"></span>
+    </div>
+    <div class="content">
+      <!-- Summary card -->
+      <div class="card" style="text-align:center;padding:24px">
+        <div style="font-size:36px;font-weight:700;color:var(--lloyds-green)">7</div>
+        <div style="font-size:14px;color:var(--text-secondary);margin-top:4px">Badges Earned</div>
+        <div style="margin-top:12px">
+          <div class="progress-track" style="height:6px">
+            <div class="progress-fill" style="width:58%"></div>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:6px">7 of 12 available</div>
+        </div>
+        <span class="a11y-note">aria-label: "7 badges earned out of 12 available, 58% progress"</span>
+      </div>
+
+      <!-- Badge grid -->
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">Score Milestones</div>
+      <div class="badge-grid">
+        <div class="badge-item earned">
+          <div class="badge-icon">🎯</div>
+          <div class="badge-name">Score 600</div>
+          <div class="badge-date">12 Mar 2026</div>
+        </div>
+        <div class="badge-item earned">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Score 700</div>
+          <div class="badge-date">28 Apr 2026</div>
+        </div>
+        <div class="badge-item locked">
+          <div class="badge-icon">🔒</div>
+          <div class="badge-name">Score 800</div>
+          <div class="badge-date">Locked</div>
+        </div>
+      </div>
+
+      <div style="font-size:14px;font-weight:700;margin:16px 0 12px">Streaks</div>
+      <div class="badge-grid">
+        <div class="badge-item earned">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">7-Day Check</div>
+          <div class="badge-date">5 May 2026</div>
+        </div>
+        <div class="badge-item earned">
+          <div class="badge-icon">✅</div>
+          <div class="badge-name">5 Tips Done</div>
+          <div class="badge-date">10 May 2026</div>
+        </div>
+        <div class="badge-item locked">
+          <div class="badge-icon">🔒</div>
+          <div class="badge-name">30-Day Streak</div>
+          <div class="badge-date">18/30 days</div>
+        </div>
+      </div>
+
+      <!-- Progress towards next badge -->
+      <div class="card" style="margin-top:16px">
+        <div class="card-title" style="font-size:14px">Next: 30-Day Streak</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:8px">
+          <div class="progress-track" style="flex:1">
+            <div class="progress-fill" style="width:60%"></div>
+          </div>
+          <span style="font-size:12px;color:var(--text-secondary)">18/30</span>
+        </div>
+        <span class="a11y-note">aria-label: "18 of 30 days completed towards 30-day streak badge"</span>
+      </div>
+
+      <span class="story-ref">US-034, US-035</span>
+      <span class="annotation">Badges are cosmetic only — no financial incentive (FCA compliance)</span>
+    </div>
+    <div class="bottom-nav">
+      <a class="nav-item" href="#">🏠<span>Home</span></a>
+      <a class="nav-item" href="#">📈<span>Credit</span></a>
+      <a class="nav-item" href="#">📋<span>Plan</span></a>
+      <a class="nav-item active" href="#">🏆<span>Badges</span></a>
+      <a class="nav-item" href="#">💬<span>Chat</span></a>
+      <a class="nav-item" href="#">⚙️<span>Settings</span></a>
+    </div>
+  </div>
+</div>
+<hr class="section-divider">
+
+<!-- Screen 2: Budgeting Connection -->
+<div class="screen-section">
+  <div class="screen-label">
+    <span>S2 — Connect Budgeting Tool</span>
+    <span class="route">/credit-coach/budgeting/connect</span>
+    <span class="tag">EP-07</span>
+  </div>
+  <div class="mobile-shell">
+    <div class="top-bar">
+      <span class="back-icon">←</span>
+      <span class="title">Budgeting</span>
+      <span class="action"></span>
+    </div>
+    <div class="content">
+      <!-- Benefits card -->
+      <div class="card" style="text-align:center;padding:24px">
+        <div style="font-size:40px;margin-bottom:12px">🏦</div>
+        <div class="card-title">Connect Your Bank</div>
+        <div class="card-subtitle" style="margin-top:8px;line-height:1.5">See how your spending affects your credit utilisation. Get personalised tips based on your actual spending patterns.</div>
+      </div>
+
+      <!-- Benefits list -->
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px">What you'll get</div>
+        <div class="list-item" style="padding:10px 0">
+          <div class="list-item-icon" style="width:32px;height:32px;font-size:14px">📊</div>
+          <div class="list-item-text"><span class="primary" style="font-size:14px">Monthly spending breakdown</span></div>
+        </div>
+        <div class="list-item" style="padding:10px 0">
+          <div class="list-item-icon" style="width:32px;height:32px;font-size:14px">💡</div>
+          <div class="list-item-text"><span class="primary" style="font-size:14px">Spending-based credit tips</span></div>
+        </div>
+        <div class="list-item" style="padding:10px 0;border:none">
+          <div class="list-item-icon" style="width:32px;height:32px;font-size:14px">📈</div>
+          <div class="list-item-text"><span class="primary" style="font-size:14px">Utilisation correlation insights</span></div>
+        </div>
+      </div>
+
+      <!-- Supported banks -->
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px">Supported banks</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="badge badge-positive">Lloyds</span>
+          <span class="badge badge-positive">Halifax</span>
+          <span class="badge badge-positive">Barclays</span>
+          <span class="badge badge-positive">HSBC</span>
+          <span class="badge badge-positive">NatWest</span>
+          <span class="badge badge-info">+ 40 more</span>
+        </div>
+      </div>
+
+      <!-- Consent notice -->
+      <div style="font-size:12px;color:var(--text-secondary);margin:12px 0;line-height:1.5;padding:0 4px">
+        🔒 Your data is encrypted and accessed via Open Banking (PSD2). You can disconnect at any time. This consent is separate from your credit data consent.
+      </div>
+
+      <button class="btn-primary" style="margin-top:8px">Connect Your Bank</button>
+      <span class="a11y-note">aria-label: "Connect your bank account via Open Banking"</span>
+      <span class="story-ref" style="margin-top:8px;display:block">US-036, US-038</span>
+      <span class="annotation">Separate consent from credit data consent per UK GDPR</span>
+    </div>
+    <div class="bottom-nav">
+      <a class="nav-item" href="#">🏠<span>Home</span></a>
+      <a class="nav-item" href="#">📈<span>Credit</span></a>
+      <a class="nav-item" href="#">📋<span>Plan</span></a>
+      <a class="nav-item" href="#">📊<span>Factors</span></a>
+      <a class="nav-item" href="#">💬<span>Chat</span></a>
+      <a class="nav-item" href="#">⚙️<span>Settings</span></a>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- Screen 3: Spending Insights -->
+<div class="screen-section">
+  <div class="screen-label">
+    <span>S3 — Spending Insights</span>
+    <span class="route">/credit-coach/budgeting/insights</span>
+    <span class="tag">EP-07</span>
+  </div>
+  <div class="mobile-shell">
+    <div class="top-bar">
+      <span class="back-icon">←</span>
+      <span class="title">Spending Insights</span>
+      <span class="action"></span>
+    </div>
+    <div class="content">
+      <!-- Monthly summary -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-title" style="font-size:14px">May 2026</div>
+          <span class="badge badge-positive">Connected</span>
+        </div>
+        <div style="font-size:28px;font-weight:700">£2,340</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-top:4px">Total spending this month</div>
+
+        <!-- Spending bar -->
+        <div class="spending-bar">
+          <div class="seg seg-essentials" style="width:55%"></div>
+          <div class="seg seg-discretionary" style="width:30%"></div>
+          <div class="seg seg-debt" style="width:15%"></div>
+        </div>
+        <div class="spending-legend">
+          <div class="leg"><div class="dot" style="background:#006A4D"></div>Essentials £1,287</div>
+          <div class="leg"><div class="dot" style="background:#00875F"></div>Discretionary £702</div>
+          <div class="leg"><div class="dot" style="background:#9C5A00"></div>Debt £351</div>
+        </div>
+        <span class="a11y-note">aria-label: "Spending breakdown: Essentials 55%, Discretionary 30%, Debt repayments 15%"</span>
+      </div>
+
+      <!-- Utilisation correlation -->
+      <div class="card">
+        <div class="card-title" style="font-size:14px">Credit Utilisation Impact</div>
+        <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="font-size:24px;font-weight:700;color:var(--status-pending)">38%</div>
+            <div style="font-size:12px;color:var(--text-secondary)">Current utilisation</div>
+          </div>
+          <div style="font-size:20px">→</div>
+          <div>
+            <div style="font-size:24px;font-weight:700;color:var(--status-positive)">25%</div>
+            <div style="font-size:12px;color:var(--text-secondary)">Target (Good)</div>
+          </div>
+        </div>
+        <div style="margin-top:16px;padding:12px;background:var(--lloyds-green-light);border-radius:8px;font-size:13px;line-height:1.5">
+          💡 <strong>Tip:</strong> Reducing credit card spending by £200/month could lower your utilisation to 25%
+        </div>
+      </div>
+
+      <!-- Last updated -->
+      <div style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px">
+        Last updated: 13 May 2026 · <a href="#" style="color:var(--lloyds-green);text-decoration:none">Refresh</a>
+      </div>
+
+      <span class="story-ref" style="margin-top:12px;display:block">US-037, US-038</span>
+      <span class="annotation">Data refreshed daily via Open Banking. Restricted data sensitivity.</span>
+    </div>
+    <div class="bottom-nav">
+      <a class="nav-item" href="#">🏠<span>Home</span></a>
+      <a class="nav-item" href="#">📈<span>Credit</span></a>
+      <a class="nav-item" href="#">📋<span>Plan</span></a>
+      <a class="nav-item" href="#">📊<span>Factors</span></a>
+      <a class="nav-item" href="#">💬<span>Chat</span></a>
+      <a class="nav-item" href="#">⚙️<span>Settings</span></a>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- EP-08: MULTI-LANGUAGE, ACCESSIBILITY & RESILIENCE -->
+<!-- ═══════════════════════════════════════════════════════ -->
+
+<!-- Screen 4: Language Settings -->
+<div class="screen-section">
+  <div class="screen-label">
+    <span>S4 — Language Settings</span>
+    <span class="route">/credit-coach/settings/language</span>
+    <span class="tag">EP-08</span>
+  </div>
+  <div class="mobile-shell">
+    <div class="top-bar">
+      <span class="back-icon">←</span>
+      <span class="title">Language</span>
+      <span class="action"></span>
+    </div>
+    <div class="content">
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">App Language</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">All UI elements will display in your selected language. CRA data and lender terms remain in English.</div>
+
+        <div class="radio-group">
+          <div class="radio-item">
+            <div class="radio-circle selected"></div>
+            <div>
+              <div class="radio-label">English</div>
+              <div class="radio-sublabel">Default</div>
+            </div>
+          </div>
+          <div class="radio-item">
+            <div class="radio-circle"></div>
+            <div>
+              <div class="radio-label">Cymraeg (Welsh)</div>
+              <div class="radio-sublabel">Cymraeg</div>
+            </div>
+          </div>
+          <div class="radio-item">
+            <div class="radio-circle"></div>
+            <div>
+              <div class="radio-label">Gàidhlig (Scottish Gaelic)</div>
+              <div class="radio-sublabel">Gàidhlig</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:12px;background:var(--status-info-bg);border-radius:8px;font-size:13px;color:#0D47A1;line-height:1.5;margin-top:8px">
+        ℹ️ Language changes take effect immediately. Some content may show in English if translation is not yet available.
+      </div>
+
+      <span class="a11y-note" style="margin-top:12px">aria-live="polite" announces language change confirmation</span>
+      <span class="story-ref" style="margin-top:8px;display:block">US-039</span>
+      <span class="annotation">Welsh Language Act 1993 compliance. No restart required.</span>
+    </div>
+    <div class="bottom-nav">
+      <a class="nav-item" href="#">🏠<span>Home</span></a>
+      <a class="nav-item" href="#">📈<span>Credit</span></a>
+      <a class="nav-item" href="#">📋<span>Plan</span></a>
+      <a class="nav-item" href="#">📊<span>Factors</span></a>
+      <a class="nav-item" href="#">💬<span>Chat</span></a>
+      <a class="nav-item active" href="#">⚙️<span>Settings</span></a>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- Screen 5: Accessibility Settings -->
+<div class="screen-section">
+  <div class="screen-label">
+    <span>S5 — Accessibility Settings</span>
+    <span class="route">/credit-coach/settings/accessibility</span>
+    <span class="tag">EP-08</span>
+  </div>
+  <div class="mobile-shell">
+    <div class="top-bar">
+      <span class="back-icon">←</span>
+      <span class="title">Accessibility</span>
+      <span class="action"></span>
+    </div>
+    <div class="content">
+      <!-- Font size -->
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px">Text Size</div>
+        <div class="radio-group">
+          <div class="radio-item">
+            <div class="radio-circle"></div>
+            <div class="radio-label" style="font-size:13px">Small</div>
+          </div>
+          <div class="radio-item">
+            <div class="radio-circle selected"></div>
+            <div class="radio-label" style="font-size:16px">Medium (Default)</div>
+          </div>
+          <div class="radio-item">
+            <div class="radio-circle"></div>
+            <div class="radio-label" style="font-size:19px">Large</div>
+          </div>
+          <div class="radio-item">
+            <div class="radio-circle"></div>
+            <div class="radio-label" style="font-size:22px">Extra Large</div>
+          </div>
+        </div>
+        <span class="a11y-note">WCAG 2.1 AA 1.4.4 — text resizable up to 200%</span>
+      </div>
+
+      <!-- Display options -->
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px">Display</div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">High Contrast Mode</div>
+            <div class="toggle-sublabel">Enhanced colour contrast for readability</div>
+          </div>
+          <div class="toggle"><div class="toggle-thumb"></div></div>
+        </div>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Reduce Motion</div>
+            <div class="toggle-sublabel">Minimise animations and transitions</div>
+          </div>
+          <div class="toggle"><div class="toggle-thumb"></div></div>
+        </div>
+      </div>
+
+      <!-- Screen reader info -->
+      <div class="card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:8px">Screen Reader</div>
+        <div style="font-size:13px;color:var(--text-secondary);line-height:1.5">
+          This app is fully compatible with VoiceOver (iOS) and TalkBack (Android). All interactive elements have accessible labels and logical focus order.
+        </div>
+        <div style="margin-top:12px;padding:10px;background:var(--lloyds-green-light);border-radius:8px;font-size:12px;color:var(--lloyds-green)">
+          ✓ WCAG 2.1 AA Compliant
+        </div>
+      </div>
+
+      <span class="story-ref" style="margin-top:8px;display:block">US-040, US-041</span>
+      <span class="annotation">Settings persist across sessions. Equality Act 2010 compliance.</span>
+    </div>
+    <div class="bottom-nav">
+      <a class="nav-item" href="#">🏠<span>Home</span></a>
+      <a class="nav-item" href="#">📈<span>Credit</span></a>
+      <a class="nav-item" href="#">📋<span>Plan</span></a>
+      <a class="nav-item" href="#">📊<span>Factors</span></a>
+      <a class="nav-item" href="#">💬<span>Chat</span></a>
+      <a class="nav-item active" href="#">⚙️<span>Settings</span></a>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- Screen 6: Notification Centre -->
+<div class="screen-section">
+  <div class="screen-label">
+    <span>S6 — Notification Centre</span>
+    <span class="route">/credit-coach/notifications</span>
+    <span class="tag">EP-05/EP-08</span>
+  </div>
+  <div class="mobile-shell">
+    <div class="top-bar">
+      <span class="back-icon">←</span>
+      <span class="title">Notifications</span>
+      <span class="action" style="font-size:12px;color:#fff;opacity:0.8">Mark all read</span>
+    </div>
+    <div class="content">
+      <!-- Unread notification -->
+      <div class="notif-item unread">
+        <div class="notif-icon fraud">⚠️</div>
+        <div class="notif-text">
+          <div class="notif-title">Suspicious Activity Detected</div>
+          <div class="notif-body">A hard search was made by an unknown lender on your credit file</div>
+          <div class="notif-time">2 hours ago · <span style="color:var(--status-negative)">High severity</span></div>
+        </div>
+      </div>
+
+      <div class="notif-item unread">
+        <div class="notif-icon score">📈</div>
+        <div class="notif-text">
+          <div class="notif-title">Score Increased +15 points</div>
+          <div class="notif-body">Your credit score increased to 742. Credit utilisation decreased.</div>
+          <div class="notif-time">Yesterday</div>
+        </div>
+      </div>
+
+      <!-- Read notifications -->
+      <div class="notif-item">
+        <div class="notif-icon badge-n">🏆</div>
+        <div class="notif-text">
+          <div class="notif-title">Badge Earned: 5 Tips Done</div>
+          <div class="notif-body">Congratulations! You completed 5 coaching tips.</div>
+          <div class="notif-time">3 days ago</div>
+        </div>
+      </div>
+
+      <div class="notif-item">
+        <div class="notif-icon tip">💡</div>
+        <div class="notif-text">
+          <div class="notif-title">New Coaching Tip</div>
+          <div class="notif-body">Reducing your oldest credit card balance could improve your score.</div>
+          <div class="notif-time">5 days ago</div>
+        </div>
+      </div>
+
+      <div class="notif-item">
+        <div class="notif-icon score">📉</div>
+        <div class="notif-text">
+          <div class="notif-title">Score Decreased -12 points</div>
+          <div class="notif-body">Your credit score decreased to 727. New credit application detected.</div>
+          <div class="notif-time">1 week ago</div>
+        </div>
+      </div>
+
+      <div style="text-align:center;padding:16px;font-size:13px;color:var(--text-muted)">
+        Showing last 90 days
+      </div>
+
+      <span class="a11y-note">aria-label on each item: type, title, time, read status. Unread items announced as "unread"</span>
+      <span class="story-ref" style="margin-top:8px;display:block">US-028, US-025, US-026</span>
+      <span class="annotation">Deep-link: tap notification → relevant detail screen. 90-day retention.</span>
+    </div>
+    <div class="bottom-nav">
+      <a class="nav-item" href="#">🏠<span>Home</span></a>
+      <a class="nav-item" href="#">📈<span>Credit</span></a>
+      <a class="nav-item" href="#">📋<span>Plan</span></a>
+      <a class="nav-item" href="#">📊<span>Factors</span></a>
+      <a class="nav-item" href="#">💬<span>Chat</span></a>
+      <a class="nav-item" href="#">⚙️<span>Settings</span></a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

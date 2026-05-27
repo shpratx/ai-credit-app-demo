@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGrantConsent } from '../api/consent';
+import { BottomNav } from '../components/BottomNav';
 
 function ConsentPage() {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ function ConsentPage() {
 
   const s = {
     shell: { background: '#F5F5F5', minHeight: '100vh', display: 'flex', flexDirection: 'column' as const, fontFamily: "'GT Ultra Standard',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif" },
-    topBar: { height: 56, background: '#fff', borderBottom: '1px solid #E0E0E0', display: 'flex', alignItems: 'center', padding: '0 16px', gap: 12 },
-    title: { flex: 1, fontSize: 17, fontWeight: 700, textAlign: 'center' as const },
+    topBar: { height: 56, background: '#006A4D', borderBottom: '1px solid #005238', display: 'flex', alignItems: 'center', padding: '0 16px', gap: 12 },
+    title: { flex: 1, fontSize: 17, fontWeight: 700, textAlign: 'center' as const, color: '#fff' },
     content: { flex: 1, padding: 16 },
     card: { background: '#fff', border: '1px solid #E0E0E0', borderRadius: 12, padding: 20, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
     cardTitle: { fontSize: 17, fontWeight: 700, color: '#1A1A1A' },
@@ -31,9 +32,6 @@ function ConsentPage() {
     btnPrimary: { width: '100%', height: 52, background: allChecked ? '#006A4D' : '#ccc', color: '#fff', fontSize: 16, fontWeight: 700, border: 'none', borderRadius: 8, cursor: allChecked ? 'pointer' : 'not-allowed', marginTop: 24, display: 'flex', alignItems: 'center', justifyContent: 'center' },
     btnSecondary: { width: '100%', height: 52, background: 'transparent', color: '#006A4D', fontSize: 16, fontWeight: 700, border: '2px solid #006A4D', borderRadius: 8, cursor: 'pointer', marginTop: 12, display: 'flex', alignItems: 'center', justifyContent: 'center' },
     footer: { fontSize: 12, color: '#888', textAlign: 'center' as const, marginTop: 12 },
-    bottomNav: { height: 60, background: '#fff', borderTop: '1px solid #E0E0E0', display: 'flex', alignItems: 'center' },
-    navItem: { flex: 1, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: 4, fontSize: 11, color: '#888', textDecoration: 'none', cursor: 'pointer' },
-    navActive: { flex: 1, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: 4, fontSize: 11, color: '#006A4D', fontWeight: 700, textDecoration: 'none', cursor: 'pointer' },
   };
 
   const labels = [
@@ -87,13 +85,7 @@ function ConsentPage() {
           <p style={s.footer}>You can withdraw consent at any time in Settings</p>
         </div>
       </div>
-      <div style={s.bottomNav}>
-        <a style={s.navItem} onClick={() => navigate('/credit-coach/dashboard')}>🏠 Home</a>
-        <a style={s.navItem}>💳 Cards</a>
-        <a style={s.navActive}>📊 Credit</a>
-        <a style={s.navItem} onClick={() => navigate('/credit-coach/alerts')}>💬 Chat</a>
-        <a style={s.navItem} onClick={() => navigate('/credit-coach/settings/consent')}>⚙️ More</a>
-      </div>
+      <BottomNav />
     </div>
   );
 }

@@ -14,7 +14,7 @@ export default function ScoreHistoryPage() {
 
   if (isLoading) {
     return (
-      <div className="p-4 max-w-md mx-auto" aria-label="Loading score history">
+      <div className="" aria-label="Loading score history">
         <div className="animate-pulse space-y-4">
           <div className="h-10 bg-gray-200 rounded-full w-3/4" />
           <div className="h-[180px] bg-gray-200 rounded-card" />
@@ -26,7 +26,7 @@ export default function ScoreHistoryPage() {
 
   if (error) {
     return (
-      <div className="p-4 max-w-md mx-auto">
+      <div className="">
         <Alert variant="error">Couldn't load your score history. Please try again later.</Alert>
       </div>
     );
@@ -34,7 +34,7 @@ export default function ScoreHistoryPage() {
 
   if (!data || data.points.length < 2) {
     return (
-      <div className="p-4 max-w-md mx-auto">
+      <div className="">
         <Card>
           <div className="text-center py-6">
             <div className="text-4xl mb-3">📈</div>
@@ -55,7 +55,7 @@ export default function ScoreHistoryPage() {
   ];
 
   return (
-    <div className="p-4 max-w-md mx-auto">
+    <div className="">
       {/* Period selector */}
       <div className="flex gap-2 mb-4" role="radiogroup" aria-label="Time period">
         {periods.map((p) => (

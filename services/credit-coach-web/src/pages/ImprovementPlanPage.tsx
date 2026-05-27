@@ -18,7 +18,7 @@ export default function ImprovementPlanPage() {
 
   if (isLoading) {
     return (
-      <div className="p-4 max-w-md mx-auto" aria-label="Loading improvement plan">
+      <div className="" aria-label="Loading improvement plan">
         <div className="animate-pulse space-y-4">
           <div className="h-32 bg-gray-200 rounded-card" />
           <div className="h-48 bg-gray-200 rounded-card" />
@@ -29,7 +29,7 @@ export default function ImprovementPlanPage() {
 
   if (error) {
     return (
-      <div className="p-4 max-w-md mx-auto">
+      <div className="">
         <Alert variant="error">
           We couldn't generate a personalised plan yet. Check back after your next score refresh.
         </Alert>
@@ -42,7 +42,7 @@ export default function ImprovementPlanPage() {
 
   if (!plan || plan.actions.length === 0) {
     return (
-      <div className="p-4 max-w-md mx-auto text-center py-12">
+      <div className="text-center py-12">
         <div className="text-5xl mb-4">⭐</div>
         <h1 className="text-xl font-bold">Your credit is excellent!</h1>
         <p className="text-sm text-text-secondary mt-3 max-w-[280px] mx-auto leading-relaxed">
@@ -63,7 +63,7 @@ export default function ImprovementPlanPage() {
   const progressPercent = (plan.actionsCompleted / plan.actionsTotal) * 100;
 
   return (
-    <div className="p-4 max-w-md mx-auto">
+    <div className="">
       {latestMilestone && showMilestone && (
         <MilestoneModal
           title={latestMilestone.title}

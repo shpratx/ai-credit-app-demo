@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, Outlet, useLocation } from 'react-router
 import { PageShell } from './components/PageShell';
 import ConsentPage from './pages/ConsentPage';
 import DashboardPage from './pages/DashboardPage';
+import ChatPage from './pages/ChatPage';
 import FactorsPage from './pages/FactorsPage';
 import SettingsPage from './pages/SettingsPage';
 import ImprovementPlanPage from './pages/ImprovementPlanPage';
@@ -20,7 +21,7 @@ import MultiBureauPage from './pages/MultiBureauPage';
 
 const titles: Record<string, string> = {
   '/credit-coach/factors': 'Score Factors',
-  '/credit-coach/settings/consent': 'Settings',
+  '/credit-coach/settings/consent': 'Credit Coach Settings',
   '/credit-coach/plan': 'Your Plan',
   '/credit-coach/spending-impact': 'Spending & Credit',
   '/credit-coach/history': 'Score History',
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/credit-coach/consent" replace /> },
   { path: '/credit-coach/consent', element: <ConsentPage /> },
   { path: '/credit-coach/dashboard', element: <DashboardPage /> },
+  { path: '/credit-coach/chat', element: <ChatPage /> },
   // Pages wrapped in shared shell
   {
     element: <ShellWrapper />,

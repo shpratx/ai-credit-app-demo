@@ -19,7 +19,9 @@ const factors = [
 
 // CONSENT
 app.get('/mobile/v1/credit-coach/consent', (_, res) => res.json({ data: consentGranted ? [{ consentId:randomUUID(), status:"GRANTED", craProvider:"EXPERIAN", grantedAt:"2026-05-03T09:00:00Z" }] : [] }));
+app.get('/mobile/v1/credit-coach/consent-status', (_, res) => res.json({ data: consentGranted ? [{ consentId:"con-1", customerId:"cust-1", status:"GRANTED", craProvider:"EXPERIAN", consentTextVersion:"1.0", grantedAt:"2026-05-03T09:00:00Z", withdrawnAt:null }] : [] }));
 app.post('/mobile/v1/credit-coach/consent', (_, res) => { consentGranted=true; res.status(201).json({ consentId:randomUUID(), status:"GRANTED", craProvider:"EXPERIAN", grantedAt:new Date().toISOString() }); });
+app.post('/mobile/v1/credit-coach/consents/:id/withdraw', (_, res) => { consentGranted=false; res.json({ data: { consentId:"con-1", status:"WITHDRAWN", withdrawnAt:new Date().toISOString() } }); });
 
 // DASHBOARD (aggregated)
 app.get('/mobile/v1/credit-coach/dashboard', (_, res) => res.json({ data: { ...score, topFactors: factors.slice(0,4) }, meta: { source:"cache" } }));
@@ -107,6 +109,22 @@ app.get('/mobile/v1/credit-coach/scores/compare', (_, res) => res.json({ data: {
 ] } }));
 app.post('/mobile/v1/credit-coach/data/export', (_, res) => res.json({ data: { status:"processing", estimatedMinutes:2 } }));
 app.delete('/mobile/v1/credit-coach/data', (_, res) => res.json({ data: { deleted:true, retained:["consent audit records","CCA-exempt offer records"] } }));
+
+// CHAT
+const chatResponses = {
+  'score': "Your current Experian credit score is 742 out of 999, which puts you in the 'Good' band. It's gone up 15 points in the last month — mainly because you reduced your credit card balance.",
+  'improve': "Here are the top 3 things you can do to improve your score:\n1. Keep your credit utilisation below 30% (you're at 48% on one card)\n2. Continue making all payments on time\n3. Avoid applying for new credit in the next 3 months",
+  'factor': "The main factors affecting your score right now are: credit utilisation (negative — 48% on your Barclays card), payment history (positive — 36 months perfect), and account age (positive — average 4.2 years).",
+  'default': "That's a great question. Based on your credit profile, I'd suggest focusing on reducing your credit card utilisation — it's the single biggest lever you have right now. Would you like me to show you a simulation of how paying down your balance could affect your score?"
+};
+app.post('/mobile/v1/credit-coach/chat', (req, res) => {
+  const msg = (req.body.message || '').toLowerCase();
+  let reply = chatResponses.default;
+  if (msg.includes('score') && !msg.includes('improve')) reply = chatResponses.score;
+  else if (msg.includes('improve') || msg.includes('better') || msg.includes('increase')) reply = chatResponses.improve;
+  else if (msg.includes('factor') || msg.includes('affect') || msg.includes('why')) reply = chatResponses.factor;
+  res.json({ data: { reply, sessionId: 'sess-1', timestamp: new Date().toISOString() } });
+});
 
 // HEALTH
 app.get('/health', (_, res) => res.json({ status:"UP" }));

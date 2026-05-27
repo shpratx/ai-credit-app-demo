@@ -1,81 +1,74 @@
-import { PageShell } from '../components/PageShell';
+import { useState } from 'react';
 import { useGetConsents, useWithdrawConsent } from '../api/consent';
-import { useAuthStore } from '../store/authStore';
-import { Card } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
-import { Button } from '../components/ui/Button';
-import { Alert } from '../components/ui/Alert';
 
 function SettingsPage() {
-  const customerId = useAuthStore((s) => s.customerId) ?? '';
-  const { data: consents, isLoading } = useGetConsents(customerId);
+  const { data: consents, isLoading } = useGetConsents('cust-1');
   const withdrawConsent = useWithdrawConsent();
+  const [frequency, setFrequency] = useState('monthly');
 
   const activeConsent = consents?.find((c) => c.status === 'GRANTED');
 
+  const s = {
+    card: { background: '#fff', border: '1px solid #E0E0E0', borderRadius: 12, padding: 20, marginBottom: 16, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
+    cardTitle: { fontSize: 17, fontWeight: 700, color: '#1A1A1A' },
+    desc: { fontSize: 14, color: '#595959', marginTop: 8, lineHeight: 1.5 },
+    kvRow: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #E0E0E0', fontSize: 14 },
+    kvLabel: { color: '#595959' },
+    kvValue: { fontWeight: 700, color: '#1A1A1A' },
+    badge: { display: 'inline-block', padding: '3px 10px', borderRadius: 20, fontSize: 12, fontWeight: 700, background: '#E6F2EE', color: '#006A4D' },
+    select: { width: '100%', height: 44, padding: '0 16px', border: '1.5px solid #ccc', borderRadius: 8, fontSize: 14, marginTop: 12 },
+    btnDanger: { width: '100%', height: 44, background: 'transparent', color: '#C0392B', fontSize: 14, fontWeight: 700, border: '2px solid #C0392B', borderRadius: 8, cursor: 'pointer', marginTop: 16 },
+    success: { background: '#E6F2EE', border: '1px solid #006A4D', borderRadius: 8, padding: 16, marginTop: 16, fontSize: 14, color: '#006A4D' },
+  };
+
   if (isLoading) {
-    return (
-      <main className="min-h-screen bg-background p-4 max-w-[420px] mx-auto" aria-label="Credit Coach settings" aria-busy="true">
-        <div className="skeleton h-48 rounded-card" />
-      </main>
-    );
+    return <div style={{ padding: 16 }}><div style={{ background: '#f0f0f0', height: 200, borderRadius: 12 }} /></div>;
   }
 
   return (
-    <main className="min-h-screen bg-background p-4 max-w-[420px] mx-auto" aria-label="Credit Coach settings">
-      <header className="h-14 flex items-center justify-center border-b border-border bg-surface -mx-4 -mt-4 px-4 mb-4">
-        <h1 className="text-card-title font-bold">Credit Coach Settings</h1>
-      </header>
-
+    <div>
       {activeConsent && (
-        <Card title="Data sharing consent" className="mb-4">
-          <p className="text-body-sm text-text-secondary">
-            You've given consent for Lloyds to retrieve your credit score from Experian.
-          </p>
-          <div className="mt-4">
-            <div className="flex justify-between py-2.5 border-b border-border text-body-sm">
-              <span className="text-text-secondary">Provider</span>
-              <span className="font-bold">Experian</span>
-            </div>
-            <div className="flex justify-between py-2.5 border-b border-border text-body-sm">
-              <span className="text-text-secondary">Consent given</span>
-              <span className="font-bold">{new Date(activeConsent.grantedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-            </div>
-            <div className="flex justify-between py-2.5 border-b border-border text-body-sm">
-              <span className="text-text-secondary">Purpose</span>
-              <span className="font-bold">Credit coaching only</span>
-            </div>
-            <div className="flex justify-between py-2.5 text-body-sm">
-              <span className="text-text-secondary">Status</span>
-              <Badge variant="positive">Active</Badge>
-            </div>
+        <div style={s.card}>
+          <div style={s.cardTitle}>Data sharing consent</div>
+          <p style={s.desc}>You've given consent for Lloyds to retrieve your credit score from Experian.</p>
+          <div style={{ marginTop: 16 }}>
+            <div style={s.kvRow}><span style={s.kvLabel}>Provider</span><span style={s.kvValue}>Experian</span></div>
+            <div style={s.kvRow}><span style={s.kvLabel}>Consent given</span><span style={s.kvValue}>{new Date(activeConsent.grantedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span></div>
+            <div style={s.kvRow}><span style={s.kvLabel}>Purpose</span><span style={s.kvValue}>Credit coaching only</span></div>
+            <div style={s.kvRow}><span style={s.kvLabel}>Search type</span><span style={s.kvValue}>Soft search (no footprint)</span></div>
+            <div style={{ ...s.kvRow, borderBottom: 'none' }}><span style={s.kvLabel}>Status</span><span style={s.badge}>Active</span></div>
           </div>
-        </Card>
+        </div>
       )}
 
+      <div style={s.card}>
+        <div style={s.cardTitle}>Refresh frequency</div>
+        <p style={s.desc}>How often we check your score with Experian.</p>
+        <select style={s.select} value={frequency} onChange={e => setFrequency(e.target.value)}>
+          <option value="monthly">Monthly (recommended)</option>
+          <option value="fortnightly">Fortnightly</option>
+          <option value="weekly">Weekly</option>
+        </select>
+      </div>
+
       {activeConsent && (
-        <Card title="Withdraw consent" className="border-status-negative border-[1.5px]">
-          <p className="text-body-sm text-text-secondary">
-            If you withdraw consent, we'll stop retrieving your score. Your existing score history will be retained for 6 years per regulatory requirements.
-          </p>
-          <Button
-            variant="destructive"
-            className="w-full mt-4"
-            isLoading={withdrawConsent.isPending}
+        <div style={{ ...s.card, borderColor: '#C0392B', borderWidth: '1.5px' }}>
+          <div style={{ ...s.cardTitle, color: '#C0392B' }}>Withdraw consent</div>
+          <p style={s.desc}>If you withdraw consent, we'll stop retrieving your score. Your existing score history will be retained for 6 years per regulatory requirements, unless you request deletion.</p>
+          <button
+            style={s.btnDanger}
             onClick={() => withdrawConsent.mutate({ consentId: activeConsent.consentId, reason: 'customer_request' })}
-            aria-label="Withdraw consent"
+            disabled={withdrawConsent.isPending}
           >
-            Withdraw Consent
-          </Button>
-        </Card>
+            {withdrawConsent.isPending ? 'Withdrawing...' : 'Withdraw Consent'}
+          </button>
+        </div>
       )}
 
       {withdrawConsent.isSuccess && (
-        <Alert variant="success" title="Consent withdrawn" className="mt-4">
-          Your consent has been withdrawn. We will no longer retrieve your credit score.
-        </Alert>
+        <div style={s.success}>✓ Your consent has been withdrawn. We will no longer retrieve your credit score.</div>
       )}
-    </main>
+    </div>
   );
 }
 

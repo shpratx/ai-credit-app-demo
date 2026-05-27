@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useGetScore, useGetFactors, useGetChangeExplanation } from '../api/score';
+import { BottomNav } from '../components/BottomNav';
 
 function DashboardPage() {
   const navigate = useNavigate();
@@ -12,9 +13,9 @@ function DashboardPage() {
   const change = changeData;
 
   const s = {
-    shell: { background: '#F5F5F5', minHeight: '100vh', display: 'flex', flexDirection: 'column' as const, fontFamily: "'GT Ultra Standard',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif" },
-    topBar: { height: 56, background: '#fff', borderBottom: '1px solid #E0E0E0', display: 'flex', alignItems: 'center', padding: '0 16px' },
-    title: { flex: 1, fontSize: 17, fontWeight: 700, textAlign: 'center' as const },
+    shell: { background: '#F5F5F5', minHeight: '100vh', maxWidth: 430, margin: '0 auto', display: 'flex', flexDirection: 'column' as const, fontFamily: "'GT Ultra Standard',-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif" },
+    topBar: { height: 56, background: '#006A4D', borderBottom: '1px solid #005238', display: 'flex', alignItems: 'center', padding: '0 16px' },
+    title: { flex: 1, fontSize: 17, fontWeight: 700, textAlign: 'center' as const, color: '#fff' },
     content: { flex: 1, padding: 16, paddingBottom: 80 },
     scoreHero: { background: '#006A4D', borderRadius: 16, padding: 24, color: '#fff', textAlign: 'center' as const, marginBottom: 16 },
     scoreValue: { fontSize: 48, fontWeight: 700, letterSpacing: '-0.02em' },
@@ -25,9 +26,6 @@ function DashboardPage() {
     kv: { display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #E0E0E0', fontSize: 14 },
     btnPrimary: { flex: 1, height: 44, background: '#006A4D', color: '#fff', fontSize: 14, fontWeight: 700, border: 'none', borderRadius: 8, cursor: 'pointer' },
     btnSecondary: { flex: 1, height: 44, background: 'transparent', color: '#006A4D', fontSize: 14, fontWeight: 700, border: '2px solid #006A4D', borderRadius: 8, cursor: 'pointer' },
-    bottomNav: { position: 'fixed' as const, bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', maxWidth: 430, height: 60, background: '#fff', borderTop: '1px solid #E0E0E0', display: 'flex', alignItems: 'center', zIndex: 10 },
-    navItem: { flex: 1, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: 4, fontSize: 11, color: '#888', textDecoration: 'none', cursor: 'pointer' },
-    navActive: { flex: 1, display: 'flex', flexDirection: 'column' as const, alignItems: 'center', gap: 4, fontSize: 11, color: '#006A4D', fontWeight: 700, cursor: 'pointer' },
   };
 
   if (isLoading) {
@@ -46,9 +44,9 @@ function DashboardPage() {
   return (
     <div style={s.shell}>
       <div style={s.topBar}>
-        <span style={{ width: 24, cursor: 'pointer' }} onClick={() => navigate('/')}>←</span>
+        <span style={{ width: 24, cursor: 'pointer', color: '#fff' }} onClick={() => navigate('/')}>←</span>
         <span style={s.title}>Credit Score</span>
-        <span style={{ width: 24, cursor: 'pointer' }}>⟳</span>
+        <span style={{ width: 24 }}></span>
       </div>
       <div style={s.content}>
         {/* Score Hero */}
@@ -103,14 +101,7 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* Bottom Nav */}
-      <div style={s.bottomNav}>
-        <a style={s.navItem} onClick={() => navigate('/credit-coach/dashboard')}>🏠 Home</a>
-        <a style={s.navItem} onClick={() => navigate('/credit-coach/plan')}>📋 Plan</a>
-        <a style={s.navActive}>📊 Credit</a>
-        <a style={s.navItem} onClick={() => navigate('/credit-coach/simulator')}>🔮 What If</a>
-        <a style={s.navItem} onClick={() => navigate('/credit-coach/alerts')}>🔔 Alerts</a>
-      </div>
+      <BottomNav />
     </div>
   );
 }
