@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Lloyds Banking Group AI Credit Coach — Agentic Workflow Blueprint</title>
+<title>Agentic Workflow Blueprint</title>
 <style>
   :root {
     --bg:            #f5f5f7;
@@ -273,17 +273,12 @@
   <header class="header">
     <div>
       <h1>Agentic Workflow Blueprint</h1>
-      <div class="header-sub">Application: Lloyds Banking Group AI Credit Coach</div>
     </div>
     <div class="header-meta">
       <div><img src="Ascendion_logo.png" alt="Ascendion AAVA" style="height:80px; vertical-align:middle; display:block; margin-left:auto; margin-bottom:4px;"></div>
       <div>Agentic Platform</div>
     </div>
 
-    <div class="header-meta">
-      <div><img src="Lloyds-Bank-Logo.png" alt="Lloyds Banking Group Logo" style="height:90px; vertical-align:middle; display:block; margin-left:auto; margin-bottom:4px;"></div>
-      <div>Lloyds Banking Group AI Credit Coach</div>
-    </div>
   </header>
 
   <!-- HORIZONTAL STRIP -->
@@ -350,6 +345,111 @@
         <div class="agent">
           <button class="agent-toggle" onclick="toggleAgent(this)">
             <span class="agent-num">A2</span>
+            <span class="agent-label">L1 inception impact assessment verifier</span>
+            <span class="agent-chevron">▼</span>
+          </button>
+          <div class="agent-params">
+            <div class="desc-text">Analyse existing code, design and architecture documents, and application baselines to produce a comprehensive impact assessment of proposed changes.</div>
+            <div class="param-grid">
+              <div class="param-row">
+                <span class="param-label">Input</span>
+                <div class="chips">
+                  <span class="chip in">Requirements Traceability Matrix</span>
+                  <span class="chip in">Existing code</span>
+                  <span class="chip in">Existing design and architecture docs</span>
+                  <span class="chip in">Existing application baselines</span>
+                </div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Input Tool</span>
+                <div class="chips"><span class="chip in-tool"><img src="github_icon.png" alt="GitHub">Github</span></div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Output</span>
+                <div class="chips"><span class="chip out">Impact Assessment</span></div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Output Tool</span>
+                <div class="chips"><span class="chip out-tool"><img src="github_icon.png" alt="GitHub">Github</span></div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Knowledge Bases</span>
+                <div class="chips">
+                  <span class="chip kb">kb-L0-agent-quality-standards</span>
+                  <span class="chip kb">kb-L1-enterprise-architecture</span>
+                </div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Guardrail</span>
+                <span class="param-na">NA</span>
+              </div>
+              <div class="param-row">
+                <span class="param-label">LLM</span>
+                <div class="chips"><span class="chip llm"><img src="claude_icon.svg" alt="Claude">Claude Sonnet 4.6</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="agent-arrow"><div class="aa-line"></div><div class="aa-arrowhead"></div></div>
+
+        <!-- A3 -->
+        <div class="agent">
+          <button class="agent-toggle" onclick="toggleAgent(this)">
+            <span class="agent-num">A3</span>
+            <span class="agent-label">L1 inception dependency mapper</span>
+            <span class="agent-chevron">▼</span>
+          </button>
+          <div class="agent-params">
+            <div class="desc-text">Map dependencies across existing code, designs, application baselines, and the impact assessment to ensure complete traceability for downstream design and delivery.</div>
+            <div class="param-grid">
+              <div class="param-row">
+                <span class="param-label">Input</span>
+                <div class="chips">
+                  <span class="chip in">Requirements Traceability Matrix</span>
+                  <span class="chip in">Existing code</span>
+                  <span class="chip in">Existing design and architecture docs</span>
+                  <span class="chip in">Existing application baselines</span>
+                  <span class="chip in">Impact Assessment</span>
+                </div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Input Tool</span>
+                <div class="chips"><span class="chip in-tool"><img src="github_icon.png" alt="GitHub">Github</span></div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Output</span>
+                <div class="chips"><span class="chip out">Dependency Mapping</span></div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Output Tool</span>
+                <div class="chips"><span class="chip out-tool"><img src="github_icon.png" alt="GitHub">Github</span></div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Knowledge Bases</span>
+                <div class="chips">
+                  <span class="chip kb">kb-L0-agent-quality-standards</span>
+                  <span class="chip kb">kb-L1-enterprise-architecture</span>
+                </div>
+              </div>
+              <div class="param-row">
+                <span class="param-label">Guardrail</span>
+                <span class="param-na">NA</span>
+              </div>
+              <div class="param-row">
+                <span class="param-label">LLM</span>
+                <div class="chips"><span class="chip llm"><img src="claude_icon.svg" alt="Claude">Claude Sonnet 4.6</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="agent-arrow"><div class="aa-line"></div><div class="aa-arrowhead"></div></div>
+
+        <!-- A4 -->
+        <div class="agent">
+          <button class="agent-toggle" onclick="toggleAgent(this)">
+            <span class="agent-num">A4</span>
             <span class="agent-label">L1 inception requirements to epics generator</span>
             <span class="agent-chevron">▼</span>
           </button>
@@ -1034,8 +1134,8 @@
       <div class="wf-stripe"></div>
       <div class="wf-card-header">
         <div class="wf-badge">WF 5</div>
-        <div class="wf-name">L1-WF-construction-backend-code-generator</div>
-        <div class="wf-desc">Workflow to create backend code from provided specifications and designs</div>
+        <div class="wf-name">L1-WF-construction-frontend-code-generator</div>
+        <div class="wf-desc">Workflow to create UI code from provided specifications and designs</div>
       </div>
       <div class="agents-list">
 
@@ -1043,11 +1143,11 @@
         <div class="agent">
           <button class="agent-toggle" onclick="toggleAgent(this)">
             <span class="agent-num">A1</span>
-            <span class="agent-label">L1 construction backend tech stack discovery agent</span>
+            <span class="agent-label">L1 construction UI tech stack discovery agent</span>
             <span class="agent-chevron">▼</span>
           </button>
           <div class="agent-params">
-            <div class="desc-text">Automatically discover and report all technologies, frameworks, and tools used in a backend development project by analyzing codebases and technical documentation.</div>
+            <div class="desc-text">Automatically discover and report all technologies, frameworks, and tools used in a frontend development project by analyzing codebases and technical documentation.</div>
             <div class="param-grid">
               <div class="param-row">
                 <span class="param-label">Input</span>
@@ -1093,11 +1193,11 @@
         <div class="agent">
           <button class="agent-toggle" onclick="toggleAgent(this)">
             <span class="agent-num">A2</span>
-            <span class="agent-label">L1 construction backend code generator agent Using Specifications</span>
+            <span class="agent-label">L1 construction UI code generator agent Using Specifications</span>
             <span class="agent-chevron">▼</span>
           </button>
           <div class="agent-params">
-            <div class="desc-text">Generate secure, production-ready backend application code from specifications, with documentation and compliance features.</div>
+            <div class="desc-text">Generate secure, production-ready frontend application code from specifications, with documentation and compliance features.</div>
             <div class="param-grid">
               <div class="param-row">
                 <span class="param-label">Input</span>
