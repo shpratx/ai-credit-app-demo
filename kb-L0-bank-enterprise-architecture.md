@@ -1,4 +1,4 @@
-# Lloyds Banking Group — Enterprise Architecture Knowledge Base
+# Bank Banking Group — Enterprise Architecture Knowledge Base
 
 **Purpose:** Reference architecture for engineering teams building on Lloyds' platform (React frontend, Spring Boot backend)  
 **Last Updated:** 5 May 2026  

@@ -13,8 +13,6 @@
 
 **Revenue Model:** Free to customers (competitive parity with ClearScore/Credit Karma). Revenue via pre-approved offer conversion (Sprint 3+).
 
-**Brands Served:** Lloyds Bank, Halifax, Bank of Scotland (shared backend, brand-specific theming).
-
 ---
 
 ## BL2: Feature Inventory
@@ -58,7 +56,7 @@
 | S2 Wireframes (HTML) | `/ui/credit-coach-wireframes-s2.html` | ✅ Complete (7 screens) |
 | S3 Wireframes (HTML) | `/ui/credit-coach-wireframes-s3.html` | ✅ Complete (8 screens) |
 | S4 Wireframes (HTML) | `/ui/credit-coach-wireframes-s4.html` | ✅ Complete (8 screens) |
-| Design System | `/ui/lloyds-design-system.md` | ✅ Reference (Lloyds official) |
+| Design System | `/ui/bank-design-system.md` | ✅ Reference (Bank official) |
 
 **Accessibility:** All screens WCAG 2.1 AA compliant, VoiceOver (iOS) and TalkBack (Android) compatible, colour-blind safe palettes, 4.5:1 text contrast, 3:1 UI component contrast.
 
@@ -105,7 +103,7 @@
 - JSON request/response
 - Standard error format: `{error: {code, message, details}}`
 - Pagination: cursor-based for lists
-- Auth: OAuth 2.0 Bearer token (existing Lloyds auth)
+- Auth: OAuth 2.0 Bearer token (existing bank auth)
 - Gateway: Apigee
 
 ---
@@ -284,7 +282,7 @@
 | Vulnerability detection & offer suppression | Sprint 4 (EP-08) | Complex detection logic; S1 focuses on core monitoring |
 | Right to erasure (full deletion workflow) | Sprint 4 (EP-08) | Consent withdrawal stops retrieval in S1; full data purge in S4 |
 | DSAR export | Sprint 4 (EP-08) | Data accumulation begins S1; export tooling built when data model stabilises |
-| Human escalation path | Sprint 4 (EP-08) | Requires integration with existing Lloyds contact centre systems |
+| Human escalation path | Sprint 4 (EP-08) | Requires integration with existing Bank contact centre systems |
 | Breathing Space (Debt Respite Scheme) compliance | Sprint 4 (EP-08) | Requires integration with Insolvency Service portal or internal collections system notification; auto-freeze logic complex |
 | Cross-lender debt visibility | Sprint 2 (EP-04) | Requires additional CRA data fields beyond score/factors |
 | Multi-brand theming validation | Sprint 1 (included) | US-051 validates theming; full brand rollout is operational, not code |
@@ -339,7 +337,7 @@
 |-----|------|-------------|-------|--------|
 | Credit Coach Web | `/services/credit-coach-web/` | 55 TSX/TS | 45 (10 test files, Vitest) | ✅ Implemented (S1–S4) |
 
-**Frontend stack:** React 18.3, TypeScript 5.5, Vite 5.4, TanStack React Query 5, Zustand 4.5, Tailwind CSS 3.4 (Lloyds tokens), Vitest + Testing Library
+**Frontend stack:** React 18.3, TypeScript 5.5, Vite 5.4, TanStack React Query 5, Zustand 4.5, Tailwind CSS 3.4 (Bank tokens), Vitest + Testing Library
 
 **Pages:** 17 (ConsentPage, DashboardPage, FactorsPage, SettingsPage, ImprovementPlanPage, SpendingImpactPage, ScoreHistoryPage, DebtOverviewPage, SimulatorPage, OffersPage, SecciPage, AlertsPage, AlertPreferencesPage, DeleteDataPage, DecisionExplanationPage, DsarExportPage, MultiBureauPage)
 
@@ -371,7 +369,7 @@
 **Consequences:** Loose coupling, independent scaling. New subscribers (AlertService S4) added without publisher changes.
 
 ### ADR-06: Multi-Brand Support
-**Context:** Three brands (Lloyds, Halifax, BoS) from shared infrastructure.
+**Context:** Three brands (Bank of America, Lloyds, Halifax, BoS) from shared infrastructure.
 **Decision:** Brand-agnostic backend. Brand context via X-Brand-Id header. Frontend uses brand-specific theme tokens. Accessibility validated per-brand in CI.
 **Consequences:** Single deployment serves all brands. New brands = new theme tokens only.
 

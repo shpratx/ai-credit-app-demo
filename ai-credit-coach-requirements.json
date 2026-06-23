@@ -1,6 +1,6 @@
 {
   "document_title": "AI Credit Coach",
-  "source_summary": "The AI Credit Coach is a specialist agent deployed via Lloyds' Envoy platform that provides credit score monitoring, personalised improvement plans, what-if simulation, pre-approved offers, and proactive credit health alerts within the existing AI Financial Assistant.",
+  "source_summary": "The AI Credit Coach is a specialist agent deployed via Bank's Envoy platform that provides credit score monitoring, personalised improvement plans, what-if simulation, pre-approved offers, and proactive credit health alerts within the existing AI Financial Assistant.",
   "functional_requirements": [
     {
       "id": "FR-01",
@@ -230,14 +230,14 @@
     {
       "id": "FR-16",
       "title": "Match Customer Profile Against Lending Criteria",
-      "description": "The system shall match the customer's credit profile against Lloyds' lending product eligibility criteria to identify qualifying products.",
+      "description": "The system shall match the customer's credit profile against Bank's lending product eligibility criteria to identify qualifying products.",
       "user_facing": false,
       "priority": "Must-Have",
       "baseline_classification": "new",
       "baseline_reference": null,
       "baseline_impact": null,
       "citation": {
-        "source_reference": "System shall match customer credit profile against Lloyds lending criteria",
+        "source_reference": "System shall match customer credit profile against Bank lending criteria",
         "source_location": "Section 6.4 Pre-Approved Offers Engine (FR-4.1)"
       },
       "reasoning": "Core offer engine capability. Uses 'shall'."
@@ -275,7 +275,7 @@
     {
       "id": "FR-19",
       "title": "One-Tap Application with Pre-Filled Data",
-      "description": "The system shall support one-tap application for pre-approved offers with customer data pre-filled from existing Lloyds records.",
+      "description": "The system shall support one-tap application for pre-approved offers with customer data pre-filled from existing Bank records.",
       "user_facing": true,
       "priority": "Must-Have",
       "baseline_classification": "new",
@@ -335,7 +335,7 @@
     {
       "id": "FR-23",
       "title": "Product Eligibility Notifications",
-      "description": "The system shall notify the customer when score improvements unlock eligibility for new Lloyds lending products.",
+      "description": "The system shall notify the customer when score improvements unlock eligibility for new Bank lending products.",
       "user_facing": true,
       "priority": "Must-Have",
       "baseline_classification": "new",
@@ -560,7 +560,7 @@
     {
       "id": "FR-38",
       "title": "Unbiased Improvement Recommendations",
-      "description": "Credit improvement action plans shall genuinely benefit the customer and not be biased toward driving Lloyds lending revenue.",
+      "description": "Credit improvement action plans shall genuinely benefit the customer and not be biased toward driving Bank lending revenue.",
       "user_facing": true,
       "priority": "Must-Have",
       "baseline_classification": "new",
@@ -620,14 +620,14 @@
     {
       "id": "FR-42",
       "title": "Data Separation Between Bank and CRA Data",
-      "description": "The system shall keep Lloyds transaction data and CRA data in separate data domains, combining them only in the presentation/coaching layer and never co-mingling in storage.",
+      "description": "The system shall keep Bank transaction data and CRA data in separate data domains, combining them only in the presentation/coaching layer and never co-mingling in storage.",
       "user_facing": false,
       "priority": "Must-Have",
       "baseline_classification": "new",
       "baseline_reference": null,
       "baseline_impact": null,
       "citation": {
-        "source_reference": "Lloyds transaction data and CRA data are kept in separate domains. They are combined only in the presentation/coaching layer, never co-mingled in storage.",
+        "source_reference": "Bank transaction data and CRA data are kept in separate domains. They are combined only in the presentation/coaching layer, never co-mingled in storage.",
         "source_location": "Section 9.2 Data Domains (Key principle)"
       },
       "reasoning": "Explicit architectural principle for data governance and GDPR purpose limitation."
@@ -710,7 +710,7 @@
     {
       "id": "FR-48",
       "title": "Breathing Space Compliance",
-      "description": "The system shall detect when a customer enters Breathing Space (Debt Respite Scheme 2021) and automatically: freeze all credit-related alerts, suppress pre-approved offers, stop proactive communications about credit, and freeze any interest/charges on Lloyds products surfaced through the Credit Coach.",
+      "description": "The system shall detect when a customer enters Breathing Space (Debt Respite Scheme 2021) and automatically: freeze all credit-related alerts, suppress pre-approved offers, stop proactive communications about credit, and freeze any interest/charges on Bank products surfaced through the Credit Coach.",
       "user_facing": false,
       "priority": "Must-Have",
       "baseline_classification": "new",
@@ -812,7 +812,7 @@
         "source_reference": "Support 10M+ enrolled customers with daily score checks",
         "source_location": "Section 7 Non-Functional Requirements (Scalability)"
       },
-      "reasoning": "Explicit scalability target aligned with Lloyds' 10M+ mobile app user base."
+      "reasoning": "Explicit scalability target aligned with Bank's 10M+ mobile app user base."
     },
     {
       "id": "NFR-06",
@@ -842,7 +842,7 @@
       "id": "NFR-08",
       "category": "Security",
       "title": "Data Classification",
-      "description": "CRA data shall be classified as Highly Confidential and handled according to Lloyds' data classification policies.",
+      "description": "CRA data shall be classified as Highly Confidential and handled according to Bank's data classification policies.",
       "priority": "Must-Have",
       "citation": {
         "source_reference": "Data classified as Highly Confidential",
@@ -1113,9 +1113,9 @@
     {
       "id": "CON-04",
       "type": "Technology",
-      "description": "AI/ML models must be deployed via Vertex AI endpoints and registered in the Envoy marketplace, following 'Engineering the Lloyds Way' guardrails.",
+      "description": "AI/ML models must be deployed via Vertex AI endpoints and registered in the Envoy marketplace, following 'Engineering the Bank Way' guardrails.",
       "citation": {
-        "source_reference": "Deploy models via Vertex AI endpoints; Register agents in Envoy marketplace; Follow 'Engineering the Lloyds Way' guardrails",
+        "source_reference": "Deploy models via Vertex AI endpoints; Register agents in Envoy marketplace; Follow 'Engineering the Bank Way' guardrails",
         "source_location": "Enterprise Architecture KB Section 9 (AI/ML)"
       },
       "reasoning": "Enterprise architecture mandates AI platform. Vertex AI is the confirmed ML platform."
@@ -1183,9 +1183,9 @@
     {
       "id": "CON-11",
       "type": "Organisational",
-      "description": "The agent must support multi-brand deployment across Lloyds Bank, Halifax, and Bank of Scotland using brand-agnostic components with brand-specific theming.",
+      "description": "The agent must support multi-brand deployment across Bank Bank, Halifax, and Bank of Scotland using brand-agnostic components with brand-specific theming.",
       "citation": {
-        "source_reference": "The Credit Coach agent will be published to Envoy's internal agent marketplace, enabling reuse across Lloyds Bank, Halifax, and Bank of Scotland brands",
+        "source_reference": "The Credit Coach agent will be published to Envoy's internal agent marketplace, enabling reuse across Bank Bank, Halifax, and Bank of Scotland brands",
         "source_location": "Section 5.1 Technical Components (Platform note)"
       },
       "reasoning": "Organisational constraint from multi-brand architecture. Enterprise KB confirms shared backend with brand-specific theming."
@@ -1220,7 +1220,7 @@
     },
     {
       "id": "ASM-02",
-      "description": "The existing Lloyds product eligibility engine API can be extended to support real-time pre-approval matching without a full rebuild.",
+      "description": "The existing Bank product eligibility engine API can be extended to support real-time pre-approval matching without a full rebuild.",
       "needs_confirmation": true,
       "reasoning": "Dependency states it 'Exists, needs Credit Coach integration' but scope of integration work is unclear."
     },
@@ -1244,13 +1244,13 @@
     },
     {
       "id": "ASM-06",
-      "description": "The simulation engine will use CRA-provided scoring factor weightings or publicly available scoring methodology, not Lloyds' own proprietary model.",
+      "description": "The simulation engine will use CRA-provided scoring factor weightings or publicly available scoring methodology, not Bank's own proprietary model.",
       "needs_confirmation": true,
       "reasoning": "Section 3.1 mentions 'model scenarios against CRA scoring algorithms' but it's unclear if CRAs will share their algorithms or if approximations are acceptable."
     },
     {
       "id": "ASM-07",
-      "description": "Existing Lloyds mobile app authentication (biometric + device) satisfies SCA requirements for accessing Credit Coach data.",
+      "description": "Existing Bank mobile app authentication (biometric + device) satisfies SCA requirements for accessing Credit Coach data.",
       "needs_confirmation": true,
       "reasoning": "Enterprise KB confirms OAuth 2.0/OIDC and biometric auth, but explicit confirmation needed that existing auth level is sufficient for CRA data access."
     },
@@ -1308,7 +1308,7 @@
       "id": "GAP-07",
       "description": "No complaints handling process specified for Credit Coach interactions (e.g., incorrect score displayed, misleading simulation result).",
       "impact": "Cannot design complaint flow or determine FOS jurisdiction for Credit Coach-specific complaints.",
-      "suggested_question": "How should complaints about Credit Coach be handled? Does the existing Lloyds complaints process (DISP rules, 8-week resolution) apply, or is a specific process needed for AI-generated advice complaints?",
+      "suggested_question": "How should complaints about Credit Coach be handled? Does the existing Bank complaints process (DISP rules, 8-week resolution) apply, or is a specific process needed for AI-generated advice complaints?",
       "reasoning": "Domain KB confirms DISP rules require 5-day acknowledgment and 8-week resolution. Product vision does not address complaints."
     },
     {
@@ -1358,7 +1358,7 @@
       "title": "Breathing Space Integration",
       "description": "No specification of how the system detects Breathing Space status or integrates with the Insolvency Service's electronic portal for notifications.",
       "impact": "Cannot implement legally required suppression of communications and offers during Breathing Space. Risk of regulatory breach (Debt Respite Scheme Regulations 2020).",
-      "suggested_question": "How will the Credit Coach be notified when a customer enters Breathing Space? Will it integrate with the Insolvency Service portal directly, or receive notifications from an existing Lloyds collections system?",
+      "suggested_question": "How will the Credit Coach be notified when a customer enters Breathing Space? Will it integrate with the Insolvency Service portal directly, or receive notifications from an existing Bank collections system?",
       "reasoning": "Domain KB PD7 specifies that lenders are notified via the Insolvency Service's electronic portal. The product vision mentions CONC 7 compliance but doesn't specify the Breathing Space integration mechanism."
     },
     {

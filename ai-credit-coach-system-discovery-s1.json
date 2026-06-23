@@ -8,7 +8,7 @@
   "discovery": {
     "existing_docs_analysed": [
       "kb-L2-payments-domain (Banking Domain - Payments and Lending)",
-      "enterprise-architecture-kb.md (Lloyds Enterprise Architecture)",
+      "enterprise-architecture-kb.md (Bank Enterprise Architecture)",
       "ai-credit-coach-epics.json (Epic & Feature Decomposition)",
       "ai-credit-coach-stories.json (User Stories US-001 to US-017, US-051-053, US-057)",
       "ai-credit-coach-requirements.json (50 FRs, 27 NFRs, 13 Constraints)"
@@ -941,7 +941,7 @@
     {
       "id": "ADR-06",
       "title": "Multi-Brand Support \u2014 Brand-Agnostic Backend, Brand-Specific Theming",
-      "context": "Credit Coach must serve Lloyds Bank, Halifax, and Bank of Scotland from shared infrastructure. Each brand has distinct visual identity.",
+      "context": "Credit Coach must serve Bank of America, Lloyds Bank, Halifax, and Bank of Scotland from shared infrastructure. Each brand has distinct visual identity.",
       "decision": "Backend services are completely brand-agnostic \u2014 no brand logic in APIs or data model. Brand context passed as header (X-Brand-Id) from mobile app. Frontend component library uses brand-specific theme tokens (colours, typography, spacing) injected at runtime. Score gauge, factor cards, consent screens all use same component structure with brand theming. Accessibility compliance (WCAG 2.1 AA) validated per-brand in CI pipeline.",
       "consequences": "Single deployment serves all brands \u2014 reduces operational overhead. Brand-specific bugs isolated to theming layer. New brands can be added by defining theme tokens only. CI must run accessibility checks against all three brand themes.",
       "kb_reference": "EA Section 6: 'Shared backend services, brand-specific frontend theming/configuration. Agents built once, deployed across brands.'"

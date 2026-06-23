@@ -1,6 +1,6 @@
 # Product Vision: AI Credit Coach
 
-**Product:** AI Credit Coach — an augmentation module within Lloyds' AI Financial Assistant  
+**Product:** AI Credit Coach — an augmentation module within Bank' AI Financial Assistant  
 **Author:** Prateek Sharma, Business Analyst  
 **Date:** 5 May 2026  
 **Version:** 1.1  
@@ -10,7 +10,7 @@
 
 ## 1. Vision Statement
 
-Transform Lloyds' AI Financial Assistant from a backward-looking spending narrator into a forward-looking financial coach that actively helps customers understand, monitor, and improve their credit health — and connects them to the right Lloyds products at the right time.
+Transform Bank' AI Financial Assistant from a backward-looking spending narrator into a forward-looking financial coach that actively helps customers understand, monitor, and improve their credit health — and connects them to the right Bank products at the right time.
 
 ---
 
@@ -18,11 +18,11 @@ Transform Lloyds' AI Financial Assistant from a backward-looking spending narrat
 
 ### 2.1 Current State of the AI Financial Assistant
 
-Lloyds Banking Group unveiled the UK's first multi-feature AI-powered financial assistant in November 2025, describing it as "a conversational tool that allows customers to request personalised spending insights" that "provides 24/7 personalised financial coaching and work as a financial companion" [1]. The assistant is built on Lloyds' generative AI and agentic framework, using generative AI for conversational interfaces and agentic AI to process requests and execute actions [1]. It retains prior inputs to "understand and respond to specific, hyper-personalised customer requests" [1].
+Bank Banking Group unveiled the UK's first multi-feature AI-powered financial assistant in November 2025, describing it as "a conversational tool that allows customers to request personalised spending insights" that "provides 24/7 personalised financial coaching and work as a financial companion" [1]. The assistant is built on Bank' generative AI and agentic framework, using generative AI for conversational interfaces and agentic AI to process requests and execute actions [1]. It retains prior inputs to "understand and respond to specific, hyper-personalised customer requests" [1].
 
-In May 2026, Lloyds launched **Envoy**, an internal platform built with Google Cloud for building and deploying AI agents with built-in governance, monitoring, and risk controls [2]. Envoy provides standardised templates, an internal agent marketplace, and persistent memory across sessions [2]. The Credit Coach would be deployed as a new agent on this platform.
+In May 2026, Bank launched **Envoy**, an internal platform built with Google Cloud for building and deploying AI agents with built-in governance, monitoring, and risk controls [2]. Envoy provides standardised templates, an internal agent marketplace, and persistent memory across sessions [2]. The Credit Coach would be deployed as a new agent on this platform.
 
-The Financial Assistant's planned expansion covers "the full suite of financial products offered by Lloyds in 2026 and beyond, from mortgages, to car finance, to protection needs" [1] — but notably excludes credit health and score management.
+The Financial Assistant's planned expansion covers "the full suite of financial products offered by Bank in 2026 and beyond, from mortgages, to car finance, to protection needs" [1] — but notably excludes credit health and score management.
 
 ### 2.2 Capability Gaps
 
@@ -37,13 +37,13 @@ The Financial Assistant's planned expansion covers "the full suite of financial 
 
 ### 2.3 Competitive Context
 
-Experian has already launched a credit score app within ChatGPT (March 2026) [3], demonstrating market appetite for AI-powered credit intelligence. ClearScore, Credit Karma (via TransUnion), and TotallyMoney provide free credit score access to millions of UK consumers [4]. If Lloyds doesn't act, customers will rely on third parties for credit intelligence — weakening Lloyds' position as the primary financial relationship.
+Experian has already launched a credit score app within ChatGPT (March 2026) [3], demonstrating market appetite for AI-powered credit intelligence. ClearScore, Credit Karma (via TransUnion), and TotallyMoney provide free credit score access to millions of UK consumers [4]. If Bank doesn't act, customers will rely on third parties for credit intelligence — weakening Bank' position as the primary financial relationship.
 
 ---
 
 ## 3. Product Overview
 
-The AI Credit Coach is a **new specialist agent** deployed via Lloyds' **Envoy platform** [2] within the existing agentic AI architecture. It is not a separate application — it plugs into the same orchestrator, uses the same conversational UI, and follows the same governance-first guardrails. Envoy's standardised templates, agent marketplace, and persistent memory capabilities [2] provide the infrastructure foundation.
+The AI Credit Coach is a **new specialist agent** deployed via Bank' **Envoy platform** [2] within the existing agentic AI architecture. It is not a separate application — it plugs into the same orchestrator, uses the same conversational UI, and follows the same governance-first guardrails. Envoy's standardised templates, agent marketplace, and persistent memory capabilities [2] provide the infrastructure foundation.
 
 ### 3.1 Core Capabilities
 
@@ -52,7 +52,7 @@ The AI Credit Coach is a **new specialist agent** deployed via Lloyds' **Envoy p
 | 1 | **Credit Score Dashboard & Monitoring** | Real-time credit score from CRA partners (Experian/Equifax/TransUnion), score breakdown (what's helping/hurting), monthly change tracking with explanations |
 | 2 | **Personalised Credit Improvement Action Plans** | AI-generated ranked actions based on the customer's specific credit profile, with estimated point impact and timelines. Progress tracking with milestones. |
 | 3 | **Credit Score Simulator** | "What-if" engine: model scenarios (close a card, pay off overdraft, apply for mortgage) against CRA scoring algorithms to predict score impact |
-| 4 | **Pre-Approved Offers Engine** | Matches customer's actual credit profile against Lloyds' lending products. Generates guaranteed (not indicative) offers presented at optimal moments. One-tap application with pre-filled data. |
+| 4 | **Pre-Approved Offers Engine** | Matches customer's actual credit profile against Bank' lending products. Generates guaranteed (not indicative) offers presented at optimal moments. One-tap application with pre-filled data. |
 | 5 | **Proactive Credit Health Alerts** | Forward-looking notifications: utilisation approaching thresholds, upcoming payment reminders with score impact context, score improvement celebrations with new product eligibility |
 
 ### 3.2 How It Augments the Existing Assistant
@@ -84,7 +84,7 @@ The AI Credit Coach is a **new specialist agent** deployed via Lloyds' **Envoy p
 ### 4.2 Out of Scope (v1)
 
 - Debt consolidation execution (advice only, not transaction)
-- Third-party product comparison (Lloyds products only)
+- Third-party product comparison (Bank products only)
 - Credit report dispute filing (link to CRA only)
 - Joint account / household credit view
 - Business credit scoring
@@ -96,7 +96,7 @@ The AI Credit Coach is a **new specialist agent** deployed via Lloyds' **Envoy p
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                  Lloyds Mobile App                       │
+│                  Bank Mobile App                       │
 │  ┌───────────────────────────────────────────────────┐  │
 │  │           Unified Conversational UI                │  │
 │  │  "How's my credit score?" → Credit Coach Agent    │  │
@@ -115,7 +115,7 @@ The AI Credit Coach is a **new specialist agent** deployed via Lloyds' **Envoy p
 │  └────┬────┘      └────┬────┘      │  (NEW)     │     │
 │       │                │           └─────┬──────┘     │
 │  ┌────┴────────────────┴───┐      ┌─────┴──────┐     │
-│  │   Lloyds Bank Data      │      │  CRA Data  │     │
+│  │   Bank Bank Data      │      │  CRA Data  │     │
 │  │   (Transactions,        │      │  (Experian,│     │
 │  │    Balances, Products)  │      │  Equifax,  │     │
 │  └─────────────────────────┘      │  TU)       │     │
@@ -130,9 +130,9 @@ The AI Credit Coach is a **new specialist agent** deployed via Lloyds' **Envoy p
 | **Frontend** | Credit Score Dashboard widget, Score Simulator UI, Action Plan tracker, Alert cards, Offer presentation cards — all within existing mobile app shell |
 | **Backend APIs** | Credit Score Service, Simulation Engine, Action Plan Generator, Offer Matching Service, Alert Engine, CRA Integration Gateway |
 | **Data Persistence** | Score history store, Action plan state, Customer credit preferences, Alert configuration, Offer audit trail, Consent records |
-| **Integrations** | CRA APIs (Experian Connect, Equifax Data Services, TransUnion One), Lloyds Product Catalogue, Existing FA Orchestrator (via Envoy [2]), Push Notification Service |
+| **Integrations** | CRA APIs (Experian Connect, Equifax Data Services, TransUnion One), Bank Product Catalogue, Existing FA Orchestrator (via Envoy [2]), Push Notification Service |
 
-**Platform note:** The Credit Coach agent will be published to Envoy's internal agent marketplace, enabling reuse across Lloyds Bank, Halifax, and Bank of Scotland brands [2].
+**Platform note:** The Credit Coach agent will be published to Envoy's internal agent marketplace, enabling reuse across Bank Bank, Halifax, and Bank of Scotland brands [2].
 
 ---
 
@@ -172,7 +172,7 @@ The AI Credit Coach is a **new specialist agent** deployed via Lloyds' **Envoy p
 
 | ID | Requirement |
 |----|-------------|
-| FR-4.1 | System shall match customer credit profile against Lloyds lending criteria |
+| FR-4.1 | System shall match customer credit profile against Bank lending criteria |
 | FR-4.2 | Offers presented shall be guaranteed (customer will not be declined if they apply) |
 | FR-4.3 | System shall present offers at contextually appropriate moments |
 | FR-4.4 | System shall support one-tap application with pre-filled customer data |
@@ -248,7 +248,7 @@ The Duty also requires four outcomes: products and services, price and value, co
 |-------------|-------------|--------|
 | Pre-contract information | Pre-approved offers for regulated credit agreements must include adequate pre-contract explanations via the Standard European Consumer Credit Information form (SECCI) | CCA s.55; Consumer Credit (Disclosure of Information) Regulations 2010 |
 | Cooling-off period | 14-day withdrawal right must be clearly communicated at point of offer acceptance. Customer can cancel without giving reason. | CCA s.66A; Consumer Contracts Regulations 2013 |
-| Credit broking | If Credit Coach recommends third-party products in future, Lloyds would need credit broking permissions under CCA | CCA s.145 |
+| Credit broking | If Credit Coach recommends third-party products in future, Bank would need credit broking permissions under CCA | CCA s.145 |
 | Unfair relationships | The court can assess whether the credit relationship is unfair to the debtor — AI-driven offers must not create unfair terms | CCA s.140A-C |
 
 ### 8.5 BoE/PRA/FCA Joint Feedback on AI/ML (FS2/23, October 2023)
@@ -266,7 +266,7 @@ The Bank of England, PRA, and FCA published joint feedback statement FS2/23 in O
 
 ### 8.6 PRA SS1/23 — Model Risk Management Principles for Banks (in force 17 May 2024)
 
-SS1/23 sets out five principles for model risk management [14]. It applies to firms with internal model approval, but Lloyds should adopt it as best practice for the Credit Coach's simulation and offer-matching models:
+SS1/23 sets out five principles for model risk management [14]. It applies to firms with internal model approval, but Bank should adopt it as best practice for the Credit Coach's simulation and offer-matching models:
 
 | Principle | Application |
 |-----------|-------------|
@@ -304,12 +304,12 @@ The Credit Coach must normalise these into a consistent customer-facing represen
 |-------------|--------|---------------|---------------|
 | Credit score & factors | CRA (Experian/Equifax/TU) | Highly Confidential | Explicit opt-in per CRA |
 | Score history | Derived (stored internally) | Confidential | Covered by initial consent |
-| Transaction data | Lloyds core banking | Confidential | Existing T&Cs (legitimate interest) |
+| Transaction data | Bank core banking | Confidential | Existing T&Cs (legitimate interest) |
 | Action plan state | Generated internally | Internal | No additional consent needed |
-| Pre-approved offers | Lloyds product engine | Internal | Existing marketing preferences apply |
+| Pre-approved offers | Bank product engine | Internal | Existing marketing preferences apply |
 | Alert preferences | Customer input | Personal | Customer-controlled |
 
-**Key principle:** Lloyds transaction data and CRA data are kept in separate domains. They are combined only in the presentation/coaching layer, never co-mingled in storage.
+**Key principle:** Bank transaction data and CRA data are kept in separate domains. They are combined only in the presentation/coaching layer, never co-mingled in storage.
 
 ---
 
@@ -370,7 +370,7 @@ The Credit Coach must normalise these into a consistent customer-facing represen
 | CRA partnership agreement (Experian/Equifax/TU) | Commercial & Legal | To be initiated |
 | Envoy platform access & agent template | AI Platform team | Available (launched May 2026 [2]) |
 | Existing FA orchestrator API access | AI Platform team | Available |
-| Lloyds product eligibility engine API | Lending Products | Exists, needs Credit Coach integration |
+| Bank product eligibility engine API | Lending Products | Exists, needs Credit Coach integration |
 | Push notification infrastructure | Mobile Platform | Available |
 | DPIA completion | Data Protection Office | Required before build |
 | FCA regulatory review of offer mechanics | Compliance | Required before Phase 4 |
@@ -412,8 +412,8 @@ The Credit Coach must normalise these into a consistent customer-facing represen
 
 | # | Source | URL |
 |---|--------|-----|
-| [1] | FinTech Futures, "Lloyds Banking Group to launch AI financial assistant in 2026", 6 Nov 2025 | https://www.fintechfutures.com/ai-in-fintech/lloyds-banking-group-to-launch-ai-financial-assistant-in-2026 |
-| [2] | Bobsguide, "Lloyds Unveils Envoy: Scaling Agentic AI with Governance at the Core", 5 May 2026 | https://www.bobsguide.com/lloyds-unveils-envoy-scaling-agentic-ai-with-governance-at-the-core/ |
+| [1] | FinTech Futures, "Bank Banking Group to launch AI financial assistant in 2026", 6 Nov 2025 | https://www.fintechfutures.com/ai-in-fintech/Bank-banking-group-to-launch-ai-financial-assistant-in-2026 |
+| [2] | Bobsguide, "Bank Unveils Envoy: Scaling Agentic AI with Governance at the Core", 5 May 2026 | https://www.bobsguide.com/Bank-unveils-envoy-scaling-agentic-ai-with-governance-at-the-core/ |
 | [3] | FinancialIT, "Experian and OpenAI Launch the UK's First Credit Score App in ChatGPT", 13 Mar 2026 | https://financialit.net/news/lending/experian-and-openai-launch-uks-first-credit-score-app-chatgpt |
 | [4] | TransUnion UK, "Credit Score FAQ" / Debt Camel, "Best free ways to check your credit score" | https://www.transunion.co.uk/consumer/credit-score-faq |
 | [5] | FCA, "PS22/9: A new Consumer Duty", 27 Jul 2022 | https://www.fca.org.uk/publications/policy-statements/ps22-9-new-consumer-duty |

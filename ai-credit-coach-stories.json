@@ -15,7 +15,7 @@
           "user_story": "As a system administrator, I want the Credit Coach registered as a specialist agent on the Envoy platform, so that the orchestrator can route credit-related queries to it.",
           "acceptance_criteria": [
             "Given the Credit Coach agent manifest is deployed, When a customer asks a credit-related question via the FA, Then the orchestrator routes the query to the Credit Coach agent within 500ms",
-            "Given the Credit Coach agent is registered, When it is published to the internal marketplace, Then it is available for reuse across Lloyds, Halifax, and Bank of Scotland brands",
+            "Given the Credit Coach agent is registered, When it is published to the internal marketplace, Then it is available for reuse across Bank, Halifax, and Bank of Scotland brands",
             "Given the Credit Coach agent is unavailable, When the circuit breaker triggers, Then a graceful error message is returned to the orchestrator within 2 seconds",
             "Given the agent is deployed, When the orchestrator receives a non-credit query, Then it is NOT routed to the Credit Coach agent"
           ],
@@ -141,7 +141,7 @@
             "Given the design system is implemented, When any Credit Coach screen is rendered, Then all text meets 4.5:1 contrast ratio and UI components meet 3:1 contrast ratio per WCAG 2.1 AA",
             "Given a colour-blind user views score visualisations, When the gauge or chart is displayed, Then information is conveyed via shape/pattern in addition to colour using ColorBrewer safe palettes",
             "Given a screen reader user navigates the Credit Coach, When interacting with score gauge, trend chart, action card, or alert card components, Then each has appropriate ARIA labels and is fully operable via VoiceOver/TalkBack",
-            "Given the app is running on any brand (Lloyds/Halifax/BoS), When Credit Coach components render, Then brand-specific theming is applied without affecting accessibility compliance"
+            "Given the app is running on any brand (Bank/Halifax/BoS), When Credit Coach components render, Then brand-specific theming is applied without affecting accessibility compliance"
           ],
           "story_points": 8,
           "data_sensitivity": "Public",
@@ -227,7 +227,7 @@
           "title": "Validate Design System Components Against Multi-Brand Theming",
           "user_story": "As a system administrator, I want the design system components validated across all three brands, so that accessibility and visual consistency are maintained regardless of brand context.",
           "acceptance_criteria": [
-            "Given the component library is deployed, When rendered under Lloyds, Halifax, and Bank of Scotland themes, Then all components pass automated axe-core accessibility checks",
+            "Given the component library is deployed, When rendered under Bank, Halifax, and Bank of Scotland themes, Then all components pass automated axe-core accessibility checks",
             "Given brand theming is applied, When colour palettes change per brand, Then contrast ratios remain >= 4.5:1 for text and >= 3:1 for UI components across all themes",
             "Given loading and error states exist, When a component enters loading or error state, Then the state is communicated via ARIA live regions for screen reader users"
           ],
@@ -760,7 +760,7 @@
           "acceptance_criteria": [
             "Given my credit profile has been retrieved, When the improvement plan is generated via Vertex AI, Then I see up to 10 actions ranked by estimated impact (highest first), each with title, plain English description, category, estimated point impact range, timeframe, and difficulty level",
             "Given an action is displayed, When I tap 'why this helps', Then an explanation of why this specific action benefits my profile is shown (Flesch reading ease >= 60)",
-            "Given recommendations are generated, When reviewed for bias, Then they genuinely benefit me and are not biased toward Lloyds lending products",
+            "Given recommendations are generated, When reviewed for bias, Then they genuinely benefit me and are not biased toward Bank lending products",
             "Given I am using a screen reader, When the action list is displayed, Then each action's rank, title, impact, and timeframe are announced in logical order"
           ],
           "story_points": 8,
@@ -1406,7 +1406,7 @@
           "story_id": "US-031",
           "feature_id": "F-06.1",
           "title": "Match Customer Profile Against Lending Eligibility Criteria",
-          "user_story": "As a system administrator, I want the system to match customer credit profiles against Lloyds lending product eligibility criteria on each refresh, so that only qualifying products are surfaced.",
+          "user_story": "As a system administrator, I want the system to match customer credit profiles against Bank lending product eligibility criteria on each refresh, so that only qualifying products are surfaced.",
           "acceptance_criteria": [
             "Given a customer's score is refreshed, When the eligibility matching runs as a background process, Then it checks credit score thresholds, adverse markers, debt-to-income ratio, and existing exposure per product",
             "Given a customer does not meet eligibility criteria for a product, When the FA displays lending products, Then that product is NOT shown to the customer (pre-qualification gate)",
@@ -1508,7 +1508,7 @@
           "title": "One-Tap Application with SECCI and Cooling-Off Communication",
           "user_story": "As a retail banking customer, I want to apply for a pre-approved offer with minimal friction while receiving all legally required information, so that I can borrow responsibly with full awareness of my rights.",
           "acceptance_criteria": [
-            "Given I tap 'Apply' on a pre-approved offer, When the application flow starts, Then my data is pre-filled from existing Lloyds records (name, address, income, employment) for review and confirmation",
+            "Given I tap 'Apply' on a pre-approved offer, When the application flow starts, Then my data is pre-filled from existing Bank records (name, address, income, employment) for review and confirmation",
             "Given I review my pre-filled data, When I proceed, Then the SECCI document is displayed containing: type of credit, total amount, duration, APR, total amount payable, repayment schedule, and right to withdraw",
             "Given I accept the terms, When I confirm via biometric authentication (SCA), Then the application is submitted and a confirmation screen shows next steps and 14-day withdrawal instructions",
             "Given the 14-day cooling-off right, When the confirmation is displayed, Then it clearly states I can cancel without giving a reason within 14 days of signing",
@@ -2031,7 +2031,7 @@
           "title": "Suppress Offers During Financial Distress",
           "user_story": "As a compliance officer, I want all pre-approved offers automatically suppressed when financial distress indicators are detected, so that we do not encourage over-borrowing for vulnerable customers.",
           "acceptance_criteria": [
-            "Given a vulnerability flag is active OR Breathing Space is active OR the customer is in arrears on Lloyds products OR debt-to-income exceeds safe threshold, When the suppression check runs, Then all pre-approved offers are immediately suppressed",
+            "Given a vulnerability flag is active OR Breathing Space is active OR the customer is in arrears on Bank products OR debt-to-income exceeds safe threshold, When the suppression check runs, Then all pre-approved offers are immediately suppressed",
             "Given offers are suppressed, When distress indicators clear, Then offers resume automatically on the next refresh cycle",
             "Given suppression is active, When the customer attempts to view offers, Then no offers are shown (no manual override available \u2014 protective measure)",
             "Given suppression occurs, When the audit log is updated, Then it records suppression reason, start timestamp, and duration",
