@@ -1,2 +1,2 @@
-# lloyds-demo
-Lloyds AI Credit Coach demo repo
+# aidlc-demo
+AI Credit Coach demo repo
