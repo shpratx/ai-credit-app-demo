@@ -10,7 +10,7 @@
 
 ## 1. Vision Statement
 
-Transform Bank' AI Financial Assistant from a backward-looking spending narrator into a forward-looking financial coach that actively helps customers understand, monitor, and improve their credit health — and connects them to the right Bank products at the right time.
+Transform Bank's AI Financial Assistant from a backward-looking spending narrator into a forward-looking financial coach that actively helps customers understand, monitor, and improve their credit health — and connects them to the right Bank products at the right time.
 
 ---
 
