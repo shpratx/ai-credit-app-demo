@@ -2,7 +2,7 @@
 
 **Product:** AI Credit Coach — an augmentation module within Bank's AI Financial Assistant  
 **Author:** Prateek Sharma, Business Analyst  
-**Date:** 5 May 2026  
+**Date:** 5 July 2026  
 **Version:** 1.1  
 **Status:** Draft — for Product Owner & Stakeholder Review
 
